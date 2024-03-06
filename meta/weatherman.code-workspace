@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "name": "Simulator",
+      "path": "../simulator",
+    },
+    {
+      "name": "Viewer",
+      "path": "../viewer",
+    },
+    {
+      "name": "_meta",
+      "path": "./",
+    },
+  ],
+  "settings": {
+    "cSpell.ignoreWords": ["samvasta"],
+  },
+}
