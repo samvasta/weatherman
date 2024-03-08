@@ -2,23 +2,41 @@ package variables
 
 import "samvasta.com/weatherman/simulator/distributions"
 
+type VariableType string
+
+const (
+	T_IVar string = "ivar"
+)
+
 type VariableInfo struct {
 	Name        string
 	Description string
 
 	Units string
+
+	Type string
 }
 
 type Variable interface {
 	GetInfo() VariableInfo
 	Compute(inputs map[string]float64) float64
-	Inputs() []Variable
+	Inputs() []string
 }
 
 // IVar is short for "independent variable"
 type IVar struct {
-	VariableInfo
-	Distribution distributions.Distribution
+	VariableInfo `yaml:",inline" mapstructure:",squash"`
+	Distribution distributions.Distribution `mapstructure:",ignore"`
+}
+
+func NewIVar(name string, distribution distributions.Distribution) IVar {
+	return IVar{
+		VariableInfo: VariableInfo{
+			Name: name,
+			Type: T_IVar,
+		},
+		Distribution: distribution,
+	}
 }
 
 func (v IVar) GetInfo() VariableInfo {
@@ -35,26 +53,6 @@ func (v IVar) Compute(inputs map[string]float64) float64 {
 	return v.Distribution.Sample()
 }
 
-func (v IVar) Inputs() []Variable {
-	return []Variable{}
-}
-
-// Collectors collect the output of a variable and store it to be used as the input for an IVar in the next time step
-type Collector struct {
-	VariableInfo
-
-	Input  Variable
-	Target *IVar
-}
-
-func (v Collector) GetInfo() VariableInfo {
-	return v.VariableInfo
-}
-
-func (v Collector) Compute(inputs map[string]float64) float64 {
-	return inputs[v.Input.GetInfo().Name]
-}
-
-func (v Collector) Inputs() []Variable {
-	return []Variable{v.Input}
+func (v IVar) Inputs() []string {
+	return []string{}
 }

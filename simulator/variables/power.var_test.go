@@ -2,30 +2,34 @@ package variables
 
 import (
 	"testing"
-
-	"samvasta.com/weatherman/simulator/distributions"
 )
+
+func TestNewPower(t *testing.T) {
+	variable := NewPower("result", "base", "exponent")
+
+	if variable.Type != T_Power {
+		t.Errorf("Expected type=power, got %v", variable.Type)
+	}
+
+	if variable.Name != "result" {
+		t.Errorf("Expected result, got %v", variable.Name)
+	}
+
+	if variable.Base != "base" {
+		t.Errorf("Expected base, got %v", variable.Base)
+	}
+
+	if variable.Exponent != "exponent" {
+		t.Errorf("Expected exponent, got %v", variable.Exponent)
+	}
+}
 
 func TestPower(t *testing.T) {
 	inputs := map[string]float64{
 		"base": 10,
 		"exp":  2,
 	}
-
-	base := IVar{
-		VariableInfo: VariableInfo{Name: "base"},
-		Distribution: distributions.Constant{Value: 10},
-	}
-	exp := IVar{
-		VariableInfo: VariableInfo{Name: "exp"},
-		Distribution: distributions.Constant{Value: 2},
-	}
-
-	variable := Power{
-		VariableInfo: VariableInfo{Name: "result"},
-		Base:         base,
-		Exponent:     exp,
-	}
+	variable := NewPower("result", "base", "exp")
 
 	result := variable.Compute(inputs)
 
@@ -40,20 +44,7 @@ func TestPower2(t *testing.T) {
 		"exp":  -2,
 	}
 
-	base := IVar{
-		VariableInfo: VariableInfo{Name: "base"},
-		Distribution: distributions.Constant{Value: 10},
-	}
-	exp := IVar{
-		VariableInfo: VariableInfo{Name: "exp"},
-		Distribution: distributions.Constant{Value: -2},
-	}
-
-	variable := Power{
-		VariableInfo: VariableInfo{Name: "result"},
-		Base:         base,
-		Exponent:     exp,
-	}
+	variable := NewPower("result", "base", "exp")
 
 	result := variable.Compute(inputs)
 

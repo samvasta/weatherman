@@ -14,6 +14,13 @@
     },
   ],
   "settings": {
-    "cSpell.ignoreWords": ["samvasta"],
+    "cSpell.ignoreWords": [
+      "samvasta"
+    ],
+    "cSpell.words": [
+      "goccy",
+      "mapstructure",
+      "mitchellh"
+    ],
   },
 }

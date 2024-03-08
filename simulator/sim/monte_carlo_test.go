@@ -1,28 +1,15 @@
-package main
+package sim
 
 import (
-	"fmt"
+	"slices"
+	"testing"
 
 	"samvasta.com/weatherman/simulator/distributions"
-	"samvasta.com/weatherman/simulator/serialize"
 	"samvasta.com/weatherman/simulator/shared"
 	"samvasta.com/weatherman/simulator/variables"
 )
 
-func main() {
-	TrySerialize()
-	TryDeserialize()
-}
-
-func TryDeserialize() {
-	if model, err := serialize.ReadModelFromFile("test.yaml"); err != nil {
-		fmt.Printf("Error: %v\n", err)
-	} else {
-		fmt.Printf("%v\n", model)
-	}
-}
-
-func TrySerialize() {
+func TestMonteCarlo(t *testing.T) {
 	model := shared.NewModel()
 
 	initialPrinciple := variables.NewIVar("initialPrinciple", distributions.NewConstant(1000))
@@ -51,6 +38,18 @@ func TrySerialize() {
 	model.AddVariable(finalValue)
 	model.AddVariable(collector)
 
-	serialize.SaveModelToFile(&model, "test.yaml")
-	fmt.Printf("%v\n", model)
+	result := MonteCarlo(&model, 10, 10000)
+
+	finalValues := make([]float64, len(result.Iterations))
+	for i, run := range result.Iterations {
+		finalStep := run.Steps[len(run.Steps)-1]
+		finalValues[i] = finalStep.Results["collector"]
+	}
+
+	slices.Sort(finalValues)
+	median := finalValues[len(finalValues)/2]
+
+	if median < 4290 || median > 4410 {
+		t.Errorf("Median final value should be about 4347 but got Median=%v", median)
+	}
 }

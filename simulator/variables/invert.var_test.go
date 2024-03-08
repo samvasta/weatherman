@@ -2,24 +2,31 @@ package variables
 
 import (
 	"testing"
-
-	"samvasta.com/weatherman/simulator/distributions"
 )
+
+func TestNewInvert(t *testing.T) {
+	variable := NewInvert("result", "input")
+
+	if variable.Type != T_Invert {
+		t.Errorf("Expected type=invert, got %v", variable.Type)
+	}
+
+	if variable.Name != "result" {
+		t.Errorf("Expected result, got %v", variable.Name)
+	}
+
+	if variable.Input != "input" {
+		t.Errorf("Expected input, got %v", variable.Input)
+	}
+
+}
 
 func TestInvert(t *testing.T) {
 	inputs := map[string]float64{
 		"source": 10,
 	}
 
-	source := IVar{
-		VariableInfo: VariableInfo{Name: "source"},
-		Distribution: distributions.Constant{Value: 10},
-	}
-
-	variable := Invert{
-		VariableInfo: VariableInfo{Name: "result"},
-		input:        source,
-	}
+	variable := NewInvert("result", "source")
 
 	result := variable.Compute(inputs)
 
@@ -33,15 +40,7 @@ func TestInvert2(t *testing.T) {
 		"source": -10,
 	}
 
-	source := IVar{
-		VariableInfo: VariableInfo{Name: "source"},
-		Distribution: distributions.Constant{Value: -10},
-	}
-
-	variable := Invert{
-		VariableInfo: VariableInfo{Name: "result"},
-		input:        source,
-	}
+	variable := NewInvert("result", "source")
 
 	result := variable.Compute(inputs)
 

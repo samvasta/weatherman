@@ -6,19 +6,24 @@ import (
 	"samvasta.com/weatherman/simulator/variables"
 )
 
-func TopologicalSort(collectors []variables.Collector) []variables.Variable {
+func TopologicalSort(collectors []variables.Collector, allVariables map[string]variables.Variable) []variables.Variable {
 	allVars := []variables.Variable{}
-	toVisit := []variables.Variable{}
+	toVisitNames := []string{}
 
 	// Populate initial visit list
 	for _, c := range collectors {
-		toVisit = append(toVisit, c)
+		toVisitNames = append(toVisitNames, c.Name)
 	}
 
-	for len(toVisit) > 0 {
+	for len(toVisitNames) > 0 {
 		// Pop the last element off the list
-		current := toVisit[len(toVisit)-1]
-		toVisit = toVisit[:len(toVisit)-1]
+		currentName := toVisitNames[len(toVisitNames)-1]
+		toVisitNames = toVisitNames[:len(toVisitNames)-1]
+
+		current, ok := allVariables[currentName]
+		if !ok {
+			panic("Variable not found: " + currentName)
+		}
 
 		// Add the current variable to the list
 		allVars = append(allVars, current)
@@ -27,7 +32,7 @@ func TopologicalSort(collectors []variables.Collector) []variables.Variable {
 		for _, input := range current.Inputs() {
 
 			matchingIdx := slices.IndexFunc(allVars, func(variable variables.Variable) bool {
-				return variable.GetInfo().Name == input.GetInfo().Name
+				return variable.GetInfo().Name == input
 			})
 
 			if matchingIdx != -1 {
@@ -35,7 +40,7 @@ func TopologicalSort(collectors []variables.Collector) []variables.Variable {
 				allVars = append(allVars[:matchingIdx], allVars[matchingIdx+1:]...)
 			}
 
-			toVisit = append(toVisit, input)
+			toVisitNames = append(toVisitNames, input)
 		}
 	}
 

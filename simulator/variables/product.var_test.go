@@ -2,9 +2,27 @@ package variables
 
 import (
 	"testing"
-
-	"samvasta.com/weatherman/simulator/distributions"
 )
+
+func TestNewProduct(t *testing.T) {
+	variable := NewProduct("result", []string{"a", "b"})
+
+	if variable.Type != T_Product {
+		t.Errorf("Expected type=product, got %v", variable.Type)
+	}
+
+	if variable.Name != "result" {
+		t.Errorf("Expected result, got %v", variable.Name)
+	}
+
+	if variable.Variables[0] != "a" {
+		t.Errorf("Expected a, got %v", variable.Variables[0])
+	}
+
+	if variable.Variables[1] != "b" {
+		t.Errorf("Expected b, got %v", variable.Variables[1])
+	}
+}
 
 func TestProduct(t *testing.T) {
 	inputs := map[string]float64{
@@ -12,19 +30,7 @@ func TestProduct(t *testing.T) {
 		"b": 2.5,
 	}
 
-	a := IVar{
-		VariableInfo: VariableInfo{Name: "a"},
-		Distribution: distributions.Constant{Value: 16},
-	}
-	b := IVar{
-		VariableInfo: VariableInfo{Name: "b"},
-		Distribution: distributions.Constant{Value: 2.5},
-	}
-
-	variable := Product{
-		VariableInfo: VariableInfo{Name: "result"},
-		Variables:    []Variable{a, b},
-	}
+	variable := NewProduct("result", []string{"a", "b"})
 
 	result := variable.Compute(inputs)
 
@@ -39,19 +45,7 @@ func TestProduct2(t *testing.T) {
 		"b": -321,
 	}
 
-	a := IVar{
-		VariableInfo: VariableInfo{Name: "a"},
-		Distribution: distributions.Constant{Value: -0.1},
-	}
-	b := IVar{
-		VariableInfo: VariableInfo{Name: "b"},
-		Distribution: distributions.Constant{Value: -321},
-	}
-
-	variable := Product{
-		VariableInfo: VariableInfo{Name: "result"},
-		Variables:    []Variable{a, b},
-	}
+	variable := NewProduct("result", []string{"a", "b"})
 
 	result := variable.Compute(inputs)
 

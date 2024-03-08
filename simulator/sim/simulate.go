@@ -1,12 +1,12 @@
 package sim
 
 import (
-	"samvasta.com/weatherman/simulator"
+	"samvasta.com/weatherman/simulator/shared"
 	"samvasta.com/weatherman/simulator/variables"
 )
 
 type ModelState struct {
-	Model *simulator.Model
+	Model *shared.Model
 
 	Step int
 
@@ -15,13 +15,13 @@ type ModelState struct {
 	Results map[string]float64
 }
 
-func InitModelState(model *simulator.Model) ModelState {
+func InitModelState(model *shared.Model) ModelState {
 	state := ModelState{
 		Model: model,
 		Step:  0,
 	}
 
-	state.sortedVariables = TopologicalSort(model.Collectors)
+	state.sortedVariables = TopologicalSort(model.AllCollectors(), shared.GetVariablesMap(model.AllVariables))
 
 	return state
 }
@@ -30,9 +30,9 @@ func SimulateOneStep(prevState *ModelState) ModelState {
 	inputs := make(map[string]float64)
 	collectorValues := make(map[string]float64)
 
-	for _, c := range prevState.Model.Collectors {
-		if prevState.Results != nil {
-			inputs[c.Target.Name] = prevState.Results[c.Name]
+	for _, c := range prevState.Model.AllCollectors() {
+		if prevState.Results != nil && c.Target != "" {
+			inputs[c.Target] = prevState.Results[c.Name]
 		}
 		collectorValues[c.Name] = 0
 	}
@@ -54,7 +54,7 @@ func SimulateOneStep(prevState *ModelState) ModelState {
 	}
 }
 
-func Simulate(model *simulator.Model, steps int) []ModelState {
+func Simulate(model *shared.Model, steps int) []ModelState {
 	state := InitModelState(model)
 
 	states := make([]ModelState, steps+1)
@@ -66,18 +66,4 @@ func Simulate(model *simulator.Model, steps int) []ModelState {
 	}
 
 	return states
-}
-
-type MonteCarloResult struct {
-	Steps []ModelState
-}
-
-func MonteCarlo(model *simulator.Model, steps int, iterations int) []MonteCarloResult {
-	runs := make([]MonteCarloResult, iterations)
-
-	for i := 0; i < iterations; i++ {
-		runs[i] = MonteCarloResult{Steps: Simulate(model, steps)}
-	}
-
-	return runs
 }

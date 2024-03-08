@@ -2,21 +2,38 @@ package variables
 
 import "math"
 
+const (
+	T_Power string = "power"
+)
+
 type Power struct {
-	VariableInfo
+	VariableInfo `yaml:",inline" mapstructure:",squash"`
 
-	Base     Variable
-	Exponent Variable
+	Base     string
+	Exponent string
 }
 
-func (s Power) Compute(inputs map[string]float64) float64 {
-	return math.Pow(inputs[s.Base.GetInfo().Name], inputs[s.Exponent.GetInfo().Name])
+func NewPower(name string, base string, exponent string) Power {
+	return Power{
+		VariableInfo: VariableInfo{
+			Name: name,
+			Type: T_Power,
+		},
+		Base:     base,
+		Exponent: exponent,
+	}
 }
 
-func (s Power) Inputs() []Variable {
-	return []Variable{s.Base, s.Exponent}
+func (v Power) Compute(inputs map[string]float64) float64 {
+	return math.Pow(inputs[v.Base], inputs[v.Exponent])
 }
 
-func (s Power) GetInfo() VariableInfo {
-	return s.VariableInfo
+func (v Power) Inputs() []string {
+	return []string{v.Base, v.Exponent}
+}
+
+func (v Power) GetInfo() VariableInfo {
+	info := v.VariableInfo
+	info.Type = T_Power
+	return info
 }

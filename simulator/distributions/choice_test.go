@@ -75,7 +75,7 @@ func TestSampleChoiceWithWeights(t *testing.T) {
 
 	counts := map[int]int{0: 0, 1: 0, 2: 0, 3: 0}
 
-	for i := 0; i < 6000; i++ {
+	for i := 0; i < 60000; i++ {
 		sample := choice.Sample()
 		if sample != 1 && sample != 2 && sample != 3 {
 			t.Errorf("Expected sample to be 1, 2, or 3, got %v", sample)
@@ -85,16 +85,16 @@ func TestSampleChoiceWithWeights(t *testing.T) {
 
 	// Expect about 1000 of each
 	// This test is non-deterministic, so add some wiggle room
-	if counts[1] < 900 || counts[1] > 1100 {
-		t.Errorf("Expected about 1000 samples of 1, got %v", counts[1])
+	if counts[1] < 8800 || counts[1] > 11200 {
+		t.Errorf("Expected about 10000 samples of 1, got %v", counts[1])
 	}
 
-	if counts[2] < 1900 || counts[2] > 2100 {
-		t.Errorf("Expected about 2000 samples of 2, got %v", counts[2])
+	if counts[2] < 18900 || counts[2] > 21100 {
+		t.Errorf("Expected about 20000 samples of 2, got %v", counts[2])
 	}
 
-	if counts[3] < 2900 || counts[3] > 3100 {
-		t.Errorf("Expected about 3000 samples of 3, got %v", counts[3])
+	if counts[3] < 28900 || counts[3] > 31100 {
+		t.Errorf("Expected about 30000 samples of 3, got %v", counts[3])
 	}
 
 }

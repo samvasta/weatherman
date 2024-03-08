@@ -2,9 +2,27 @@ package variables
 
 import (
 	"testing"
-
-	"samvasta.com/weatherman/simulator/distributions"
 )
+
+func TestNewDivide(t *testing.T) {
+	variable := NewDivide("result", "quotient", "divisor")
+
+	if variable.Type != T_Divide {
+		t.Errorf("Expected type=divide, got %v", variable.Type)
+	}
+
+	if variable.Name != "result" {
+		t.Errorf("Expected result, got %v", variable.Name)
+	}
+
+	if variable.Quotient != "quotient" {
+		t.Errorf("Expected quotient, got %v", variable.Quotient)
+	}
+
+	if variable.Divisor != "divisor" {
+		t.Errorf("Expected divisor, got %v", variable.Divisor)
+	}
+}
 
 func TestDivide(t *testing.T) {
 	inputs := map[string]float64{
@@ -12,20 +30,7 @@ func TestDivide(t *testing.T) {
 		"divisor":  2,
 	}
 
-	quotient := IVar{
-		VariableInfo: VariableInfo{Name: "quotient"},
-		Distribution: distributions.Constant{Value: 10},
-	}
-	divisor := IVar{
-		VariableInfo: VariableInfo{Name: "divisor"},
-		Distribution: distributions.Constant{Value: 2},
-	}
-
-	variable := Divide{
-		VariableInfo: VariableInfo{Name: "result"},
-		Quotient:     quotient,
-		Divisor:      divisor,
-	}
+	variable := NewDivide("result", "quotient", "divisor")
 
 	result := variable.Compute(inputs)
 

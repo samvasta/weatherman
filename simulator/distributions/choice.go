@@ -2,12 +2,15 @@ package distributions
 
 import "math/rand"
 
+const T_Choice string = "choice"
+
 type WeightedOption struct {
 	Weight float64
 	Value  float64
 }
 
 type Choice struct {
+	Type        string
 	Options     []WeightedOption
 	totalWeight float64
 }
@@ -19,7 +22,7 @@ func NewUniformWeightedChoice(options []float64) Choice {
 		weightedOptions[i] = WeightedOption{1.0, option}
 		totalWeight += 1.0
 	}
-	return Choice{weightedOptions, totalWeight}
+	return Choice{T_Choice, weightedOptions, totalWeight}
 }
 
 func NewWeightedChoice(options []WeightedOption) Choice {
@@ -27,7 +30,7 @@ func NewWeightedChoice(options []WeightedOption) Choice {
 	for _, option := range options {
 		totalWeight += option.Weight
 	}
-	return Choice{options, totalWeight}
+	return Choice{T_Choice, options, totalWeight}
 }
 
 func (c Choice) Sample() float64 {
