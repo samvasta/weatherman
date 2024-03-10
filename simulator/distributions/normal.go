@@ -5,9 +5,9 @@ import "math/rand"
 const T_Normal string = "normal"
 
 type Normal struct {
-	Type   string
-	Mean   float64
-	StdDev float64
+	Type   string  `json:"type"`
+	Mean   float64 `json:"mean"`
+	StdDev float64 `json:"stdDev"`
 }
 
 func NewNormal(mean float64, stdDev float64) Normal {

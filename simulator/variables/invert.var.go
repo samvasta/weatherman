@@ -6,9 +6,9 @@ const (
 
 // Invert is a variable that reflects the value of another variable across 0 (multiplies by -1).
 type Invert struct {
-	VariableInfo `yaml:",inline" mapstructure:",squash"`
+	VariableInfo `json:",inline" mapstructure:",squash"`
 
-	Input string
+	Input string `json:"input"`
 }
 
 func NewInvert(name string, input string) Invert {
@@ -25,7 +25,7 @@ func (v Invert) Compute(inputs map[string]float64) float64 {
 	return -1 * inputs[v.Input]
 }
 
-func (v Invert) Inputs() []string {
+func (v Invert) GetInputs() []string {
 	return []string{v.Input}
 }
 

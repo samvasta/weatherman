@@ -5,9 +5,9 @@ const (
 )
 
 type Product struct {
-	VariableInfo `yaml:",inline" mapstructure:",squash"`
+	VariableInfo `json:",inline" mapstructure:",squash"`
 
-	Variables []string
+	Inputs []string `json:"inputs"`
 }
 
 func NewProduct(name string, inputs []string) Product {
@@ -16,22 +16,22 @@ func NewProduct(name string, inputs []string) Product {
 			Name: name,
 			Type: T_Product,
 		},
-		Variables: inputs,
+		Inputs: inputs,
 	}
 }
 
 func (v Product) Compute(inputs map[string]float64) float64 {
 	sum := 1.0
 
-	for _, dep := range v.Variables {
+	for _, dep := range v.Inputs {
 		sum *= inputs[dep]
 	}
 
 	return sum
 }
 
-func (v Product) Inputs() []string {
-	return v.Variables
+func (v Product) GetInputs() []string {
+	return v.Inputs
 }
 
 func (v Product) GetInfo() VariableInfo {

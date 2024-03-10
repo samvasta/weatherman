@@ -7,10 +7,10 @@ const (
 )
 
 type Power struct {
-	VariableInfo `yaml:",inline" mapstructure:",squash"`
+	VariableInfo `json:",inline" mapstructure:",squash"`
 
-	Base     string
-	Exponent string
+	Base     string `json:"base"`
+	Exponent string `json:"exponent"`
 }
 
 func NewPower(name string, base string, exponent string) Power {
@@ -28,7 +28,7 @@ func (v Power) Compute(inputs map[string]float64) float64 {
 	return math.Pow(inputs[v.Base], inputs[v.Exponent])
 }
 
-func (v Power) Inputs() []string {
+func (v Power) GetInputs() []string {
 	return []string{v.Base, v.Exponent}
 }
 

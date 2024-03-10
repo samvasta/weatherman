@@ -6,10 +6,10 @@ const (
 
 // Collectors collect the output of a variable and store it to be used as the input for an IVar in the next time step
 type Collector struct {
-	VariableInfo `yaml:",inline" mapstructure:",squash"`
+	VariableInfo `json:",inline" mapstructure:",squash"`
 
-	Input  string
-	Target string
+	Input  string `json:"input"`
+	Target string `json:"target"`
 }
 
 func NewCollector(name string, input string) Collector {
@@ -32,6 +32,6 @@ func (v Collector) Compute(inputs map[string]float64) float64 {
 	return inputs[v.Input]
 }
 
-func (v Collector) Inputs() []string {
+func (v Collector) GetInputs() []string {
 	return []string{v.Input}
 }

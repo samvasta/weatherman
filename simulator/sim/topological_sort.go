@@ -29,7 +29,7 @@ func TopologicalSort(collectors []variables.Collector, allVariables map[string]v
 		allVars = append(allVars, current)
 
 		// Add all the inputs of the current variable to the visit list
-		for _, input := range current.Inputs() {
+		for _, input := range current.GetInputs() {
 
 			matchingIdx := slices.IndexFunc(allVars, func(variable variables.Variable) bool {
 				return variable.GetInfo().Name == input

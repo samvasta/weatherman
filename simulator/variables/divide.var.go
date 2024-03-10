@@ -5,10 +5,10 @@ const (
 )
 
 type Divide struct {
-	VariableInfo `yaml:",inline" mapstructure:",squash"`
+	VariableInfo `json:",inline" mapstructure:",squash"`
 
-	Quotient string
-	Divisor  string
+	Quotient string `json:"quotient"`
+	Divisor  string `json:"divisor"`
 }
 
 func NewDivide(name string, quotient string, divisor string) Divide {
@@ -26,7 +26,7 @@ func (v Divide) Compute(inputs map[string]float64) float64 {
 	return inputs[v.Quotient] / inputs[v.Divisor]
 }
 
-func (v Divide) Inputs() []string {
+func (v Divide) GetInputs() []string {
 	return []string{v.Quotient, v.Divisor}
 }
 

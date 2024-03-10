@@ -5,9 +5,9 @@ const (
 )
 
 type Sum struct {
-	VariableInfo `yaml:",inline" mapstructure:",squash"`
+	VariableInfo `json:",inline" mapstructure:",squash"`
 
-	Variables []string
+	Inputs []string `json:"inputs"`
 }
 
 func NewSum(name string, inputs []string) Sum {
@@ -16,22 +16,22 @@ func NewSum(name string, inputs []string) Sum {
 			Name: name,
 			Type: T_Sum,
 		},
-		Variables: inputs,
+		Inputs: inputs,
 	}
 }
 
 func (v Sum) Compute(inputs map[string]float64) float64 {
 	sum := 0.0
 
-	for _, dep := range v.Variables {
+	for _, dep := range v.Inputs {
 		sum += inputs[dep]
 	}
 
 	return sum
 }
 
-func (v Sum) Inputs() []string {
-	return v.Variables
+func (v Sum) GetInputs() []string {
+	return v.Inputs
 }
 
 func (v Sum) GetInfo() VariableInfo {

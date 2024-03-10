@@ -5,7 +5,7 @@ import (
 )
 
 type Model struct {
-	AllVariables []variables.Variable `yaml:"variables"`
+	AllVariables []variables.Variable `json:"variables"`
 }
 
 func NewModel() Model {

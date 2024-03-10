@@ -1,10 +1,10 @@
 package serialize
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/goccy/go-yaml"
 	"github.com/mitchellh/mapstructure"
 	"samvasta.com/weatherman/simulator/distributions"
 	"samvasta.com/weatherman/simulator/shared"
@@ -24,7 +24,7 @@ func SaveModelToFile(m *shared.Model, path string) error {
 }
 
 func SerializeModel(m *shared.Model) ([]byte, error) {
-	return yaml.Marshal(m)
+	return json.Marshal(m)
 }
 
 func ReadModelFromFile(path string) (*shared.Model, error) {
@@ -39,9 +39,9 @@ func ReadModelFromFile(path string) (*shared.Model, error) {
 
 func DeserializeModel(bytes []byte) (*shared.Model, error) {
 	var m struct {
-		AllVariables [](map[string]interface{}) `yaml:"variables"`
+		AllVariables [](map[string]interface{}) `json:"variables"`
 	}
-	err := yaml.Unmarshal(bytes, &m)
+	err := json.Unmarshal(bytes, &m)
 
 	model := shared.NewModel()
 

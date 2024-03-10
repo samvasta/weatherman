@@ -9,24 +9,24 @@ const (
 )
 
 type VariableInfo struct {
-	Name        string
-	Description string
+	Name        string `json:"name"`
+	Description string `json:"description"`
 
-	Units string
+	Units string `json:"units"`
 
-	Type string
+	Type string `json:"type"`
 }
 
 type Variable interface {
 	GetInfo() VariableInfo
 	Compute(inputs map[string]float64) float64
-	Inputs() []string
+	GetInputs() []string
 }
 
 // IVar is short for "independent variable"
 type IVar struct {
-	VariableInfo `yaml:",inline" mapstructure:",squash"`
-	Distribution distributions.Distribution `mapstructure:",ignore"`
+	VariableInfo `json:",inline" mapstructure:",squash"`
+	Distribution distributions.Distribution `json:"distribution" mapstructure:",ignore"`
 }
 
 func NewIVar(name string, distribution distributions.Distribution) IVar {
@@ -53,6 +53,6 @@ func (v IVar) Compute(inputs map[string]float64) float64 {
 	return v.Distribution.Sample()
 }
 
-func (v IVar) Inputs() []string {
+func (v IVar) GetInputs() []string {
 	return []string{}
 }

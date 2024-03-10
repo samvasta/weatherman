@@ -15,7 +15,7 @@ func main() {
 }
 
 func TryDeserialize() {
-	if model, err := serialize.ReadModelFromFile("test.yaml"); err != nil {
+	if model, err := serialize.ReadModelFromFile("test.json"); err != nil {
 		fmt.Printf("Error: %v\n", err)
 	} else {
 		fmt.Printf("%v\n", model)
@@ -51,6 +51,6 @@ func TrySerialize() {
 	model.AddVariable(finalValue)
 	model.AddVariable(collector)
 
-	serialize.SaveModelToFile(&model, "test.yaml")
+	serialize.SaveModelToFile(&model, "test.json")
 	fmt.Printf("%v\n", model)
 }

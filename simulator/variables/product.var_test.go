@@ -15,12 +15,12 @@ func TestNewProduct(t *testing.T) {
 		t.Errorf("Expected result, got %v", variable.Name)
 	}
 
-	if variable.Variables[0] != "a" {
-		t.Errorf("Expected a, got %v", variable.Variables[0])
+	if variable.Inputs[0] != "a" {
+		t.Errorf("Expected a, got %v", variable.Inputs[0])
 	}
 
-	if variable.Variables[1] != "b" {
-		t.Errorf("Expected b, got %v", variable.Variables[1])
+	if variable.Inputs[1] != "b" {
+		t.Errorf("Expected b, got %v", variable.Inputs[1])
 	}
 }
 

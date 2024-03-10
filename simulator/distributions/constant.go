@@ -3,8 +3,8 @@ package distributions
 const T_Constant string = "constant"
 
 type Constant struct {
-	Type  string
-	Value float64
+	Type  string  `json:"type"`
+	Value float64 `json:"value"`
 }
 
 func NewConstant(value float64) Constant {

@@ -5,13 +5,13 @@ import "math/rand"
 const T_Choice string = "choice"
 
 type WeightedOption struct {
-	Weight float64
-	Value  float64
+	Weight float64 `json:"weight"`
+	Value  float64 `json:"value"`
 }
 
 type Choice struct {
-	Type        string
-	Options     []WeightedOption
+	Type        string           `json:"type"`
+	Options     []WeightedOption `json:"options"`
 	totalWeight float64
 }
 

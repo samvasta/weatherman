@@ -5,9 +5,9 @@ import "math/rand"
 const T_Uniform string = "uniform"
 
 type Uniform struct {
-	Type string
-	Min  float64
-	Max  float64
+	Type string  `json:"type"`
+	Min  float64 `json:"min"`
+	Max  float64 `json:"max"`
 }
 
 func NewUniform(min float64, max float64) Uniform {
