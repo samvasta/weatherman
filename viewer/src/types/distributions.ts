@@ -1,0 +1,87 @@
+import { z } from "zod";
+
+export enum DistributionType {
+  Constant = "constant",
+  Uniform = "uniform",
+  Normal = "normal",
+  Choice = "choice",
+}
+
+export const ConstantSchema = z.object({
+  type: z.literal(DistributionType.Constant).default(DistributionType.Constant),
+  value: z.number().finite(),
+});
+
+export type ConstantData = z.infer<typeof ConstantSchema>;
+export function isConstant(
+  distribution: AnyDistributionData
+): distribution is ConstantData {
+  return distribution.type === DistributionType.Constant;
+}
+
+export const UniformSchema = z
+  .object({
+    type: z.literal(DistributionType.Uniform).default(DistributionType.Uniform),
+    min: z.number().finite(),
+    max: z.number().finite(),
+  })
+  .superRefine(({ min, max }, ctx) => {
+    if (min > max) {
+      ctx.addIssue({
+        code: "too_big",
+        maximum: max,
+        type: "number",
+        path: ["min"],
+        message: "The minimum value cannot be greater than the maximum value",
+        inclusive: true,
+      });
+    }
+  });
+
+export type UniformData = z.infer<typeof UniformSchema>;
+export function isUniform(
+  distribution: AnyDistributionData
+): distribution is UniformData {
+  return distribution.type === DistributionType.Uniform;
+}
+
+export const NormalSchema = z.object({
+  type: z.literal(DistributionType.Normal).default(DistributionType.Normal),
+  mean: z.number().finite(),
+  stdDev: z.number().finite().nonnegative(),
+});
+
+export type NormalData = z.infer<typeof NormalSchema>;
+export function isNormal(
+  distribution: AnyDistributionData
+): distribution is NormalData {
+  return distribution.type === DistributionType.Normal;
+}
+
+export const ChoiceSchema = z.object({
+  type: z.literal(DistributionType.Choice).default(DistributionType.Choice),
+  options: z
+    .array(
+      z.object({
+        value: z.number().finite(),
+        weight: z.number().finite().positive(),
+      })
+    )
+    .min(1),
+});
+
+export type ChoiceData = z.infer<typeof ChoiceSchema>;
+export function isChoice(
+  distribution: AnyDistributionData
+): distribution is ChoiceData {
+  return distribution.type === DistributionType.Choice;
+}
+
+export const AnyDistributionSchema = z.union([
+  ConstantSchema,
+  UniformSchema,
+  NormalSchema,
+  ChoiceSchema,
+]);
+
+export type AnyDistributionData = z.infer<typeof AnyDistributionSchema>;
