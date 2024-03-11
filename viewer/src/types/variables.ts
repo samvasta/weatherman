@@ -180,16 +180,37 @@ export function getInputPortNames(variable: AnyVariableData): string[] {
     return ["base", "exponent"];
   }
   if (isProduct(variable)) {
-    return variable.inputs.map((_, i) => i.toString());
+    return [
+      ...variable.inputs.map((_, i) => i.toString()),
+      variable.inputs.length.toString(),
+    ];
   }
   if (isSum(variable)) {
-    return variable.inputs.map((_, i) => i.toString());
+    return [
+      ...variable.inputs.map((_, i) => i.toString()),
+      variable.inputs.length.toString(),
+    ];
   }
   if (isIVar(variable)) {
     return [];
   }
 
   throw new Error("Unknown variable type");
+}
+
+export function setInput(
+  variable: AnyVariableData,
+  inputName: string | number,
+  value: string
+) {
+  if (isProduct(variable)) {
+    variable.inputs[Number(inputName)] = value;
+  } else if (isSum(variable)) {
+    variable.inputs[Number(inputName)] = value;
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    (variable as any)[inputName] = value;
+  }
 }
 
 export function fromJSON(maybeVariable: unknown): AnyVariableData {

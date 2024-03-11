@@ -2,20 +2,22 @@ import { type Edge, MarkerType, type Node } from "reactflow";
 
 import { type AnyVariableData, getVariableInputs } from "@/types/variables";
 
-export type VariableNodeData = Node<AnyVariableData, "var">;
-export type VariableEdge = Edge<{
-  targetPort: string;
-}>;
+export type VariableNodeType = Node<AnyVariableData, "var">;
+
+export type VariableEdgeData = {
+  variableInput: string;
+};
+export type VariableEdgeType = Edge<VariableEdgeData>;
 
 export const OUTPUT_PORT_NAME = "output";
 
 export function useNodesAndEdges(variables: AnyVariableData[]): {
-  nodes: VariableNodeData[];
-  edges: VariableEdge[];
+  nodes: VariableNodeType[];
+  edges: VariableEdgeType[];
 } {
-  const nodes: VariableNodeData[] = [];
+  const nodes: VariableNodeType[] = [];
 
-  const edges: VariableEdge[] = [];
+  const edges: VariableEdgeType[] = [];
 
   for (const v of variables) {
     nodes.push({
@@ -25,38 +27,104 @@ export function useNodesAndEdges(variables: AnyVariableData[]): {
       width: 300,
       height: 300,
       type: "var",
-      draggable: false,
+      // draggable: false,
     });
 
     const inputs = getVariableInputs(v);
     for (const [targetPort, input] of Object.entries(inputs)) {
-      edges.push({
-        id: `${v.name}-${targetPort}-${input}`,
-        source: input,
-        sourceHandle: `${input}-${OUTPUT_PORT_NAME}`,
-        target: v.name,
-        targetHandle: `${v.name}-${targetPort}`,
-        data: {
-          targetPort: `${v.name}-${targetPort}`,
-        },
-        type: "smoothstep",
-        updatable: true,
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          width: 16,
-          height: 16,
-          color: "#58795D",
-        },
-        style: {
-          strokeWidth: 2,
-          stroke: "#58795D",
-        },
-      });
+      edges.push(
+        makeEdge({
+          targetName: v.name,
+          targetInput: targetPort,
+          sourceName: input,
+          targetHandle: `${v.name}-${targetPort}`,
+          sourceHandle: `${input}-${OUTPUT_PORT_NAME}`,
+        })
+      );
     }
   }
 
   return {
     nodes,
     edges,
+  };
+}
+
+export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
+  nodes: VariableNodeType[];
+  edges: VariableEdgeType[];
+} {
+  const nodes: VariableNodeType[] = [];
+
+  const edges: VariableEdgeType[] = [];
+
+  for (const v of variables) {
+    nodes.push({
+      id: v.name,
+      data: v,
+      position: { x: 0, y: 0 },
+      width: 300,
+      height: 300,
+      type: "var",
+      // draggable: false,
+    });
+
+    const inputs = getVariableInputs(v);
+    for (const [targetPort, input] of Object.entries(inputs)) {
+      if (input) {
+        edges.push(
+          makeEdge({
+            targetName: v.name,
+            targetInput: targetPort,
+            sourceName: input,
+            targetHandle: `${v.name}-${targetPort}`,
+            sourceHandle: `${input}-${OUTPUT_PORT_NAME}`,
+          })
+        );
+      }
+    }
+  }
+
+  return {
+    nodes,
+    edges,
+  };
+}
+
+export function makeEdge({
+  targetName,
+  targetInput,
+  sourceName,
+  targetHandle,
+  sourceHandle,
+}: {
+  targetName: string;
+  targetInput: string;
+  sourceName: string;
+  targetHandle: string;
+  sourceHandle: string;
+}): VariableEdgeType {
+  return {
+    id: `${targetName}-${targetInput}-${sourceName}`,
+    source: sourceName,
+    sourceHandle,
+    target: targetName,
+    targetHandle,
+    data: {
+      variableInput: targetInput,
+    },
+    type: "weatherman",
+    updatable: true,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 12,
+      height: 12,
+      color: "#9B9A93",
+      strokeWidth: 0,
+    },
+    style: {
+      strokeWidth: 2,
+      stroke: "#9B9A93",
+    },
   };
 }

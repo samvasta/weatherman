@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Heading } from "@/components/primitives/text/Heading";
+import { Txt } from "@/components/primitives/text/Text";
 
 import { ChoiceIcon } from "@/components/icons/distributions/ChoiceIcon";
 import { ConstantIcon } from "@/components/icons/distributions/ConstantIcon";
@@ -25,10 +26,10 @@ import { CommonVariableInfo } from "./SharedNodeInfo";
 export function IVarNode({ data }: { data: IVarData }) {
   const Content = useDistributionContent(data.distribution);
   return (
-    <>
+    <div className="flex flex-col px-6 py-3">
       <CommonVariableInfo info={data} />
       {Content}
-    </>
+    </div>
   );
 }
 
@@ -76,7 +77,10 @@ function NormalDistribution({ data }: { data: NormalData }) {
   return (
     <div className="flex items-end gap-2">
       <Heading size="2xl">
-        {data.mean} ({data.stdDev}σ)
+        {data.mean}{" "}
+        <Txt intent="subtle" as="span" size="md">
+          {data.stdDev}σ
+        </Txt>
       </Heading>
       <NormalIcon label="Normal" size="xl" className="text-neutral-10" />
     </div>

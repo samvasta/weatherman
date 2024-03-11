@@ -1,7 +1,7 @@
 import Head from "next/head";
 
 import { Canvas } from "@/canvas/Canvas";
-import { useNodesAndEdges } from "@/canvas/useNodesAndEdges";
+import { variablesToNodesAndEdges } from "@/canvas/useNodesAndEdges";
 import { fromJSON } from "@/types/variables";
 import { api } from "@/utils/api";
 
@@ -16,7 +16,7 @@ export default function Home() {
 
   const variables = rawVariables.map(fromJSON);
 
-  const { nodes, edges } = useNodesAndEdges(variables);
+  const { nodes, edges } = variablesToNodesAndEdges(variables);
 
   return (
     <>
@@ -30,11 +30,15 @@ export default function Home() {
           Palette
           <pre>{JSON.stringify(data, undefined, 2)}</pre>
         </div>
+
         {nodes.length > 0 && (
           <Canvas
+            // variables={variables}
             initialNodes={nodes}
             initialEdges={edges}
-            onVariablesChanged={() => {}}
+            onVariablesChanged={(next) => {
+              // console.log(next);
+            }}
           />
         )}
       </div>

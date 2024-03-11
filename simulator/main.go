@@ -39,6 +39,10 @@ func TrySerialize() {
 
 	finalValue := variables.NewProduct("finalValue", []string{"totalPrinciple", "roiMultiplier"})
 
+	two := variables.NewIVar("twoish", distributions.NewUniform(1.5, 2.5))
+
+	finalValueSq := variables.NewPower("finalValueSq", "finalValue", "")
+
 	collector := variables.NewCollector("collector", "finalValue")
 	collector.Target = "initialPrinciple"
 
@@ -49,6 +53,9 @@ func TrySerialize() {
 	model.AddVariable(const1)
 	model.AddVariable(roiMultiplier)
 	model.AddVariable(finalValue)
+	model.AddVariable(two)
+	model.AddVariable(finalValueSq)
+
 	model.AddVariable(collector)
 
 	serialize.SaveModelToFile(&model, "test.json")

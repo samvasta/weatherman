@@ -34,6 +34,12 @@
     "editor.formatOnSave": true,
     "eslint.validate": ["javascript", "typescript", "typescriptreact"],
     "cSpell.ignoreWords": ["samvasta"],
-    "cSpell.words": ["goccy", "mapstructure", "mitchellh"]
+    "cSpell.words": [
+      "goccy",
+      "mapstructure",
+      "mitchellh",
+      "outgoer",
+      "Outgoers"
+    ]
   }
 }

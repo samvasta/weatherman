@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import React from "react";
 
 import ELK, { type ElkNode } from "elkjs/lib/elk.bundled.js";
 import { useNodesInitialized, useReactFlow } from "reactflow";
@@ -11,8 +12,9 @@ import {
 
 import {
   OUTPUT_PORT_NAME,
-  type VariableEdge,
-  type VariableNodeData,
+  type VariableEdgeType,
+  type VariableNodeType,
+  variablesToNodesAndEdges,
 } from "./useNodesAndEdges";
 
 // elk layouting options can be found here:
@@ -23,14 +25,16 @@ const layoutOptions = {
   "elk.layered.spacing.edgeNodeBetweenLayers": "80",
   "elk.spacing.nodeNode": "20",
   "elk.layered.nodePlacement.strategy": "SIMPLE",
+  "org.eclipse.elk.edgeRouting": "ORTHOGONAL",
+  "org.eclipse.elk.mrtree.edgeRoutingMode": "AVOID_OVERLAP",
 };
 
 const elk = new ELK();
 
 // uses elkjs to give each node a layouted position
 export const getLayoutedNodes = async (
-  nodes: VariableNodeData[],
-  edges: VariableEdge[]
+  nodes: VariableNodeType[],
+  edges: VariableEdgeType[]
 ) => {
   const graph: ElkNode = {
     id: "root",
@@ -38,10 +42,11 @@ export const getLayoutedNodes = async (
     children: nodes.map((n) => {
       const targetPortNames = getInputPortNames(n.data);
 
-      const targetPorts = targetPortNames.map((portName) => ({
+      const targetPorts = targetPortNames.map((portName, i) => ({
         id: `${n.data.name}-${portName}`,
         properties: {
           side: "WEST",
+          index: -i,
         },
       }));
 
@@ -50,6 +55,7 @@ export const getLayoutedNodes = async (
           id: `${n.data.name}-${OUTPUT_PORT_NAME}`,
           properties: {
             side: "EAST",
+            index: 0,
           },
         },
       ];
@@ -64,6 +70,8 @@ export const getLayoutedNodes = async (
         // ⚠️ we need to tell elk that the ports are fixed, in order to reduce edge crossings
         properties: {
           "org.eclipse.elk.portConstraints": "FIXED_ORDER",
+          "org.eclipse.elk.layered.portSortingStrategy": "INPUT_ORDER",
+          "org.eclipse.elk.layered.considerModelOrder.portModelOrder": "true",
         },
         // we are also passing the id, so we can also handle edges without a sourceHandle or targetHandle option
         ports: [{ id: n.id }, ...targetPorts, ...sourcePorts],
@@ -73,6 +81,9 @@ export const getLayoutedNodes = async (
       id: e.id,
       sources: [e.sourceHandle || e.source],
       targets: [e.targetHandle || e.target],
+      properties: {
+        "org.eclipse.elk.edge.type": "DIRECTED",
+      },
     })),
   };
 
@@ -81,13 +92,6 @@ export const getLayoutedNodes = async (
   const layoutedNodes = nodes.map((node) => {
     const layoutedNode = layoutedGraph.children?.find(
       (lgNode) => lgNode.id === node.id
-    );
-
-    console.log(
-      layoutedNode?.layoutOptions,
-      layoutedNode?.x,
-      layoutedNode?.y,
-      layoutedNode?.edges
     );
 
     return {
@@ -99,29 +103,71 @@ export const getLayoutedNodes = async (
     };
   });
 
-  return layoutedNodes;
+  return { layoutedNodes, layoutedEdges: edges };
 };
 
 export default function useLayoutNodes() {
   const nodesInitialized = useNodesInitialized();
-  const { getNodes, getEdges, setNodes, fitView } =
+  const { getNodes, getEdges, setNodes, setEdges, fitView } =
     useReactFlow<AnyVariableData>();
+
+  const updateNodes = React.useCallback(async () => {
+    const { layoutedNodes, layoutedEdges } = await getLayoutedNodes(
+      getNodes() as VariableNodeType[],
+      getEdges() as VariableEdgeType[]
+    );
+
+    setNodes(layoutedNodes);
+    setEdges(layoutedEdges);
+    setTimeout(() => fitView(), 0);
+  }, [getNodes, getEdges, setNodes, setEdges, fitView]);
 
   useEffect(() => {
     if (nodesInitialized) {
-      const layoutNodes = async () => {
-        const layoutedNodes = await getLayoutedNodes(
-          getNodes() as VariableNodeData[],
-          getEdges() as VariableEdge[]
-        );
-
-        setNodes(layoutedNodes);
-        setTimeout(() => fitView(), 0);
-      };
-
-      layoutNodes();
+      void updateNodes();
     }
-  }, [nodesInitialized, getNodes, getEdges, setNodes, fitView]);
+  }, [nodesInitialized, updateNodes]);
 
-  return null;
+  return updateNodes;
+}
+
+export function useReactFlowNodes({
+  variables,
+}: {
+  variables: AnyVariableData[];
+}): [
+  {
+    nodes: VariableNodeType[];
+    edges: VariableEdgeType[];
+  },
+  React.Dispatch<
+    React.SetStateAction<{
+      nodes: VariableNodeType[];
+      edges: VariableEdgeType[];
+    }>
+  >,
+] {
+  const { nodes: rawNodes, edges: rawEdges } = useMemo(() => {
+    return variablesToNodesAndEdges(variables);
+  }, [variables]);
+
+  const [nodesAndEdges, setNodesAndEdges] = React.useState<{
+    nodes: VariableNodeType[];
+    edges: VariableEdgeType[];
+  }>({ nodes: rawNodes, edges: rawEdges });
+
+  const updateNodes = React.useCallback(async () => {
+    const { layoutedNodes, layoutedEdges } = await getLayoutedNodes(
+      rawNodes,
+      rawEdges
+    );
+
+    setNodesAndEdges({ nodes: layoutedNodes, edges: layoutedEdges });
+  }, [rawNodes, rawEdges]);
+
+  useEffect(() => {
+    void updateNodes();
+  }, [updateNodes]);
+
+  return [nodesAndEdges, setNodesAndEdges];
 }

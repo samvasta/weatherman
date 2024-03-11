@@ -2,11 +2,10 @@ import * as React from "react";
 
 import { type VariantProps, cva } from "class-variance-authority";
 
-import { LoadingIcon } from "@/icons/svgs/Loading";
 import { cn } from "@/utils/tailwind";
 
 export const buttonVariants = cva(
-  "inline-flex gap-1 items-center justify-center rounded-none font-medium transition-colors focus-visible:outline-none focus-visible:ring-0 disabled:opacity-50 disabled:pointer-events-none h-fit",
+  "inline-flex gap-1 items-center justify-center rounded-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-0 disabled:opacity-50 disabled:pointer-events-none h-fit",
   {
     variants: {
       variant: {
@@ -38,10 +37,6 @@ export const buttonVariants = cva(
         success: "scheme-success",
         info: "scheme-info",
         inherit: "",
-      },
-      state: {
-        default: "",
-        loading: "",
       },
     },
     compoundVariants: [
@@ -79,7 +74,6 @@ export const buttonVariants = cva(
       colorScheme: "inherit",
       size: "md",
       variant: "solid",
-      state: "default",
     },
   }
 );
@@ -102,47 +96,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       colorScheme,
       variant,
       size,
-      state,
       children,
       ...props
     },
     ref
   ) => {
-    if (state === "loading") {
-      return (
-        <button
-          className={cn(
-            buttonVariants({ variant, size, colorScheme, state, className }),
-            {
-              "pl-1": Boolean(leftIcon),
-              "pr-1": Boolean(rightIcon),
-            },
-            "relative"
-          )}
-          ref={ref}
-          type="button"
-          {...props}
-        >
-          <div className={cn({ "opacity-0": state === "loading" })}>
-            {leftIcon}
-            {children}
-            {rightIcon}
-          </div>
-          {state === "loading" && (
-            <LoadingIcon
-              className={cn(
-                "absolute bottom-1/2 left-1/2 right-1/2 top-1/2 -translate-x-1/2 -translate-y-[40%]"
-              )}
-              label="Loading..."
-            />
-          )}
-        </button>
-      );
-    }
     return (
       <button
         className={cn(
-          buttonVariants({ variant, size, colorScheme, state, className }),
+          buttonVariants({ variant, size, colorScheme, className }),
           {
             "pl-1": Boolean(leftIcon),
             "pr-1": Boolean(rightIcon),
@@ -166,14 +128,11 @@ export type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   // eslint-disable-next-line @typescript-eslint/ban-types
   ButtonVariants & {};
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  (
-    { className, colorScheme, variant, size, state, children, ...props },
-    ref
-  ) => {
+  ({ className, colorScheme, variant, size, children, ...props }, ref) => {
     return (
       <button
         className={cn(
-          buttonVariants({ variant, size, colorScheme, state }),
+          buttonVariants({ variant, size, colorScheme }),
           "p-1",
           className
         )}
@@ -181,11 +140,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         type="button"
         {...props}
       >
-        {state === "loading" ? (
-          <LoadingIcon className="-translate-y-[40%]" label="Loading..." />
-        ) : (
-          children
-        )}
+        {children}
       </button>
     );
   }

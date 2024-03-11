@@ -11,9 +11,9 @@ export const textClassNames = cva("font-sans font-regular", {
       ui: "leading-none",
     },
     intent: {
-      default: "text-neutral-12",
-      subtle: "text-neutral-11",
-      disabled: "text-neutral-10",
+      default: "text-cur-scheme-12",
+      subtle: "text-cur-scheme-11",
+      disabled: "text-cur-scheme-10",
     },
     size: {
       xs: "text-xs",
