@@ -70,10 +70,10 @@ export const VariableNode = React.memo(
             "border-primary-9 bg-primary-2 text-primary-12 scheme-primary"
         )}
         style={{
-          minHeight: (targetPorts.length + 1) * 16 + 32,
+          minHeight: (targetPorts.length + 1) * 24 + 32,
         }}
       >
-        <div className="targets absolute top-0 flex h-full w-2 flex-col justify-between py-2">
+        <div className="targets absolute top-0 flex h-full w-2 flex-col justify-evenly py-2">
           {targetPorts.map((handle) => {
             const edge = edges.find(
               (e) => e.target === id && e.targetHandle === `${id}-${handle}`
@@ -86,20 +86,21 @@ export const VariableNode = React.memo(
                 position={Position.Left}
                 className="!relative !-left-0.5 !top-0 !h-3 !w-2 !-translate-x-[100%] !translate-y-0 !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
               >
-                {selected && edge ? (
-                  <Txt className="pointer-events-none absolute bottom-3 right-1 w-fit bg-neutral-1">
-                    {edge.source}
-                    <Txt as="span" intent="subtle" className="scheme-neutral">
-                      ({handle})
-                    </Txt>
-                  </Txt>
-                ) : (
-                  handle.length > 1 && (
-                    <Txt className="pointer-events-none absolute bottom-3 right-1 w-fit bg-neutral-1">
-                      {handle}
-                    </Txt>
-                  )
-                )}
+                <Txt
+                  className="pointer-events-none absolute bottom-4 right-1 w-fit bg-neutral-1 leading-none"
+                  size="xs"
+                >
+                  {selected && edge ? (
+                    <>
+                      {edge.source}
+                      <Txt as="span" intent="subtle" className="scheme-neutral">
+                        ({handle})
+                      </Txt>
+                    </>
+                  ) : (
+                    handle.length > 1 && handle
+                  )}
+                </Txt>
               </Handle>
             );
           })}
