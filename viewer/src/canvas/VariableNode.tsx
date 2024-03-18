@@ -1,5 +1,6 @@
 import React, { type HTMLAttributes } from "react";
 
+import { useAtomValue } from "jotai";
 import { TrashIcon } from "lucide-react";
 import {
   Handle,
@@ -7,6 +8,7 @@ import {
   Position,
   useEdges,
   useReactFlow,
+  useStore,
 } from "reactflow";
 
 import { IconButton } from "@/components/primitives/button/Button";
@@ -20,6 +22,7 @@ import {
 } from "@/types/variables/allVariables";
 import { cn } from "@/utils/tailwind";
 
+import { nodeIdToNameAtom } from "./atoms";
 import { OUTPUT_PORT_NAME } from "./useNodesAndEdges";
 
 export const VariableNode = React.memo(
@@ -27,6 +30,8 @@ export const VariableNode = React.memo(
     const info = AllVariables[data.type];
 
     const { setNodes } = useReactFlow();
+
+    const addSelectedNodes = useStore((state) => state.addSelectedNodes);
 
     const onDeleteClick = () => {
       setNodes((nodes) => nodes.filter((node) => node.id !== id));
@@ -39,6 +44,7 @@ export const VariableNode = React.memo(
 
     const Content = info.VariableContent;
 
+    const nodeIdsToNames = useAtomValue(nodeIdToNameAtom);
     return (
       <div
         className={cn(
@@ -52,33 +58,43 @@ export const VariableNode = React.memo(
       >
         <div className="targets absolute top-0 flex h-full w-2 flex-col justify-evenly py-2">
           {targetPorts.map((port) => {
-            const edge = edges.find(
+            const edge = edges.filter(
               (e) => e.target === id && e.targetHandle === `${id}-${port.name}`
             );
+
             return (
-              <Handle
+              <div
                 key={port.name}
-                id={`${id}-${port.name}`}
-                type="target"
-                position={Position.Left}
-                className="!relative !-left-0.5 !top-0 !h-3 !w-2 !-translate-x-[100%] !translate-y-0 !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
+                className="!relative !-left-0.5 !top-0 !-translate-x-[100%] !translate-y-0 "
               >
                 <Txt
-                  className="pointer-events-none absolute bottom-4 right-1 w-fit bg-neutral-1 leading-none"
+                  className="absolute bottom-2 right-1 w-fit bg-neutral-1 leading-none"
                   size="xs"
                 >
-                  {selected && edge ? (
+                  {selected && edge && edge.length === 1 ? (
                     <>
-                      {edge.source}
+                      <span
+                        onClick={() => {
+                          addSelectedNodes([edge[0]!.source]);
+                        }}
+                      >
+                        {nodeIdsToNames[edge[0]!.source]}
+                      </span>
                       <Txt as="span" intent="subtle" className="scheme-neutral">
                         ({port.name})
                       </Txt>
                     </>
-                  ) : (
+                  ) : targetPorts.length > 1 ? (
                     port.name.length > 1 && port.name
-                  )}
+                  ) : null}
                 </Txt>
-              </Handle>
+                <Handle
+                  id={`${id}-${port.name}`}
+                  type="target"
+                  position={Position.Left}
+                  className="!absolute !left-0 !h-3 !w-2  !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
+                ></Handle>
+              </div>
             );
           })}
         </div>

@@ -5,7 +5,7 @@ import (
 )
 
 func TestNewDivide(t *testing.T) {
-	variable := NewDivide("result", "quotient", "divisor")
+	variable := NewDivide("result", "dividend", "divisor")
 
 	if variable.Type != T_Divide {
 		t.Errorf("Expected type=divide, got %v", variable.Type)
@@ -15,8 +15,8 @@ func TestNewDivide(t *testing.T) {
 		t.Errorf("Expected result, got %v", variable.Name)
 	}
 
-	if variable.Quotient != "quotient" {
-		t.Errorf("Expected quotient, got %v", variable.Quotient)
+	if variable.Dividend != "dividend" {
+		t.Errorf("Expected dividend, got %v", variable.Dividend)
 	}
 
 	if variable.Divisor != "divisor" {
@@ -26,11 +26,11 @@ func TestNewDivide(t *testing.T) {
 
 func TestDivide(t *testing.T) {
 	inputs := map[string]float64{
-		"quotient": 10,
+		"dividend": 10,
 		"divisor":  2,
 	}
 
-	variable := NewDivide("result", "quotient", "divisor")
+	variable := NewDivide("result", "dividend", "divisor")
 
 	result := variable.Compute(inputs)
 

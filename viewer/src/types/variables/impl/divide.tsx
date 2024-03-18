@@ -23,7 +23,7 @@ import {
 const DivideSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Divide).default(VariableType.Divide),
 
-  quotient: z.string().min(1),
+  dividend: z.string().min(1),
   divisor: z.string().min(1),
 });
 
@@ -65,16 +65,16 @@ export const DivideInfo: VariableInfo<DivideData> = {
     ...DEFAULT_COMMON_DATA,
     name: "divide",
     type: VariableType.Divide,
-    quotient: "",
+    dividend: "",
     divisor: "",
   },
   hasOutput: true,
   getInputs: (divide) => ({
-    quotient: singleToList(divide.quotient),
+    dividend: singleToList(divide.dividend),
     divisor: singleToList(divide.divisor),
   }),
   getPorts: (divide) => [
-    { name: "quotient", connectionStrategy: "overwrite" },
+    { name: "dividend", connectionStrategy: "overwrite" },
     { name: "divisor", connectionStrategy: "overwrite" },
   ],
   VariableContent: DivideNode,

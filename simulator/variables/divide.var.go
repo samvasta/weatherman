@@ -7,27 +7,27 @@ const (
 type Divide struct {
 	VariableInfo `json:",inline" mapstructure:",squash"`
 
-	Quotient string `json:"quotient"`
+	Dividend string `json:"dividend"`
 	Divisor  string `json:"divisor"`
 }
 
-func NewDivide(name string, quotient string, divisor string) Divide {
+func NewDivide(name string, dividend string, divisor string) Divide {
 	return Divide{
 		VariableInfo: VariableInfo{
 			Name: name,
 			Type: T_Divide,
 		},
-		Quotient: quotient,
+		Dividend: dividend,
 		Divisor:  divisor,
 	}
 }
 
 func (v Divide) Compute(inputs map[string]float64) float64 {
-	return inputs[v.Quotient] / inputs[v.Divisor]
+	return inputs[v.Dividend] / inputs[v.Divisor]
 }
 
 func (v Divide) GetInputs() []string {
-	return []string{v.Quotient, v.Divisor}
+	return []string{v.Dividend, v.Divisor}
 }
 
 func (v Divide) GetInfo() VariableInfo {
