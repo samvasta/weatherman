@@ -1,6 +1,6 @@
 import { Txt } from "@/components/primitives/text/Text";
 
-import { type CommonVariableInfoData } from "@/types/variables";
+import { type CommonVariableInfoData } from "@/types/variables/common";
 
 export function CommonVariableInfo({ info }: { info: CommonVariableInfoData }) {
   return (

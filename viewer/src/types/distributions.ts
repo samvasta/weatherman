@@ -85,3 +85,49 @@ export const AnyDistributionSchema = z.union([
 ]);
 
 export type AnyDistributionData = z.infer<typeof AnyDistributionSchema>;
+
+export function getDefaultDistributionData(
+  type: DistributionType
+): AnyDistributionData {
+  switch (type) {
+    case DistributionType.Choice:
+      return {
+        type,
+        options: [
+          {
+            value: 0,
+            weight: 1,
+          },
+          {
+            value: 1,
+            weight: 1,
+          },
+        ],
+      } as ChoiceData;
+
+    case DistributionType.Constant:
+      return {
+        type,
+        value: 1,
+      } as ConstantData;
+
+    case DistributionType.Normal:
+      return {
+        type,
+        mean: 1,
+        stdDev: 0.5,
+      };
+
+    case DistributionType.Uniform:
+      return {
+        type,
+        min: 0,
+        max: 10,
+      };
+
+    default:
+      throw new Error(
+        "Unrecognized distribution type " + (type as unknown as string)
+      );
+  }
+}

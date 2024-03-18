@@ -15,8 +15,8 @@ export const ConstantIcon = createIcon({
           gradientUnits="userSpaceOnUse"
           opacity={0.1}
         >
-          <stop stop-color="currentColor" stopOpacity={0.4} offset="0" />
-          <stop stop-color="currentColor" stop-opacity="0" offset="1" />
+          <stop stopColor="currentColor" stopOpacity={0.4} offset="0" />
+          <stop stopColor="currentColor" stopOpacity="0" offset="1" />
         </linearGradient>
       </defs>
       <g>
@@ -24,7 +24,7 @@ export const ConstantIcon = createIcon({
           d="m0 12.5h24"
           fill="none"
           stroke="currentColor"
-          stroke-opacity=".99751"
+          strokeOpacity=".99751"
         />
         <rect
           y="12.9"

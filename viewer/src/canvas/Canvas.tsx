@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type DragEventHandler } from "react";
 
 import ReactFlow, {
   Background,
@@ -7,6 +7,7 @@ import ReactFlow, {
   type Edge,
   MiniMap,
   type OnConnect,
+  type ReactFlowInstance,
   ReactFlowProvider,
   addEdge,
   useEdgesState,
@@ -16,11 +17,16 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 
-import { type AnyVariableData, setInput } from "@/types/variables";
+import {
+  AllVariables,
+  type AnyVariableData,
+} from "@/types/variables/allVariables";
+import { VariableType } from "@/types/variables/common";
 
 import { ConnectionLine } from "./ConnectionLine";
 import { VariableEdge } from "./VariableEdge";
 import { VariableNode } from "./VariableNode";
+import { Toolbar } from "./toolbar/Toolbar";
 import useLayoutNodes from "./useLayoutNodes";
 import {
   OUTPUT_PORT_NAME,
@@ -49,7 +55,14 @@ export type CanvasProps = {
 export function Canvas(props: CanvasProps) {
   return (
     <ReactFlowProvider>
-      <CanvasInner {...props} />
+      <div className="flex h-screen w-screen flex-col overflow-hidden">
+        <div className="min-h-0 grow">
+          <CanvasInner {...props} />
+        </div>
+        <div className="h-fit min-h-0 grow-0 border-t-4 bg-neutral-3">
+          <Toolbar />
+        </div>
+      </div>
     </ReactFlowProvider>
   );
 }
@@ -61,6 +74,10 @@ function CanvasInner({
 }: CanvasProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [reactFlowInstance, setReactFlowInstance] =
+    React.useState<ReactFlowInstance<AnyVariableData, VariableEdgeData> | null>(
+      null
+    );
 
   useLayoutNodes();
 
@@ -86,6 +103,21 @@ function CanvasInner({
       if (wouldCreateCycle({ connection, nodes: nodes, edges })) {
         return false;
       }
+
+      const targetNode = nodes.find((n) => n.id === connection.target);
+      if (connection.targetHandle && targetNode) {
+        const info = AllVariables[targetNode.data.type];
+        const portStr = connection.targetHandle.split("-")[1];
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const port = info
+          .getPorts(targetNode.data.type)
+          .find((port) => port.name === portStr);
+
+        if (port && port.connectionStrategy === "block") {
+          return false;
+        }
+      }
+
       // if (portIsAlreadyFull({ connection, nodes: nodes, edges })) {
       //   return false;
       // }
@@ -101,6 +133,35 @@ function CanvasInner({
       params.sourceHandle &&
       params.targetHandle
     ) {
+      const nodes = getNodes() as VariableNodeType[];
+
+      const targetNode = nodes.find((n) => n.id === params.target);
+
+      if (!targetNode) {
+        console.error(`Node not found with id=${params.target}`);
+        return;
+      }
+      const info = AllVariables[targetNode.data.type];
+
+      const portStr = params.targetHandle.split("-")[1];
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const port = info
+        .getPorts(targetNode.data.type)
+        .find((port) => port.name === portStr);
+
+      if (!port) {
+        console.error(
+          `Port called "${params.targetHandle}" not found on type ${targetNode.data.type}`
+        );
+        return;
+      }
+
+      if (port.connectionStrategy === "block") {
+        console.error(`Port called "${params.targetHandle}" is not writable`);
+        return;
+      }
+
       const newEdge = makeEdge({
         sourceName: params.source,
         targetName: params.target,
@@ -117,15 +178,16 @@ function CanvasInner({
       );
 
       let deletedEdges: Edge[] = [];
-      if (existingEdgeForTargetPortIdx >= 0) {
+      if (
+        existingEdgeForTargetPortIdx >= 0 &&
+        port.connectionStrategy === "overwrite"
+      ) {
         deletedEdges = currentEdges.splice(existingEdgeForTargetPortIdx, 1);
       }
 
       const nextEdges = addEdge(newEdge, currentEdges);
 
-      onVariablesChanged(
-        graphToVariables(getNodes() as VariableNodeType[], nextEdges)
-      );
+      onVariablesChanged(graphToVariables(nodes, nextEdges));
       setEdges(nextEdges);
 
       updateNodeInternals(params.target);
@@ -134,6 +196,60 @@ function CanvasInner({
       }
     }
   }, []);
+
+  const onDragOver = React.useCallback<DragEventHandler>((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onDrop = React.useCallback<DragEventHandler>(
+    (event) => {
+      event.preventDefault();
+
+      const data = JSON.parse(
+        event.dataTransfer.getData("application/reactflow")
+      ) as AnyVariableData;
+
+      // check if the dropped element is valid
+      if (
+        typeof data === "undefined" ||
+        !data ||
+        !data.type ||
+        !Object.values(VariableType).includes(data.type) ||
+        !reactFlowInstance
+      ) {
+        return;
+      }
+
+      // reactFlowInstance.project was renamed to reactFlowInstance.screenToFlowPosition
+      // and you don't need to subtract the reactFlowBounds.left/top anymore
+      // details: https://reactflow.dev/whats-new/2023-11-10
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const existingNodes = getNodes();
+      let name = data.name;
+      let i = 2;
+      while (existingNodes.some((n) => n.id === name)) {
+        name = `${data.name} ${i++}`;
+      }
+
+      const newNode: VariableNodeType = {
+        id: name,
+        type: "var",
+        position,
+        data: {
+          ...data,
+          name,
+        },
+      };
+
+      setNodes((nds) => nds.concat(newNode));
+    },
+    [reactFlowInstance]
+  );
 
   return (
     <ReactFlow
@@ -166,11 +282,15 @@ function CanvasInner({
       connectionLineComponent={ConnectionLine}
       onConnect={onConnect}
       isValidConnection={isValidConnection}
+      onInit={setReactFlowInstance}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
       className="relative"
       attributionPosition="bottom-right"
       panOnDrag
       zoomOnScroll
       fitView
+      multiSelectionKeyCode={null}
     >
       <Background />
       <Controls />
@@ -190,33 +310,34 @@ function graphToVariables(
     vars[node.id] = node.data;
   }
 
-  for (const edge of edges) {
-    // if (
-    //   vars[edge.target]?.type === VariableType.Product ||
-    //   vars[edge.target]?.type === VariableType.Sum
-    // ) {
-    //   console.log(
-    //     "adding ",
-    //     edge.source +
-    //       " to input for " +
-    //       edge.target +
-    //       " at index " +
-    //       edge.data!.variableInput
-    //   );
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    //   (vars[edge.target] as unknown as any).inputs.push(edge.source);
-    // } else {
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    //   (vars[edge.target] as unknown as any)[edge.data!.variableInput] =
-    //     edge.source;
-    // }
+  console.log("vars", vars);
+  // for (const edge of edges) {
+  //   // if (
+  //   //   vars[edge.target]?.type === VariableType.Product ||
+  //   //   vars[edge.target]?.type === VariableType.Sum
+  //   // ) {
+  //   //   console.log(
+  //   //     "adding ",
+  //   //     edge.source +
+  //   //       " to input for " +
+  //   //       edge.target +
+  //   //       " at index " +
+  //   //       edge.data!.variableInput
+  //   //   );
+  //   //   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+  //   //   (vars[edge.target] as unknown as any).inputs.push(edge.source);
+  //   // } else {
+  //   //   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+  //   //   (vars[edge.target] as unknown as any)[edge.data!.variableInput] =
+  //   //     edge.source;
+  //   // }
 
-    setInput(
-      vars[edge.target] as AnyVariableData,
-      edge.data!.variableInput,
-      edge.source
-    );
-  }
+  //   setInput(
+  //     vars[edge.target] as AnyVariableData,
+  //     edge.data!.variableInput,
+  //     edge.source
+  //   );
+  // }
 
   return Object.values(vars);
 }

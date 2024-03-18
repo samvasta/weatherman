@@ -1,66 +1,43 @@
-import React from "react";
+import React, { type HTMLAttributes } from "react";
 
-import { Handle, type NodeProps, Position, useEdges } from "reactflow";
+import { TrashIcon } from "lucide-react";
+import {
+  Handle,
+  type NodeProps,
+  Position,
+  useEdges,
+  useReactFlow,
+} from "reactflow";
 
+import { IconButton } from "@/components/primitives/button/Button";
 import { Txt } from "@/components/primitives/text/Text";
 
+import { sizeLookup } from "@/components/icons/createIcon";
+
 import {
+  AllVariables,
   type AnyVariableData,
-  getInputPortNames,
-  isCollector,
-  isDivide,
-  isIVar,
-  isInvert,
-  isPower,
-  isProduct,
-  isSum,
-} from "@/types/variables";
+} from "@/types/variables/allVariables";
 import { cn } from "@/utils/tailwind";
 
-import { CollectorNode } from "./nodes/CollectorNode";
-import { DivideNode } from "./nodes/DivideNode";
-import { IVarNode } from "./nodes/IVarNode";
-import { InvertNode } from "./nodes/InvertNode";
-import { PowerNode } from "./nodes/PowerNode";
-import { ProductNode } from "./nodes/ProductNode";
-import { SumNode } from "./nodes/SumNode";
 import { OUTPUT_PORT_NAME } from "./useNodesAndEdges";
-
-function useNodeContent(variable: AnyVariableData) {
-  if (isCollector(variable)) {
-    return <CollectorNode data={variable} />;
-  }
-  if (isDivide(variable)) {
-    return <DivideNode data={variable} />;
-  }
-  if (isInvert(variable)) {
-    return <InvertNode data={variable} />;
-  }
-  if (isPower(variable)) {
-    return <PowerNode data={variable} />;
-  }
-  if (isProduct(variable)) {
-    return <ProductNode data={variable} />;
-  }
-  if (isSum(variable)) {
-    return <SumNode data={variable} />;
-  }
-  if (isIVar(variable)) {
-    return <IVarNode data={variable} />;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-  throw new Error("Unknown variable type, " + (variable as any).type);
-}
 
 export const VariableNode = React.memo(
   ({ id, data, selected }: NodeProps<AnyVariableData>) => {
+    const info = AllVariables[data.type];
+
+    const { setNodes } = useReactFlow();
+
+    const onDeleteClick = () => {
+      setNodes((nodes) => nodes.filter((node) => node.id !== id));
+    };
+
     const edges = useEdges();
-    const targetPorts = getInputPortNames(data);
+    const targetPorts = info.getPorts(data);
 
-    const hasOutput = !isCollector(data);
+    const hasOutput = info.hasOutput;
 
-    const Content = useNodeContent(data);
+    const Content = info.VariableContent;
 
     return (
       <div
@@ -74,14 +51,14 @@ export const VariableNode = React.memo(
         }}
       >
         <div className="targets absolute top-0 flex h-full w-2 flex-col justify-evenly py-2">
-          {targetPorts.map((handle) => {
+          {targetPorts.map((port) => {
             const edge = edges.find(
-              (e) => e.target === id && e.targetHandle === `${id}-${handle}`
+              (e) => e.target === id && e.targetHandle === `${id}-${port.name}`
             );
             return (
               <Handle
-                key={handle}
-                id={`${data.name}-${handle}`}
+                key={port.name}
+                id={`${id}-${port.name}`}
                 type="target"
                 position={Position.Left}
                 className="!relative !-left-0.5 !top-0 !h-3 !w-2 !-translate-x-[100%] !translate-y-0 !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
@@ -94,31 +71,69 @@ export const VariableNode = React.memo(
                     <>
                       {edge.source}
                       <Txt as="span" intent="subtle" className="scheme-neutral">
-                        ({handle})
+                        ({port.name})
                       </Txt>
                     </>
                   ) : (
-                    handle.length > 1 && handle
+                    port.name.length > 1 && port.name
                   )}
                 </Txt>
               </Handle>
             );
           })}
         </div>
-        <div className="relative h-full w-full">{Content}</div>
+        <div className="relative h-full w-full">
+          <Content data={data} />
+        </div>
         <div className="sources absolute right-0 top-0 flex h-full w-3 flex-col justify-around">
           {hasOutput && (
             <Handle
               key={OUTPUT_PORT_NAME}
-              id={`${data.name}-${OUTPUT_PORT_NAME}`}
+              id={`${id}-${OUTPUT_PORT_NAME}`}
               type="source"
               position={Position.Right}
               className="!border-0-2 !relative !-right-1 !top-0 !h-3 !w-2 !translate-x-[100%] !translate-y-0 !rounded-l-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
             />
           )}
         </div>
+
+        {selected && (
+          <IconButton
+            className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-neutral-6 bg-neutral-1 text-neutral-10 hover:border-danger-10 hover:bg-danger-3 hover:text-danger-12"
+            variant="ghost"
+            onClick={onDeleteClick}
+          >
+            <TrashIcon size={sizeLookup.xs.width} className="stroke-current" />
+          </IconButton>
+        )}
       </div>
     );
   }
 );
 VariableNode.displayName = "VariableNode";
+
+export const VariableNodePreview = React.memo(
+  ({
+    data,
+    className,
+    ...rest
+  }: { data: AnyVariableData } & HTMLAttributes<HTMLDivElement>) => {
+    const info = AllVariables[data.type];
+    const Content = info.VariablePreviewContent;
+
+    return (
+      <div
+        className={cn(
+          "rounded-sm border bg-neutral-1 text-neutral-13 shadow-md",
+          className
+        )}
+        {...rest}
+      >
+        <div className="relative h-full w-full">
+          <Content data={data} />
+        </div>
+      </div>
+    );
+  }
+);
+VariableNodePreview.displayName = "VariableNodePreview";

@@ -15,8 +15,8 @@ export const NormalIcon = createIcon({
           gradientTransform="translate(-6,-3)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="currentColor" stopOpacity={0.4} offset="0" />
-          <stop stop-color="currentColor" stop-opacity="0" offset="1" />
+          <stop stopColor="currentColor" stopOpacity={0.4} offset="0" />
+          <stop stopColor="currentColor" stopOpacity="0" offset="1" />
         </linearGradient>
       </defs>
       <path

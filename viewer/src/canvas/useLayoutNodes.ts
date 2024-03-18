@@ -1,20 +1,18 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import React from "react";
 
 import ELK, { type ElkNode } from "elkjs/lib/elk.bundled.js";
 import { useNodesInitialized, useReactFlow } from "reactflow";
 
 import {
+  AllVariables,
   type AnyVariableData,
-  getInputPortNames,
-  isCollector,
-} from "@/types/variables";
+} from "@/types/variables/allVariables";
 
 import {
   OUTPUT_PORT_NAME,
   type VariableEdgeType,
   type VariableNodeType,
-  variablesToNodesAndEdges,
 } from "./useNodesAndEdges";
 
 // elk layouting options can be found here:
@@ -25,8 +23,7 @@ const layoutOptions = {
   "elk.layered.spacing.edgeNodeBetweenLayers": "80",
   "elk.spacing.nodeNode": "20",
   "elk.layered.nodePlacement.strategy": "SIMPLE",
-  "org.eclipse.elk.edgeRouting": "ORTHOGONAL",
-  "org.eclipse.elk.mrtree.edgeRoutingMode": "AVOID_OVERLAP",
+  "elk.edgeRouting": "ORTHOGONAL",
 };
 
 const elk = new ELK();
@@ -40,10 +37,11 @@ export const getLayoutedNodes = async (
     id: "root",
     layoutOptions,
     children: nodes.map((n) => {
-      const targetPortNames = getInputPortNames(n.data);
+      const info = AllVariables[n.data.type];
+      const targetPortNames = info.getPorts(n.data.type);
 
-      const targetPorts = targetPortNames.map((portName, i) => ({
-        id: `${n.data.name}-${portName}`,
+      const targetPorts = targetPortNames.map((port, i) => ({
+        id: `${n.id}-${port.name}`,
         properties: {
           side: "WEST",
           index: -i,
@@ -52,14 +50,14 @@ export const getLayoutedNodes = async (
 
       let sourcePorts = [
         {
-          id: `${n.data.name}-${OUTPUT_PORT_NAME}`,
+          id: `${n.id}-${OUTPUT_PORT_NAME}`,
           properties: {
             side: "EAST",
             index: 0,
           },
         },
       ];
-      if (isCollector(n.data)) {
+      if (!info.hasOutput) {
         sourcePorts = [];
       }
 
@@ -69,9 +67,9 @@ export const getLayoutedNodes = async (
         height: n.height ?? 50,
         // ⚠️ we need to tell elk that the ports are fixed, in order to reduce edge crossings
         properties: {
-          "org.eclipse.elk.portConstraints": "FIXED_ORDER",
-          "org.eclipse.elk.layered.portSortingStrategy": "INPUT_ORDER",
-          "org.eclipse.elk.layered.considerModelOrder.portModelOrder": "true",
+          "elk.portConstraints": "FIXED_ORDER",
+          "elk.layered.portSortingStrategy": "INPUT_ORDER",
+          "elk.layered.considerModelOrder.portModelOrder": "true",
         },
         // we are also passing the id, so we can also handle edges without a sourceHandle or targetHandle option
         ports: [{ id: n.id }, ...targetPorts, ...sourcePorts],
@@ -96,6 +94,14 @@ export const getLayoutedNodes = async (
 
     return {
       ...node,
+      data: {
+        ...node.data,
+        ui: {
+          x: layoutedNode?.x ?? 0,
+          y: layoutedNode?.y ?? 0,
+          id: node.id,
+        },
+      },
       position: {
         x: layoutedNode?.x ?? 0,
         y: layoutedNode?.y ?? 0,
@@ -129,45 +135,4 @@ export default function useLayoutNodes() {
   }, [nodesInitialized, updateNodes]);
 
   return updateNodes;
-}
-
-export function useReactFlowNodes({
-  variables,
-}: {
-  variables: AnyVariableData[];
-}): [
-  {
-    nodes: VariableNodeType[];
-    edges: VariableEdgeType[];
-  },
-  React.Dispatch<
-    React.SetStateAction<{
-      nodes: VariableNodeType[];
-      edges: VariableEdgeType[];
-    }>
-  >,
-] {
-  const { nodes: rawNodes, edges: rawEdges } = useMemo(() => {
-    return variablesToNodesAndEdges(variables);
-  }, [variables]);
-
-  const [nodesAndEdges, setNodesAndEdges] = React.useState<{
-    nodes: VariableNodeType[];
-    edges: VariableEdgeType[];
-  }>({ nodes: rawNodes, edges: rawEdges });
-
-  const updateNodes = React.useCallback(async () => {
-    const { layoutedNodes, layoutedEdges } = await getLayoutedNodes(
-      rawNodes,
-      rawEdges
-    );
-
-    setNodesAndEdges({ nodes: layoutedNodes, edges: layoutedEdges });
-  }, [rawNodes, rawEdges]);
-
-  useEffect(() => {
-    void updateNodes();
-  }, [updateNodes]);
-
-  return [nodesAndEdges, setNodesAndEdges];
 }

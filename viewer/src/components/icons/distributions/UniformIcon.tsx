@@ -14,21 +14,21 @@ export const UniformIcon = createIcon({
           y2="21"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="currentColor" stopOpacity={0.4} offset="0" />
-          <stop stop-color="currentColor" stop-opacity="0" offset="1" />
+          <stop stopColor="currentColor" stopOpacity={0.4} offset="0" />
+          <stop stopColor="currentColor" stopOpacity="0" offset="1" />
         </linearGradient>
         <clipPath id="clipPath5838">
           <rect width="24" height="24" />
         </clipPath>
       </defs>
       <g>
-        <g clip-path="url(#clipPath5838)">
+        <g clipPath="url(#clipPath5838)">
           <path d="m-1 21v-4l26-10v14z" fill="url(#linearGradient4579)" />
           <path
             d="m-1 17 26-10"
             fill="none"
             stroke="currentColor"
-            stroke-opacity=".99751"
+            strokeOpacity=".99751"
           />
         </g>
       </g>

@@ -1,6 +1,10 @@
+import { nanoid } from "nanoid";
 import { type Edge, MarkerType, type Node } from "reactflow";
 
-import { type AnyVariableData, getVariableInputs } from "@/types/variables";
+import {
+  AllVariables,
+  type AnyVariableData,
+} from "@/types/variables/allVariables";
 
 export type VariableNodeType = Node<AnyVariableData, "var">;
 
@@ -11,83 +15,55 @@ export type VariableEdgeType = Edge<VariableEdgeData>;
 
 export const OUTPUT_PORT_NAME = "output";
 
-export function useNodesAndEdges(variables: AnyVariableData[]): {
-  nodes: VariableNodeType[];
-  edges: VariableEdgeType[];
-} {
-  const nodes: VariableNodeType[] = [];
-
-  const edges: VariableEdgeType[] = [];
-
-  for (const v of variables) {
-    nodes.push({
-      id: v.name,
-      data: v,
-      position: { x: 0, y: 0 },
-      width: 300,
-      height: 300,
-      type: "var",
-      // draggable: false,
-    });
-
-    const inputs = getVariableInputs(v);
-    for (const [targetPort, input] of Object.entries(inputs)) {
-      edges.push(
-        makeEdge({
-          targetName: v.name,
-          targetInput: targetPort,
-          sourceName: input,
-          targetHandle: `${v.name}-${targetPort}`,
-          sourceHandle: `${input}-${OUTPUT_PORT_NAME}`,
-        })
-      );
-    }
-  }
-
-  return {
-    nodes,
-    edges,
-  };
-}
-
 export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
   nodes: VariableNodeType[];
   edges: VariableEdgeType[];
+  nodeNameToId: Record<string, string>;
 } {
   const nodes: VariableNodeType[] = [];
 
   const edges: VariableEdgeType[] = [];
 
+  const nodeNameToId: Record<string, string> = {};
+
   for (const v of variables) {
+    const id = nanoid(8);
+    nodeNameToId[v.name] = id;
     nodes.push({
-      id: v.name,
+      id,
       data: v,
-      position: { x: 0, y: 0 },
+      position: { x: v.ui?.x ?? 0, y: v.ui?.y ?? 0 },
       width: 300,
       height: 300,
       type: "var",
       // draggable: false,
     });
+  }
 
-    const inputs = getVariableInputs(v);
-    for (const [targetPort, input] of Object.entries(inputs)) {
-      if (input) {
-        edges.push(
-          makeEdge({
-            targetName: v.name,
-            targetInput: targetPort,
-            sourceName: input,
-            targetHandle: `${v.name}-${targetPort}`,
-            sourceHandle: `${input}-${OUTPUT_PORT_NAME}`,
-          })
-        );
+  for (const v of variables) {
+    const info = AllVariables[v.type];
+
+    const inputs = info.getInputs(v);
+    for (const [targetPort, inputList] of Object.entries(inputs)) {
+      if (inputList) {
+        inputList.forEach((input) => {
+          edges.push(
+            makeEdge({
+              targetName: nodeNameToId[v.name]!,
+              targetInput: targetPort,
+              sourceName: nodeNameToId[input]!,
+              targetHandle: `${nodeNameToId[v.name]}-${targetPort}`,
+              sourceHandle: `${nodeNameToId[input]}-${OUTPUT_PORT_NAME}`,
+            })
+          );
+        });
       }
     }
   }
-
   return {
     nodes,
     edges,
+    nodeNameToId,
   };
 }
 

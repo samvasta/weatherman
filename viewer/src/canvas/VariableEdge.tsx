@@ -53,7 +53,7 @@ export function VariableEdge({
     <>
       <BaseEdge
         path={edgePath}
-        markerEnd={markerEnd}
+        markerEnd={markerEnd || ""}
         style={{
           ...style,
           stroke: selected || isNodeSelected ? "#218358" : "#9B9A93",

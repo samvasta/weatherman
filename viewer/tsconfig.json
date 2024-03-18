@@ -11,6 +11,8 @@
 
     /* Strictness */
     "strict": true,
+    "strictNullChecks": true,
+    "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
 
