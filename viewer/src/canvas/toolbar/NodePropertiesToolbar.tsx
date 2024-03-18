@@ -67,8 +67,6 @@ export function NodePropertiesToolbar({
 
   const onUpdateNode = React.useCallback(
     (nextData: Partial<AnyVariableData>) => {
-      // let updatedNodes = [];
-
       setNodes((nodes) => {
         const list = (nodes as VariableNodeType[]).map((n) => {
           if (n.id === selected.id) {
@@ -92,7 +90,7 @@ export function NodePropertiesToolbar({
       });
       updateNodeInternals(selected.id);
     },
-    [setNodes, updateNodeInternals, selected.id]
+    [setNodes, updateNodeInternals, selected.id, selected.data.name]
   );
 
   if (!node) {
