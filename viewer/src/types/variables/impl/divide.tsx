@@ -23,8 +23,8 @@ import {
 const DivideSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Divide).default(VariableType.Divide),
 
-  dividend: z.string().min(1),
-  divisor: z.string().min(1),
+  dividend: z.string().min(1, `The "dividend" input is missing.`),
+  divisor: z.string().min(1, `The "divisor" input is missing.`),
 });
 
 export type DivideData = z.TypeOf<typeof DivideSchema>;

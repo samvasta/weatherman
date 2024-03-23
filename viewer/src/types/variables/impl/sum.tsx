@@ -22,7 +22,7 @@ import {
 const SumSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Sum).default(VariableType.Sum),
 
-  inputs: z.array(z.string().min(1)),
+  inputs: z.array(z.string().min(1)).min(1, "At least 1 input is required"),
 });
 
 export type SumData = z.TypeOf<typeof SumSchema>;
@@ -69,14 +69,14 @@ export const SumInfo: VariableInfo<SumData> = {
   getInputs: (sum) =>
     sum.inputs.reduce(
       (map, input) => {
-        map["input"].push(input);
+        map["inputs"].push(input);
         return map;
       },
-      { input: [] as string[] }
+      { inputs: [] as string[] }
     ),
   getPorts: (sum) => [
     {
-      name: "input",
+      name: "inputs",
       connectionStrategy: "append",
     },
   ],

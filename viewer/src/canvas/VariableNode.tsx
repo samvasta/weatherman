@@ -1,7 +1,7 @@
 import React, { type HTMLAttributes } from "react";
 
 import { useAtomValue } from "jotai";
-import { TrashIcon } from "lucide-react";
+import { TrashIcon, TriangleAlertIcon } from "lucide-react";
 import {
   Handle,
   type NodeProps,
@@ -12,6 +12,8 @@ import {
 } from "reactflow";
 
 import { IconButton } from "@/components/primitives/button/Button";
+import { Tooltip } from "@/components/primitives/floating/tooltip/Tooltip";
+import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
 import { sizeLookup } from "@/components/icons/createIcon";
@@ -22,7 +24,7 @@ import {
 } from "@/types/variables/allVariables";
 import { cn } from "@/utils/tailwind";
 
-import { nodeIdToNameAtom } from "./atoms";
+import { nodeIdToNameAtom, useNodeErrors } from "./atoms";
 import { OUTPUT_PORT_NAME, PORT_NAME_SEPARATOR } from "./useNodesAndEdges";
 
 export const VariableNode = React.memo(
@@ -45,12 +47,20 @@ export const VariableNode = React.memo(
     const Content = info.VariableContent;
 
     const nodeIdsToNames = useAtomValue(nodeIdToNameAtom);
+
+    const { errors, hasError } = useNodeErrors(data.name);
+
     return (
       <div
         className={cn(
           "grid min-w-20 rounded-sm border bg-neutral-1 text-neutral-13 shadow-md",
           selected &&
-            "border-primary-9 bg-primary-2 text-primary-12 scheme-primary"
+            !hasError &&
+            "border-primary-9 bg-primary-2 text-primary-12 scheme-primary",
+
+          selected &&
+            hasError &&
+            "border-danger-11 text-danger-12 scheme-danger"
         )}
         style={{
           minHeight: (targetPorts.length + 1) * 24 + 32,
@@ -70,7 +80,7 @@ export const VariableNode = React.memo(
                 className="!relative !-left-0.5 !top-0 !-translate-x-[100%] !translate-y-0 "
               >
                 <Txt
-                  className="absolute bottom-2 right-1 w-fit bg-neutral-1 leading-none"
+                  className="absolute bottom-2 right-1 w-fit leading-none"
                   size="xs"
                 >
                   {selected && edge && edge.length === 1 ? (
@@ -117,12 +127,34 @@ export const VariableNode = React.memo(
 
         {selected && (
           <IconButton
-            className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-neutral-6 bg-neutral-1 text-neutral-10 hover:border-danger-10 hover:bg-danger-3 hover:text-danger-12"
+            className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-neutral-9 bg-neutral-1 text-neutral-10 hover:border-danger-10 hover:bg-danger-3 hover:text-danger-12"
             variant="ghost"
             onClick={onDeleteClick}
           >
             <TrashIcon size={sizeLookup.xs.width} className="stroke-current" />
           </IconButton>
+        )}
+        {hasError && (
+          <Tooltip
+            colorScheme="danger"
+            content={
+              <div className="flex flex-col">
+                <Heading size="md">Errors:</Heading>
+                {errors.map((e, i) => (
+                  <div key={`error-${i}`}>
+                    <Txt size="md">{e.message}</Txt>
+                  </div>
+                ))}
+              </div>
+            }
+          >
+            <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full  bg-danger-9 p-1 text-danger-1">
+              <TriangleAlertIcon
+                size={sizeLookup.xs.width}
+                className="stroke-current"
+              />
+            </div>
+          </Tooltip>
         )}
       </div>
     );

@@ -1,19 +1,24 @@
 import React from "react";
 
+import { useAtomValue } from "jotai";
 import { useOnSelectionChange } from "reactflow";
 
+import { simulationResultAtom } from "../atoms";
 import {
   type VariableEdgeType,
   type VariableNodeType,
 } from "../useNodesAndEdges";
 import { NodePaletteToolbar } from "./NodePaletteToolbar";
 import { NodePropertiesToolbar } from "./NodePropertiesToolbar";
+import { NodeResultsToolbar } from "./NodeResultsToolbar";
 
 export function Toolbar() {
   const [selectedNode, setSelectedNode] =
     React.useState<VariableNodeType | null>(null);
   const [selectedEdge, setSelectedEdge] =
     React.useState<VariableEdgeType | null>(null);
+
+  const simulationResults = useAtomValue(simulationResultAtom);
 
   useOnSelectionChange({
     onChange: (params) => {
@@ -29,6 +34,13 @@ export function Toolbar() {
       }
     },
   });
+
+  if (simulationResults) {
+    if (selectedNode) {
+      return <NodeResultsToolbar selected={selectedNode} />;
+    }
+    return <></>;
+  }
 
   if (selectedNode) {
     return <NodePropertiesToolbar selected={selectedNode} />;

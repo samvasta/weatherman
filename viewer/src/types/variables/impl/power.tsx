@@ -23,8 +23,8 @@ import {
 const PowerSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Power).default(VariableType.Power),
 
-  base: z.string().min(1),
-  exponent: z.string().min(1),
+  base: z.string().min(1, `The "base" input is missing.`),
+  exponent: z.string().min(1, `The "exponent" input is missing.`),
 });
 
 export type PowerData = z.TypeOf<typeof PowerSchema>;

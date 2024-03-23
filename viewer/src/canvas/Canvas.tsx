@@ -1,5 +1,6 @@
-import React, { type DragEventHandler } from "react";
+import React, { type DragEventHandler, useEffect } from "react";
 
+import { useSetAtom } from "jotai";
 import ReactFlow, {
   Background,
   type Connection,
@@ -27,6 +28,8 @@ import { ConnectionLine } from "./ConnectionLine";
 import { Menu } from "./Menu";
 import { VariableEdge } from "./VariableEdge";
 import { VariableNode } from "./VariableNode";
+import { compiledModelAtom } from "./atoms";
+import { graphToModel } from "./graphToModel";
 import { Toolbar } from "./toolbar/Toolbar";
 import {
   OUTPUT_PORT_NAME,
@@ -49,8 +52,6 @@ const edgeTypes = {
 export type CanvasProps = {
   initialNodes: VariableNodeType[];
   initialEdges: VariableEdgeType[];
-  // variables: AnyVariableData[];
-  onVariablesChanged: (nextVariables: AnyVariableData[]) => void;
 };
 
 export function Canvas(props: CanvasProps) {
@@ -68,11 +69,9 @@ export function Canvas(props: CanvasProps) {
   );
 }
 
-function CanvasInner({
-  initialNodes,
-  initialEdges,
-  onVariablesChanged,
-}: CanvasProps) {
+function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
+  const setCompiledModel = useSetAtom(compiledModelAtom);
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] =
@@ -84,6 +83,14 @@ function CanvasInner({
     AnyVariableData,
     VariableEdgeData
   >();
+
+  useEffect(() => {
+    const nextModel = graphToModel(
+      getNodes() as VariableNodeType[],
+      getEdges()
+    );
+    setCompiledModel(nextModel);
+  }, [getNodes, getEdges, setCompiledModel]);
 
   const updateNodeInternals = useUpdateNodeInternals();
 
@@ -189,7 +196,8 @@ function CanvasInner({
 
       const nextEdges = addEdge(newEdge, currentEdges);
 
-      onVariablesChanged(graphToVariables(nodes, nextEdges));
+      const nextModel = graphToModel(nodes, nextEdges);
+      setCompiledModel(nextModel);
       setEdges(nextEdges);
 
       updateNodeInternals(params.target);
@@ -265,9 +273,12 @@ function CanvasInner({
         //   (prev) => applyNodeChanges(changes, prev) as VariableNodeType[]
         // );
         if (changes.some((c) => c.type === "add" || c.type === "remove")) {
-          onVariablesChanged(
-            graphToVariables(getNodes() as VariableNodeType[], getEdges())
+          const nextModel = graphToModel(
+            getNodes() as VariableNodeType[],
+            getEdges()
           );
+
+          setCompiledModel(nextModel);
         }
       }}
       onEdgesChange={(changes) => {
@@ -276,9 +287,11 @@ function CanvasInner({
         //   (prev) => applyEdgeChanges(changes, prev) as VariableEdgeType[]
         // );
         if (changes.some((c) => c.type === "add" || c.type === "remove")) {
-          onVariablesChanged(
-            graphToVariables(getNodes() as VariableNodeType[], getEdges())
+          const nextModel = graphToModel(
+            getNodes() as VariableNodeType[],
+            getEdges()
           );
+          setCompiledModel(nextModel);
         }
       }}
       connectionLineComponent={ConnectionLine}
@@ -300,47 +313,4 @@ function CanvasInner({
       <Menu />
     </ReactFlow>
   );
-}
-
-function graphToVariables(
-  nodes: VariableNodeType[],
-  edges: VariableEdgeType[]
-): AnyVariableData[] {
-  const vars: Record<string, AnyVariableData> = {};
-
-  // console.log(nodes, edges);
-  for (const node of nodes) {
-    vars[node.id] = node.data;
-  }
-
-  console.log("vars", vars);
-  // for (const edge of edges) {
-  //   // if (
-  //   //   vars[edge.target]?.type === VariableType.Product ||
-  //   //   vars[edge.target]?.type === VariableType.Sum
-  //   // ) {
-  //   //   console.log(
-  //   //     "adding ",
-  //   //     edge.source +
-  //   //       " to input for " +
-  //   //       edge.target +
-  //   //       " at index " +
-  //   //       edge.data!.variableInput
-  //   //   );
-  //   //   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-  //   //   (vars[edge.target] as unknown as any).inputs.push(edge.source);
-  //   // } else {
-  //   //   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-  //   //   (vars[edge.target] as unknown as any)[edge.data!.variableInput] =
-  //   //     edge.source;
-  //   // }
-
-  //   setInput(
-  //     vars[edge.target] as AnyVariableData,
-  //     edge.data!.variableInput,
-  //     edge.source
-  //   );
-  // }
-
-  return Object.values(vars);
 }

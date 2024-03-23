@@ -48,7 +48,10 @@ export function isUniform(
 export const NormalSchema = z.object({
   type: z.literal(DistributionType.Normal).default(DistributionType.Normal),
   mean: z.number().finite(),
-  stdDev: z.number().finite().nonnegative(),
+  stdDev: z
+    .number()
+    .finite()
+    .nonnegative("Standard deviation cannot be negative."),
 });
 
 export type NormalData = z.infer<typeof NormalSchema>;
@@ -64,7 +67,7 @@ export const ChoiceSchema = z.object({
     .array(
       z.object({
         value: z.number().finite(),
-        weight: z.number().finite().positive(),
+        weight: z.number().finite().positive("Weight must be positive."),
       })
     )
     .min(1),

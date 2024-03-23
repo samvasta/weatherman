@@ -22,7 +22,7 @@ import {
 const ProductSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Product).default(VariableType.Product),
 
-  inputs: z.array(z.string().min(1)),
+  inputs: z.array(z.string().min(1)).min(1, "At least 1 input is required"),
 });
 
 export type ProductData = z.TypeOf<typeof ProductSchema>;
@@ -69,14 +69,14 @@ export const ProductInfo: VariableInfo<ProductData> = {
   getInputs: (product) =>
     product.inputs.reduce(
       (map, input) => {
-        map["input"].push(input);
+        map["inputs"].push(input);
         return map;
       },
-      { input: [] as string[] }
+      { inputs: [] as string[] }
     ),
   getPorts: (product) => [
     {
-      name: "input",
+      name: "inputs",
       connectionStrategy: "append",
     },
   ],

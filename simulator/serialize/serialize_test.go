@@ -61,3 +61,14 @@ func TestSerialize(t *testing.T) {
 		}
 	}
 }
+
+func TestDeserialize(t *testing.T) {
+	str := `{"variables":[{"name":"initialPrinciple","description":"","units":"","type":"ivar","distribution":{"type":"constant","value":1000}},{"name":"contribution","description":"","units":"","type":"ivar","distribution":{"type":"constant","value":100}},{"name":"returnOnInvestment","description":"","units":"","type":"ivar","distribution":{"type":"normal","mean":0.1,"stdDev":0.05}},{"name":"totalPrinciple","description":"","units":"","type":"sum","inputs":["initialPrinciple","contribution"]},{"name":"const1","description":"","units":"","type":"ivar","distribution":{"type":"constant","value":1}},{"name":"roiMultiplier","description":"","units":"","type":"sum","inputs":["returnOnInvestment","const1"]},{"name":"finalValue","description":"","units":"","type":"product","inputs":["totalPrinciple","roiMultiplier"]},{"name":"twoish","description":"","units":"","type":"ivar","distribution":{"type":"uniform","min":1.5,"max":2.5}, "ui": {"x":123, "y": 23, "id": "abcde"}},{"name":"finalValueSq","description":"","units":"","type":"power","base":"finalValue","exponent":""},{"name":"collector","description":"","units":"","type":"collector","input":"finalValue","target":"initialPrinciple"}]}`
+
+	_, err := DeserializeModel([]byte(str))
+
+	if err != nil {
+		t.Error(err)
+	}
+
+}

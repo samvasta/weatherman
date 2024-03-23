@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 
-import { CloseIcon } from "@/icons/svgs/Close";
 import { cn } from "@/utils/tailwind";
 import { wrapIf } from "@/utils/wrapIf";
 
@@ -182,7 +182,7 @@ export const DialogCloseButton = React.forwardRef<
         )}
         {...rest}
       >
-        <CloseIcon label="close" className="h-4 w-4" />
+        <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     );

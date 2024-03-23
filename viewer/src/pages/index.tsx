@@ -23,7 +23,6 @@ export default function Home() {
   const { nodes, edges, nodeNameToId } = variablesToNodesAndEdges(
     variables as AnyVariableData[]
   );
-  console.log(nodes.map((n) => n.data));
 
   React.useEffect(() => {
     initializeNodeNamesMap(nodeNameToId);
@@ -41,9 +40,6 @@ export default function Home() {
           // variables={variables}
           initialNodes={nodes}
           initialEdges={edges}
-          onVariablesChanged={(next) => {
-            // console.log(next);
-          }}
         />
       )}
     </>

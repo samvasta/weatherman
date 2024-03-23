@@ -1,6 +1,7 @@
 import { createTRPCRouter } from "@/server/api/trpc";
 
 import { jsonRouter } from "./routers/json";
+import { simulateRouter } from "./routers/simulate";
 
 /**
  * This is the primary router for your server.
@@ -9,6 +10,7 @@ import { jsonRouter } from "./routers/json";
  */
 export const appRouter = createTRPCRouter({
   json: jsonRouter,
+  simulate: simulateRouter,
 });
 
 // export type definition of API

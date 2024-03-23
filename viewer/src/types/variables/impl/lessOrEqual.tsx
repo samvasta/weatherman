@@ -24,11 +24,11 @@ import {
 const LessOrEqualSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.LessOrEqual).default(VariableType.LessOrEqual),
 
-  testA: z.string().min(1),
-  testB: z.string().min(1),
+  testA: z.string().min(1, `The "test A" input is missing.`),
+  testB: z.string().min(1, `The "test B" input is missing.`),
 
-  true: z.string().min(1),
-  false: z.string().min(1),
+  true: z.string().min(1, `The "true" input is missing.`),
+  false: z.string().min(1, `The "false" input is missing.`),
 });
 
 export type LessOrEqualData = z.TypeOf<typeof LessOrEqualSchema>;

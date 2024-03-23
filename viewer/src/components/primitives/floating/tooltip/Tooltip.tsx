@@ -3,10 +3,8 @@ import React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { type VariantProps, cva } from "class-variance-authority";
 
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/utils/tailwind";
 
-import { Dialog } from "../dialog/Dialog";
 import { TooltipArrow } from "./TooltipArrow";
 
 const tooltip = cva("font-sans font-medium", {
@@ -42,20 +40,6 @@ export function Tooltip(props: TooltipProps) {
     side = "top",
     ...providerProps
   } = props;
-
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return (
-      <Dialog
-        content={content}
-        triggerProps={{ asChild: true }}
-        showCloseButton={false}
-      >
-        {children}
-      </Dialog>
-    );
-  }
 
   return (
     <TooltipPrimitive.Provider {...providerProps}>

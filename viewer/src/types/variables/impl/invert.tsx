@@ -23,7 +23,7 @@ import {
 const InvertSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Invert).default(VariableType.Invert),
 
-  input: z.string().min(1),
+  input: z.string().min(1, `The input is missing.`),
 });
 
 export type InvertData = z.TypeOf<typeof InvertSchema>;

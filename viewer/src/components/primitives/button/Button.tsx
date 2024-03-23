@@ -31,8 +31,6 @@ export const buttonVariants = cva(
         inverted: "scheme-neutral border-0",
         neutral: "scheme-neutral text-neutral-12",
         primary: "scheme-primary",
-        secondary: "scheme-secondary",
-        tertiary: "scheme-tertiary",
         danger: "scheme-danger",
         success: "scheme-success",
         info: "scheme-info",

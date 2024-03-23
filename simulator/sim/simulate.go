@@ -57,13 +57,12 @@ func SimulateOneStep(prevState *ModelState) ModelState {
 func Simulate(model *shared.Model, steps int) []ModelState {
 	state := InitModelState(model)
 
-	states := make([]ModelState, steps+1)
-	states[0] = state
+	states := make([]ModelState, steps)
+	// states[0] = state
 
 	for i := 0; i < steps; i++ {
 		state = SimulateOneStep(&state)
-		states = append(states, state)
+		states[i] = state
 	}
-
 	return states
 }

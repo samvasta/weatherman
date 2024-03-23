@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useSetAtom } from "jotai";
 import { useNodes, useReactFlow, useUpdateNodeInternals } from "reactflow";
 
 import { EmptyState } from "@/components/empty/EmptyState";
@@ -9,6 +10,8 @@ import {
   type AnyVariableData,
 } from "@/types/variables/allVariables";
 
+import { compiledModelAtom } from "../atoms";
+import { graphToModel } from "../graphToModel";
 import { type VariableNodeType } from "../useNodesAndEdges";
 
 function replaceName(
@@ -56,7 +59,8 @@ export function NodePropertiesToolbar({
 
   const updateNodeInternals = useUpdateNodeInternals();
 
-  const { setNodes } = useReactFlow();
+  const updateCompiledModel = useSetAtom(compiledModelAtom);
+  const { setNodes, getEdges } = useReactFlow();
 
   const nodes = useNodes();
 
@@ -68,29 +72,40 @@ export function NodePropertiesToolbar({
   const onUpdateNode = React.useCallback(
     (nextData: Partial<AnyVariableData>) => {
       setNodes((nodes) => {
-        const list = (nodes as VariableNodeType[]).map((n) => {
-          if (n.id === selected.id) {
-            return {
-              ...n,
-              data: { ...n.data, ...nextData },
-            };
-          } else {
-            if (nextData.name) {
+        const list: VariableNodeType[] = (nodes as VariableNodeType[]).map(
+          (n) => {
+            if (n.id === selected.id) {
               return {
                 ...n,
-                data: replaceName(n.data, selected.data.name, nextData.name),
-              };
+                data: { ...n.data, ...nextData },
+              } as VariableNodeType;
             } else {
-              return n;
+              if (nextData.name) {
+                return {
+                  ...n,
+                  data: replaceName(n.data, selected.data.name, nextData.name),
+                } as VariableNodeType;
+              } else {
+                return n;
+              }
             }
           }
-        });
+        );
+
+        updateCompiledModel(graphToModel(list, getEdges()));
 
         return list;
       });
       updateNodeInternals(selected.id);
     },
-    [setNodes, updateNodeInternals, selected.id, selected.data.name]
+    [
+      setNodes,
+      updateNodeInternals,
+      selected.id,
+      selected.data.name,
+      updateCompiledModel,
+      getEdges,
+    ]
   );
 
   if (!node) {

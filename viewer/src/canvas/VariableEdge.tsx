@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useSetAtom } from "jotai";
 import { X } from "lucide-react";
 import {
   BaseEdge,
@@ -12,6 +13,12 @@ import {
 } from "reactflow";
 
 import { IconButton } from "@/components/primitives/button/Button";
+
+import { type AnyVariableData } from "@/types/variables/allVariables";
+
+import { compiledModelAtom } from "./atoms";
+import { graphToModel } from "./graphToModel";
+import { type VariableNodeType } from "./useNodesAndEdges";
 
 export function VariableEdge({
   id,
@@ -36,15 +43,25 @@ export function VariableEdge({
     targetPosition,
   });
   const updateNodeInternals = useUpdateNodeInternals();
-  const nodes = useNodes();
+  const nodes = useNodes<AnyVariableData>();
   const { setEdges } = useReactFlow();
+  const setCompiledModel = useSetAtom(compiledModelAtom);
 
   const isNodeSelected = nodes.some(
     (n) => n.selected && (n.id === source || n.id === target)
   );
 
   const onEdgeClick = () => {
-    setEdges((edges) => edges.filter((edge) => edge.id !== id));
+    setEdges((edges) => {
+      const nextEdges = edges.filter((edge) => edge.id !== id);
+
+      const nextModel = graphToModel(nodes as VariableNodeType[], nextEdges);
+
+      console.log(nextModel);
+      setCompiledModel(nextModel);
+
+      return nextEdges;
+    });
 
     updateNodeInternals(source);
   };
@@ -75,7 +92,7 @@ export function VariableEdge({
               onClick={onEdgeClick}
               size="xs"
               variant="ghost"
-              className="h-fit w-fit rounded-full border border-cur-scheme-9 bg-cur-scheme-2 p-0.5 text-cur-scheme-9 scheme-danger"
+              className="h-fit w-fit rounded-full border border-neutral-9 bg-neutral-1 p-0.5 text-neutral-12 scheme-neutral hover:border-danger-10 hover:bg-danger-3 hover:text-danger-12 hover:scheme-danger"
             >
               <X className="h-4 w-4" />
             </IconButton>

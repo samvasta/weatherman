@@ -23,7 +23,7 @@ import {
 const CollectorSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Collector).default(VariableType.Collector),
 
-  input: z.string().min(1),
+  input: z.string().min(1, `The input is missing.`),
   target: z.string().nullable(),
 });
 
