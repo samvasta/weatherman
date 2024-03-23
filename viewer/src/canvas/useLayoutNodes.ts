@@ -1,8 +1,7 @@
-import { useEffect } from "react";
 import React from "react";
 
 import ELK, { type ElkNode } from "elkjs/lib/elk.bundled.js";
-import { useNodesInitialized, useReactFlow } from "reactflow";
+import { useReactFlow } from "reactflow";
 
 import {
   AllVariables,
@@ -11,6 +10,7 @@ import {
 
 import {
   OUTPUT_PORT_NAME,
+  PORT_NAME_SEPARATOR,
   type VariableEdgeType,
   type VariableNodeType,
 } from "./useNodesAndEdges";
@@ -41,7 +41,7 @@ export const getLayoutedNodes = async (
       const targetPortNames = info.getPorts(n.data.type);
 
       const targetPorts = targetPortNames.map((port, i) => ({
-        id: `${n.id}-${port.name}`,
+        id: `${n.id}${PORT_NAME_SEPARATOR}${port.name}`,
         properties: {
           side: "WEST",
           index: -i,
@@ -50,7 +50,7 @@ export const getLayoutedNodes = async (
 
       let sourcePorts = [
         {
-          id: `${n.id}-${OUTPUT_PORT_NAME}`,
+          id: `${n.id}${PORT_NAME_SEPARATOR}${OUTPUT_PORT_NAME}`,
           properties: {
             side: "EAST",
             index: 0,
@@ -113,7 +113,6 @@ export const getLayoutedNodes = async (
 };
 
 export default function useLayoutNodes() {
-  const nodesInitialized = useNodesInitialized();
   const { getNodes, getEdges, setNodes, setEdges, fitView } =
     useReactFlow<AnyVariableData>();
 
@@ -127,12 +126,6 @@ export default function useLayoutNodes() {
     setEdges(layoutedEdges);
     setTimeout(() => fitView(), 0);
   }, [getNodes, getEdges, setNodes, setEdges, fitView]);
-
-  useEffect(() => {
-    if (nodesInitialized) {
-      void updateNodes();
-    }
-  }, [nodesInitialized, updateNodes]);
 
   return updateNodes;
 }

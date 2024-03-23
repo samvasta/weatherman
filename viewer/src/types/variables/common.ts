@@ -3,8 +3,11 @@ import { z } from "zod";
 export enum VariableType {
   Collector = "collector",
   Divide = "divide",
+  Equals = "equals",
   Invert = "invert",
   IVar = "ivar",
+  LessThan = "less",
+  LessOrEqual = "lessOrEqual",
   Power = "power",
   Product = "product",
   Sum = "sum",

@@ -23,7 +23,7 @@ import {
 import { cn } from "@/utils/tailwind";
 
 import { nodeIdToNameAtom } from "./atoms";
-import { OUTPUT_PORT_NAME } from "./useNodesAndEdges";
+import { OUTPUT_PORT_NAME, PORT_NAME_SEPARATOR } from "./useNodesAndEdges";
 
 export const VariableNode = React.memo(
   ({ id, data, selected }: NodeProps<AnyVariableData>) => {
@@ -59,7 +59,9 @@ export const VariableNode = React.memo(
         <div className="targets absolute top-0 flex h-full w-2 flex-col justify-evenly py-2">
           {targetPorts.map((port) => {
             const edge = edges.filter(
-              (e) => e.target === id && e.targetHandle === `${id}-${port.name}`
+              (e) =>
+                e.target === id &&
+                e.targetHandle === `${id}${PORT_NAME_SEPARATOR}${port.name}`
             );
 
             return (
@@ -89,7 +91,7 @@ export const VariableNode = React.memo(
                   ) : null}
                 </Txt>
                 <Handle
-                  id={`${id}-${port.name}`}
+                  id={`${id}${PORT_NAME_SEPARATOR}${port.name}`}
                   type="target"
                   position={Position.Left}
                   className="!absolute !left-0 !h-3 !w-2  !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
@@ -105,7 +107,7 @@ export const VariableNode = React.memo(
           {hasOutput && (
             <Handle
               key={OUTPUT_PORT_NAME}
-              id={`${id}-${OUTPUT_PORT_NAME}`}
+              id={`${id}${PORT_NAME_SEPARATOR}${OUTPUT_PORT_NAME}`}
               type="source"
               position={Position.Right}
               className="!border-0-2 !relative !-right-1 !top-0 !h-3 !w-2 !translate-x-[100%] !translate-y-0 !rounded-l-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"

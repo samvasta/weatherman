@@ -24,12 +24,13 @@ import {
 import { VariableType } from "@/types/variables/common";
 
 import { ConnectionLine } from "./ConnectionLine";
+import { Menu } from "./Menu";
 import { VariableEdge } from "./VariableEdge";
 import { VariableNode } from "./VariableNode";
 import { Toolbar } from "./toolbar/Toolbar";
-import useLayoutNodes from "./useLayoutNodes";
 import {
   OUTPUT_PORT_NAME,
+  PORT_NAME_SEPARATOR,
   type VariableEdgeData,
   type VariableEdgeType,
   type VariableNodeType,
@@ -78,8 +79,6 @@ function CanvasInner({
     React.useState<ReactFlowInstance<AnyVariableData, VariableEdgeData> | null>(
       null
     );
-
-  useLayoutNodes();
 
   const { getNodes, getEdges } = useReactFlow<
     AnyVariableData,
@@ -143,7 +142,7 @@ function CanvasInner({
       }
       const info = AllVariables[targetNode.data.type];
 
-      const portStr = params.targetHandle.split("-")[1];
+      const portStr = params.targetHandle.split(PORT_NAME_SEPARATOR)[1];
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const port = info
@@ -152,7 +151,10 @@ function CanvasInner({
 
       if (!port) {
         console.error(
-          `Port called "${params.targetHandle}" not found on type ${targetNode.data.type}`
+          `Port called "${params.targetHandle}" (searching for ${portStr}) not found on type ${targetNode.data.type}. (valid ports are [${info
+            .getPorts(targetNode.data.type)
+            .map((p) => p.name)
+            .join(", ")}])`
         );
         return;
       }
@@ -295,6 +297,7 @@ function CanvasInner({
       <Background />
       <Controls />
       <MiniMap className="absolute bottom-4 right-4" />
+      <Menu />
     </ReactFlow>
   );
 }

@@ -15,6 +15,8 @@ export type VariableEdgeType = Edge<VariableEdgeData>;
 
 export const OUTPUT_PORT_NAME = "output";
 
+export const PORT_NAME_SEPARATOR = ":";
+
 export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
   nodes: VariableNodeType[];
   edges: VariableEdgeType[];
@@ -52,8 +54,8 @@ export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
               targetName: nodeNameToId[v.name]!,
               targetInput: targetPort,
               sourceName: nodeNameToId[input]!,
-              targetHandle: `${nodeNameToId[v.name]}-${targetPort}`,
-              sourceHandle: `${nodeNameToId[input]}-${OUTPUT_PORT_NAME}`,
+              targetHandle: `${nodeNameToId[v.name]}${PORT_NAME_SEPARATOR}${targetPort}`,
+              sourceHandle: `${nodeNameToId[input]}${PORT_NAME_SEPARATOR}${OUTPUT_PORT_NAME}`,
             })
           );
         });
@@ -81,7 +83,7 @@ export function makeEdge({
   sourceHandle: string;
 }): VariableEdgeType {
   return {
-    id: `${targetName}-${targetInput}-${sourceName}`,
+    id: `${targetName}${PORT_NAME_SEPARATOR}${targetInput}${PORT_NAME_SEPARATOR}${sourceName}`,
     source: sourceName,
     sourceHandle,
     target: targetName,
