@@ -39,7 +39,6 @@ export function NodeResultsToolbar({
 
   return (
     <div className="flex max-h-[50vh] w-fit gap-2 overflow-y-auto p-4">
-      {/* {JSON.stringify(results.steps)} */}
       <Dialog
         contentProps={{
           className:

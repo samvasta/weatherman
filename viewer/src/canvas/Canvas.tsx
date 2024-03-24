@@ -335,6 +335,7 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       fitView
       multiSelectionKeyCode={null}
       draggable={!isSimulated}
+      zoomOnDoubleClick={false}
     >
       <Background />
       <Controls />

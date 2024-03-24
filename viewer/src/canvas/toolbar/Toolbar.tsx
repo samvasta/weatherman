@@ -35,8 +35,6 @@ export function Toolbar() {
     },
   });
 
-  console.log(selectedNode?.data.name);
-
   if (isSimulated) {
     if (selectedNode) {
       return <NodeResultsToolbar selected={selectedNode} />;
