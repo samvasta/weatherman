@@ -74,6 +74,6 @@ func (result MonteCarloResult) GetStats(collectorName string) CollectorStats {
 		steps[i] = CollectorStepStats{NewPercentiles(step)}
 	}
 
-	return CollectorStats{Steps: steps, IterationValues: iterationValues}
+	return CollectorStats{Steps: steps, IterationValues: []Serie{}}
 
 }

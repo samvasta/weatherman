@@ -12,10 +12,9 @@ const tooltip = cva("font-sans font-medium", {
     colorScheme: {
       default: "border-info-10",
       primary: "border-primary-10",
-      secondary: "border-secondary-10",
-      tertiary: "border-tertiary-10",
       success: "border-success-10",
       danger: "border-danger-10",
+      warning: "border-warning-10",
       info: "border-info-10",
       neutral: "border-neutral-10",
     },

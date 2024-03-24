@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import React from "react";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { CheckCircleIcon, PlayIcon, TriangleAlertIcon } from "lucide-react";
 import { useNodesInitialized, useReactFlow } from "reactflow";
 import { useFilePicker } from "use-file-picker";
 import {
@@ -13,7 +14,15 @@ import { Validator } from "use-file-picker/validators";
 
 import { Button } from "@/components/primitives/button/Button";
 import { Dialog } from "@/components/primitives/floating/dialog/Dialog";
+import { Tooltip } from "@/components/primitives/floating/tooltip/Tooltip";
 import { Input } from "@/components/primitives/input/Input";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/primitives/menubar/Menubar";
 import { Txt } from "@/components/primitives/text/Text";
 
 import { type Model, ModelSchema } from "@/types/model";
@@ -109,64 +118,81 @@ export function Menu() {
 
   return (
     <div className="absolute left-0 top-0 z-30 flex w-screen justify-start gap-4 border-b-4 bg-neutral-3 px-2 py-1">
-      <Button
-        variant="link"
-        colorScheme="neutral"
-        className="w-fit"
-        onClick={() => openFilePicker()}
-      >
-        Import
-      </Button>
-      <Dialog
-        usePortal
-        content={({ onClose }) => <SaveDialog onClose={onClose} />}
-      >
-        <Button
-          variant="link"
-          colorScheme="neutral"
-          className="w-fit"
-          disabled={hasErrors}
-        >
-          Export
-        </Button>
-      </Dialog>
-      <Button
-        variant="link"
-        colorScheme="neutral"
-        className="w-fit"
-        onClick={() => autoLayoutNodes()}
-      >
-        Auto-layout
-      </Button>
-      {simulationResult === null ? (
-        <Button
-          variant="link"
-          colorScheme="neutral"
-          className="w-fit"
-          disabled={hasErrors || simulate.isLoading}
-          onClick={() => {
-            if (!hasErrors) {
-              void simulate.mutateAsync({
-                model: compiledModel,
-                iterations: 10000,
-                steps: 50,
-              });
-            }
-          }}
-        >
-          Run
-          {simulate.isLoading && "ning..."}
-        </Button>
-      ) : (
-        <Button
-          variant="link"
-          colorScheme="neutral"
-          className="w-fit"
-          onClick={() => setSimulationResult(null)}
-        >
-          Clear Results
-        </Button>
-      )}
+      <Menubar>
+        <MenubarMenu>
+          <MenubarTrigger>File</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem onSelect={() => openFilePicker()}>Import</MenubarItem>
+            <MenubarItem disabled={hasErrors} asChild>
+              <Dialog
+                usePortal
+                content={({ onClose }) => <SaveDialog onClose={onClose} />}
+              >
+                <Button
+                  variant="ghost"
+                  colorScheme="primary"
+                  size="md"
+                  className="w-full justify-start text-sm text-neutral-12"
+                >
+                  Export
+                </Button>
+              </Dialog>
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger>Model</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem onSelect={() => autoLayoutNodes()}>
+              Auto-layout
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger asChild>
+            <Button variant="link" size="sm" className="text-neutral-12">
+              Simulate
+              {simulationResult === null && hasErrors ? (
+                <Tooltip
+                  content="Cannot simulate because the model has errors."
+                  colorScheme="warning"
+                >
+                  <TriangleAlertIcon className="h-4 w-4 -translate-y-0.5 fill-swatches-yellow text-neutral-12" />
+                </Tooltip>
+              ) : simulate.isLoading ? (
+                <div className="absolute right-0 top-0 grid h-4 w-4 translate-x-1/2 place-items-center rounded-full bg-primary-8 p-0.5">
+                  <PlayIcon className="h-2.5 w-2.5 fill-neutral-13" />
+                </div>
+              ) : simulationResult !== null ? (
+                <CheckCircleIcon className="absolute right-0 top-0 h-4 w-4 translate-x-1/2 rounded-full bg-primary-8 text-neutral-13" />
+              ) : null}
+            </Button>
+          </MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem
+              disabled={hasErrors || simulationResult !== null}
+              onSelect={() => {
+                if (!hasErrors) {
+                  void simulate.mutateAsync({
+                    model: compiledModel,
+                    iterations: 10000,
+                    steps: 50,
+                  });
+                }
+              }}
+            >
+              Run
+            </MenubarItem>
+
+            <MenubarItem
+              disabled={simulationResult === null}
+              onSelect={() => setSimulationResult(null)}
+            >
+              Clear Results
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
     </div>
   );
 }

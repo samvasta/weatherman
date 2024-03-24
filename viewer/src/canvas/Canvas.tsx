@@ -1,6 +1,6 @@
 import React, { type DragEventHandler, useEffect } from "react";
 
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import ReactFlow, {
   Background,
   type Connection,
@@ -28,7 +28,7 @@ import { ConnectionLine } from "./ConnectionLine";
 import { Menu } from "./Menu";
 import { VariableEdge } from "./VariableEdge";
 import { VariableNode } from "./VariableNode";
-import { compiledModelAtom } from "./atoms";
+import { compiledModelAtom, isSimulatedAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { Toolbar } from "./toolbar/Toolbar";
 import {
@@ -71,6 +71,7 @@ export function Canvas(props: CanvasProps) {
 
 function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
   const setCompiledModel = useSetAtom(compiledModelAtom);
+  const isSimulated = useAtomValue(isSimulatedAtom);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -96,6 +97,9 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
 
   const isValidConnection = React.useCallback(
     (connection: Connection) => {
+      if (isSimulated) {
+        return false;
+      }
       // we are using getNodes and getEdges helpers here
       // to make sure we create isValidConnection function only once
       const nodes = getNodes() as VariableNodeType[];
@@ -129,91 +133,106 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       // }
       return true;
     },
-    [getNodes, getEdges]
+    [getNodes, getEdges, isSimulated]
   );
 
-  const onConnect: OnConnect = React.useCallback((params) => {
-    if (
-      params.source &&
-      params.target &&
-      params.sourceHandle &&
-      params.targetHandle
-    ) {
-      const nodes = getNodes() as VariableNodeType[];
-
-      const targetNode = nodes.find((n) => n.id === params.target);
-
-      if (!targetNode) {
-        console.error(`Node not found with id=${params.target}`);
+  const onConnect: OnConnect = React.useCallback(
+    (params) => {
+      if (isSimulated) {
         return;
       }
-      const info = AllVariables[targetNode.data.type];
-
-      const portStr = params.targetHandle.split(PORT_NAME_SEPARATOR)[1];
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const port = info
-        .getPorts(targetNode.data.type)
-        .find((port) => port.name === portStr);
-
-      if (!port) {
-        console.error(
-          `Port called "${params.targetHandle}" (searching for ${portStr}) not found on type ${targetNode.data.type}. (valid ports are [${info
-            .getPorts(targetNode.data.type)
-            .map((p) => p.name)
-            .join(", ")}])`
-        );
-        return;
-      }
-
-      if (port.connectionStrategy === "block") {
-        console.error(`Port called "${params.targetHandle}" is not writable`);
-        return;
-      }
-
-      const newEdge = makeEdge({
-        sourceName: params.source,
-        targetName: params.target,
-        targetHandle: params.targetHandle,
-        sourceHandle: params.sourceHandle,
-        targetInput: params.targetHandle?.split("-")?.[1] ?? "",
-      });
-
-      const currentEdges = [...getEdges()];
-
-      const existingEdgeForTargetPortIdx = currentEdges.findIndex(
-        (e) =>
-          e.target === params.target && e.targetHandle === params.targetHandle
-      );
-
-      let deletedEdges: Edge[] = [];
       if (
-        existingEdgeForTargetPortIdx >= 0 &&
-        port.connectionStrategy === "overwrite"
+        params.source &&
+        params.target &&
+        params.sourceHandle &&
+        params.targetHandle
       ) {
-        deletedEdges = currentEdges.splice(existingEdgeForTargetPortIdx, 1);
+        const nodes = getNodes() as VariableNodeType[];
+
+        const targetNode = nodes.find((n) => n.id === params.target);
+
+        if (!targetNode) {
+          console.error(`Node not found with id=${params.target}`);
+          return;
+        }
+        const info = AllVariables[targetNode.data.type];
+
+        const portStr = params.targetHandle.split(PORT_NAME_SEPARATOR)[1];
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const port = info
+          .getPorts(targetNode.data.type)
+          .find((port) => port.name === portStr);
+
+        if (!port) {
+          console.error(
+            `Port called "${params.targetHandle}" (searching for ${portStr}) not found on type ${targetNode.data.type}. (valid ports are [${info
+              .getPorts(targetNode.data.type)
+              .map((p) => p.name)
+              .join(", ")}])`
+          );
+          return;
+        }
+
+        if (port.connectionStrategy === "block") {
+          console.error(`Port called "${params.targetHandle}" is not writable`);
+          return;
+        }
+
+        const newEdge = makeEdge({
+          sourceName: params.source,
+          targetName: params.target,
+          targetHandle: params.targetHandle,
+          sourceHandle: params.sourceHandle,
+          targetInput: params.targetHandle?.split("-")?.[1] ?? "",
+        });
+
+        const currentEdges = [...getEdges()];
+
+        const existingEdgeForTargetPortIdx = currentEdges.findIndex(
+          (e) =>
+            e.target === params.target && e.targetHandle === params.targetHandle
+        );
+
+        let deletedEdges: Edge[] = [];
+        if (
+          existingEdgeForTargetPortIdx >= 0 &&
+          port.connectionStrategy === "overwrite"
+        ) {
+          deletedEdges = currentEdges.splice(existingEdgeForTargetPortIdx, 1);
+        }
+
+        const nextEdges = addEdge(newEdge, currentEdges);
+
+        const nextModel = graphToModel(nodes, nextEdges);
+        setCompiledModel(nextModel);
+        setEdges(nextEdges);
+
+        updateNodeInternals(params.target);
+        for (const deletedEdge of deletedEdges) {
+          updateNodeInternals(deletedEdge.source);
+        }
       }
+    },
+    [isSimulated]
+  );
 
-      const nextEdges = addEdge(newEdge, currentEdges);
-
-      const nextModel = graphToModel(nodes, nextEdges);
-      setCompiledModel(nextModel);
-      setEdges(nextEdges);
-
-      updateNodeInternals(params.target);
-      for (const deletedEdge of deletedEdges) {
-        updateNodeInternals(deletedEdge.source);
+  const onDragOver = React.useCallback<DragEventHandler>(
+    (event) => {
+      if (isSimulated) {
+        return;
       }
-    }
-  }, []);
-
-  const onDragOver = React.useCallback<DragEventHandler>((event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-  }, []);
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+    },
+    [isSimulated]
+  );
 
   const onDrop = React.useCallback<DragEventHandler>(
     (event) => {
+      if (isSimulated) {
+        return;
+      }
       event.preventDefault();
 
       const data = JSON.parse(
@@ -258,7 +277,7 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance]
+    [reactFlowInstance, isSimulated]
   );
 
   return (
@@ -268,30 +287,39 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       nodes={nodes}
       edges={edges}
       onNodesChange={(changes) => {
-        onNodesChange(changes);
-        // setNodes(
-        //   (prev) => applyNodeChanges(changes, prev) as VariableNodeType[]
-        // );
-        if (changes.some((c) => c.type === "add" || c.type === "remove")) {
+        if (
+          !isSimulated &&
+          changes.some((c) => c.type === "add" || c.type === "remove")
+        ) {
+          onNodesChange(changes);
           const nextModel = graphToModel(
             getNodes() as VariableNodeType[],
             getEdges()
           );
 
           setCompiledModel(nextModel);
+        } else {
+          onNodesChange(
+            changes.filter(
+              (c) => c.type === "dimensions" || c.type === "select"
+            )
+          );
         }
       }}
       onEdgesChange={(changes) => {
-        onEdgesChange(changes);
-        // setEdges(
-        //   (prev) => applyEdgeChanges(changes, prev) as VariableEdgeType[]
-        // );
-        if (changes.some((c) => c.type === "add" || c.type === "remove")) {
+        if (
+          !isSimulated &&
+          changes.some((c) => c.type === "add" || c.type === "remove")
+        ) {
+          onEdgesChange(changes);
+
           const nextModel = graphToModel(
             getNodes() as VariableNodeType[],
             getEdges()
           );
           setCompiledModel(nextModel);
+        } else {
+          onEdgesChange(changes.filter((c) => c.type === "select"));
         }
       }}
       connectionLineComponent={ConnectionLine}
@@ -306,6 +334,7 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       zoomOnScroll
       fitView
       multiSelectionKeyCode={null}
+      draggable={!isSimulated}
     >
       <Background />
       <Controls />

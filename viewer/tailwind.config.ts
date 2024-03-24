@@ -75,6 +75,22 @@ export default {
         [2]: "#FEF6F7",
         [1]: "#FFFCFC",
       },
+
+      warning: {
+        [12]: "#9F8F36",
+        [11]: "#BFAB15",
+        [10]: "#DFDB26",
+        [9]: "#E8E16A",
+        [8]: "#E7E99E",
+        [7]: "#E8EBAF",
+        [6]: "#EDEBBF",
+        [5]: "#F2FBCF",
+        [4]: "#F7FBDF",
+        [3]: "#FCFCEE",
+        [2]: "#FEFEF7",
+        [1]: "#FFFFFC",
+      },
+
       success: {
         [12]: "#58902D",
         [11]: "#73B93D",
@@ -240,11 +256,13 @@ export default {
       },
     },
   },
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   plugins: [
     animatePlugin,
     radixPlugin,
 
-    ariaAttributesPlugin,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ariaAttributesPlugin as any,
     plugin(function ({ matchUtilities, theme }) {
       matchUtilities(
         {
@@ -269,6 +287,7 @@ export default {
             neutral: "neutral",
             primary: "primary",
             danger: "danger",
+            warning: "warning",
             success: "success",
             info: "info",
           },

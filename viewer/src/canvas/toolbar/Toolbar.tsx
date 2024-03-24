@@ -3,7 +3,7 @@ import React from "react";
 import { useAtomValue } from "jotai";
 import { useOnSelectionChange } from "reactflow";
 
-import { simulationResultAtom } from "../atoms";
+import { isSimulatedAtom } from "../atoms";
 import {
   type VariableEdgeType,
   type VariableNodeType,
@@ -18,7 +18,7 @@ export function Toolbar() {
   const [selectedEdge, setSelectedEdge] =
     React.useState<VariableEdgeType | null>(null);
 
-  const simulationResults = useAtomValue(simulationResultAtom);
+  const isSimulated = useAtomValue(isSimulatedAtom);
 
   useOnSelectionChange({
     onChange: (params) => {
@@ -35,7 +35,9 @@ export function Toolbar() {
     },
   });
 
-  if (simulationResults) {
+  console.log(selectedNode?.data.name);
+
+  if (isSimulated) {
     if (selectedNode) {
       return <NodeResultsToolbar selected={selectedNode} />;
     }

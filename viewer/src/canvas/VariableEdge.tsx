@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { X } from "lucide-react";
 import {
   BaseEdge,
@@ -16,7 +16,7 @@ import { IconButton } from "@/components/primitives/button/Button";
 
 import { type AnyVariableData } from "@/types/variables/allVariables";
 
-import { compiledModelAtom } from "./atoms";
+import { compiledModelAtom, isSimulatedAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { type VariableNodeType } from "./useNodesAndEdges";
 
@@ -46,10 +46,12 @@ export function VariableEdge({
   const nodes = useNodes<AnyVariableData>();
   const { setEdges } = useReactFlow();
   const setCompiledModel = useSetAtom(compiledModelAtom);
+  const isSimulated = useAtomValue(isSimulatedAtom);
 
   const isNodeSelected = nodes.some(
     (n) => n.selected && (n.id === source || n.id === target)
   );
+  const anyNodeSelected = nodes.some((n) => n.selected);
 
   const onEdgeClick = () => {
     setEdges((edges) => {
@@ -57,7 +59,6 @@ export function VariableEdge({
 
       const nextModel = graphToModel(nodes as VariableNodeType[], nextEdges);
 
-      console.log(nextModel);
       setCompiledModel(nextModel);
 
       return nextEdges;
@@ -73,10 +74,16 @@ export function VariableEdge({
         markerEnd={markerEnd || ""}
         style={{
           ...style,
-          stroke: selected || isNodeSelected ? "#218358" : "#9B9A93",
+          stroke:
+            selected || isNodeSelected
+              ? "#218358"
+              : anyNodeSelected
+                ? // add opacity to emphasize the selected edges and to make the selected edges show through
+                  "#9B9A9344"
+                : "#9B9A93",
         }}
       />
-      {(isNodeSelected || selected) && (
+      {!isSimulated && (isNodeSelected || selected) && (
         <EdgeLabelRenderer>
           <div
             style={{

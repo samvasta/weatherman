@@ -24,7 +24,12 @@ import {
 } from "@/types/variables/allVariables";
 import { cn } from "@/utils/tailwind";
 
-import { nodeIdToNameAtom, useNodeErrors } from "./atoms";
+import {
+  isSimulatedAtom,
+  nodeIdToNameAtom,
+  useNodeErrors,
+  useSimulationResultForNode,
+} from "./atoms";
 import { OUTPUT_PORT_NAME, PORT_NAME_SEPARATOR } from "./useNodesAndEdges";
 
 export const VariableNode = React.memo(
@@ -50,17 +55,26 @@ export const VariableNode = React.memo(
 
     const { errors, hasError } = useNodeErrors(data.name);
 
+    const results = useSimulationResultForNode(data.name);
+    const isSimulated = useAtomValue(isSimulatedAtom);
+
     return (
       <div
         className={cn(
           "grid min-w-20 rounded-sm border bg-neutral-1 text-neutral-13 shadow-md",
+          isSimulated && "border-neutral-4 bg-neutral-2 text-neutral-10",
+          !hasError &&
+            results !== null &&
+            "border-info-9 bg-info-2 text-info-12 scheme-info",
+
           selected &&
             !hasError &&
+            results === null &&
             "border-primary-9 bg-primary-2 text-primary-12 scheme-primary",
 
           selected &&
             hasError &&
-            "border-danger-11 text-danger-12 scheme-danger"
+            "border-warning-11 text-warning-12 scheme-warning"
         )}
         style={{
           minHeight: (targetPorts.length + 1) * 24 + 32,
@@ -77,7 +91,10 @@ export const VariableNode = React.memo(
             return (
               <div
                 key={port.name}
-                className="!relative !-left-0.5 !top-0 !-translate-x-[100%] !translate-y-0 "
+                className={cn(
+                  "!relative !-left-0.5 !top-0 !-translate-x-[100%] !translate-y-0 ",
+                  isSimulated && "pointer-events-none"
+                )}
               >
                 <Txt
                   className="absolute bottom-2 right-1 w-fit leading-none"
@@ -104,7 +121,10 @@ export const VariableNode = React.memo(
                   id={`${id}${PORT_NAME_SEPARATOR}${port.name}`}
                   type="target"
                   position={Position.Left}
-                  className="!absolute !left-0 !h-3 !w-2  !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
+                  className={cn(
+                    "!absolute !left-0 !h-3 !w-2  !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12",
+                    isSimulated && "!border-cur-scheme-10 !bg-cur-scheme-10"
+                  )}
                 ></Handle>
               </div>
             );
@@ -113,19 +133,27 @@ export const VariableNode = React.memo(
         <div className="relative h-full w-full">
           <Content data={data} />
         </div>
-        <div className="sources absolute right-0 top-0 flex h-full w-3 flex-col justify-around">
+        <div
+          className={cn(
+            "sources absolute right-0 top-0 flex h-full w-3 flex-col justify-around",
+            isSimulated && "pointer-events-none"
+          )}
+        >
           {hasOutput && (
             <Handle
               key={OUTPUT_PORT_NAME}
               id={`${id}${PORT_NAME_SEPARATOR}${OUTPUT_PORT_NAME}`}
               type="source"
               position={Position.Right}
-              className="!border-0-2 !relative !-right-1 !top-0 !h-3 !w-2 !translate-x-[100%] !translate-y-0 !rounded-l-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12"
+              className={cn(
+                "!border-0-2 !relative !-right-1 !top-0 !h-3 !w-2 !translate-x-[100%] !translate-y-0 !rounded-l-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12",
+                isSimulated && "!border-cur-scheme-10 !bg-cur-scheme-10"
+              )}
             />
           )}
         </div>
 
-        {selected && (
+        {selected && !isSimulated && (
           <IconButton
             className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-neutral-9 bg-neutral-1 text-neutral-10 hover:border-danger-10 hover:bg-danger-3 hover:text-danger-12"
             variant="ghost"
@@ -136,7 +164,7 @@ export const VariableNode = React.memo(
         )}
         {hasError && (
           <Tooltip
-            colorScheme="danger"
+            colorScheme="warning"
             content={
               <div className="flex flex-col">
                 <Heading size="md">Errors:</Heading>
@@ -148,7 +176,7 @@ export const VariableNode = React.memo(
               </div>
             }
           >
-            <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full  bg-danger-9 p-1 text-danger-1">
+            <div className="bg-warning-9 absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2  rounded-full p-1 text-neutral-12">
               <TriangleAlertIcon
                 size={sizeLookup.xs.width}
                 className="stroke-current"

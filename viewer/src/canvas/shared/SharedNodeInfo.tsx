@@ -5,9 +5,7 @@ import { type CommonVariableInfoData } from "@/types/variables/common";
 export function CommonVariableInfo({ info }: { info: CommonVariableInfoData }) {
   return (
     <div className="block">
-      <Txt size="md" intent="default">
-        {info.name}
-      </Txt>
+      <Txt size="md">{info.name}</Txt>
       <Txt
         size="xs"
         intent="subtle"

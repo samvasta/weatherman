@@ -1,11 +1,14 @@
 import React from "react";
 
+import { useAtomValue } from "jotai";
 import {
   type ConnectionLineComponentProps,
   getSmoothStepPath,
 } from "reactflow";
 
 import { cn } from "@/utils/tailwind";
+
+import { isSimulatedAtom } from "./atoms";
 
 export function ConnectionLine({
   fromX,
@@ -26,6 +29,8 @@ export function ConnectionLine({
     targetPosition: toPosition,
   });
 
+  const isSimulated = useAtomValue(isSimulatedAtom);
+
   return (
     <g>
       <path
@@ -33,6 +38,7 @@ export function ConnectionLine({
         strokeWidth={6}
         className={cn(
           "animated stroke-primary-11",
+          isSimulated && "stroke-neutral-6",
           connectionStatus === "invalid" && "stroke-danger-10"
         )}
         d={edgePath}
@@ -45,6 +51,7 @@ export function ConnectionLine({
         strokeWidth={6}
         className={cn(
           "stroke-primary-11",
+          isSimulated && "stroke-neutral-6",
           connectionStatus === "invalid" && "stroke-danger-10"
         )}
       />

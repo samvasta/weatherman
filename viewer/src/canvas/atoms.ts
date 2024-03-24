@@ -90,6 +90,11 @@ export const fileNameAtom = atom<string>("model");
 
 export const simulationResultAtom = atom<SimulationResult | null>(null);
 
+export const isSimulatedAtom = selectAtom(
+  simulationResultAtom,
+  (result) => result !== null
+);
+
 export function useSimulationResultForNode(
   nodeName: string
 ): CollectorStats | null {
