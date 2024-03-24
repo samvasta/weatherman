@@ -46,9 +46,9 @@ export function NodeResultsToolbar({
             "min-h-[80vh] h-[400px] w-[80vw] max-w-[80vw] max-h-[80vh] p-0",
         }}
         content={({ onClose }) => (
-          <div className="relative h-[80vh] w-[80vw]">
+          <>
             <Button
-              className="absolute left-4 top-4"
+              className="absolute left-4 top-4 w-fit"
               onClick={() =>
                 setType((prev) => (prev === "river" ? "hair" : "river"))
               }
@@ -64,7 +64,7 @@ export function NodeResultsToolbar({
               }}
               type={type}
             />
-          </div>
+          </>
         )}
       >
         <Button variant="solid" colorScheme="primary" className="w-fit">

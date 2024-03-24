@@ -61,14 +61,14 @@ export function Menu() {
 
   const isInitialized = useNodesInitialized();
   const [hasInitialized, setHasInitialized] = React.useState(isInitialized);
-  const setSimulationResult = useSetAtom(simulationResultAtom);
+  const [simulationResult, setSimulationResult] = useAtom(simulationResultAtom);
 
   const [compiledModel, setCompiledModel] = useAtom(compiledModelAtom);
   const hasErrors = useAtomValue(hasErrorsAtom);
   const setFileName = useSetAtom(fileNameAtom);
   const initializeNodeNamesMap = useSetAtom(initializeNodeNamesMapAtom);
 
-  const x = api.simulate.go.useMutation({
+  const simulate = api.simulate.go.useMutation({
     onSuccess: (data) => {
       setSimulationResult(data);
     },
@@ -138,23 +138,35 @@ export function Menu() {
       >
         Auto-layout
       </Button>
-      <Button
-        variant="link"
-        colorScheme="neutral"
-        className="w-fit"
-        disabled={hasErrors}
-        onClick={() => {
-          if (!hasErrors) {
-            void x.mutateAsync({
-              model: compiledModel,
-              iterations: 100,
-              steps: 10,
-            });
-          }
-        }}
-      >
-        Run
-      </Button>
+      {simulationResult === null ? (
+        <Button
+          variant="link"
+          colorScheme="neutral"
+          className="w-fit"
+          disabled={hasErrors || simulate.isLoading}
+          onClick={() => {
+            if (!hasErrors) {
+              void simulate.mutateAsync({
+                model: compiledModel,
+                iterations: 10000,
+                steps: 50,
+              });
+            }
+          }}
+        >
+          Run
+          {simulate.isLoading && "ning..."}
+        </Button>
+      ) : (
+        <Button
+          variant="link"
+          colorScheme="neutral"
+          className="w-fit"
+          onClick={() => setSimulationResult(null)}
+        >
+          Clear Results
+        </Button>
+      )}
     </div>
   );
 }

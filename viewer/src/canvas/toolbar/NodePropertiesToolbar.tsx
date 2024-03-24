@@ -34,9 +34,11 @@ function replaceName(
   if (typeof input === "object") {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return Object.entries(input)
-      .map(
-        ([key, value]) =>
-          [key, replaceName(value, oldName, newName)] as [string, unknown]
+      .map(([key, value]) =>
+        key === "type"
+          ? // Never overwrite `type` properties
+            ([key, value] as [string, unknown])
+          : ([key, replaceName(value, oldName, newName)] as [string, unknown])
       )
       .reduce(
         (acc, [k, v]) => {

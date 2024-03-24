@@ -15,7 +15,6 @@ import { useParentSize } from "@visx/responsive";
 import { scaleLinear } from "@visx/scale";
 import { Area, LinePath } from "@visx/shape";
 import { Text } from "@visx/text";
-import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 
 import { Txt } from "@/components/primitives/text/Text";
 
@@ -64,23 +63,9 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
     [data.percentiles]
   );
 
-  const {
-    tooltipData,
-    tooltipLeft,
-    tooltipTop,
-    tooltipOpen,
-    showTooltip,
-    hideTooltip,
-  } = useTooltip<Percentiles & { x: number }>();
-
-  // If you don't want to use a Portal, simply replace `TooltipInPortal` below with
-  // `Tooltip` or `TooltipWithBounds` and remove `containerRef`
-  const { containerRef, TooltipInPortal } = useTooltipInPortal({
-    // use TooltipWithBounds
-    detectBounds: true,
-    // when tooltip containers are scrolled, this will correctly update the Tooltip position
-    scroll: true,
-  });
+  const [tooltipData, setTooltipData] = React.useState<
+    (Percentiles & { x: number }) | null
+  >(null);
 
   const handleTooltip = React.useCallback(
     (event: React.MouseEvent<SVGRectElement>) => {
@@ -91,18 +76,14 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
         return;
       }
 
-      const x0 = xScale.invert(point.x) - 0.5;
+      const x0 = xScale.invert(point.x - margin.left);
       const data = points.find((p) => p.x === Math.round(x0));
       if (!data) {
         return;
       }
-      showTooltip({
-        tooltipData: data,
-        tooltipLeft: point.x,
-        tooltipTop: yScale(data.p50),
-      });
+      setTooltipData(data);
     },
-    [showTooltip, yScale, xScale, points]
+    [xScale, points, margin.left, setTooltipData]
   );
 
   const tooltips = React.useMemo(() => {
@@ -159,14 +140,35 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
       });
     }
 
+    while (minY < 16) {
+      tooltips.forEach((t) => {
+        if (t.y + t.dy < yMax / 3) {
+          t.dy += 2;
+
+          if (t.dx < 0) {
+            t.dx -= 2;
+          } else {
+            t.dx += 2;
+          }
+        }
+      });
+
+      minY = Number.POSITIVE_INFINITY;
+      tooltips.forEach((t) => {
+        minY = Math.min(t.y + t.dy, minY);
+      });
+    }
+
     while (maxY > height - 128) {
       tooltips.forEach((t) => {
-        t.dy -= 16;
+        if (t.y + t.dy > yMax / 3) {
+          t.dy -= 16;
 
-        if (t.dx < 0) {
-          t.dx -= 16;
-        } else {
-          t.dx += 16;
+          if (t.dx < 0) {
+            t.dx -= 16;
+          } else {
+            t.dx += 16;
+          }
         }
       });
 
@@ -177,11 +179,11 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
     }
 
     return tooltips;
-  }, [tooltipData, xScale, yScale, points.length, height]);
+  }, [tooltipData, xScale, yScale, points.length, height, yMax]);
 
   return (
     <div ref={parentRef} className="h-full w-full">
-      <svg width={width} height={height} ref={containerRef}>
+      <svg width={width} height={height}>
         <Text textAnchor="middle" fontSize={24} x={width / 2} y={32}>
           {`${name} vs time`}
         </Text>
@@ -234,7 +236,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
             data={points}
             clipPath="url(#chart-area)"
             onMouseMove={handleTooltip}
-            onMouseOut={hideTooltip}
+            onMouseOut={() => setTooltipData(null)}
           />
           {type === "river" ? (
             <>
@@ -293,7 +295,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
               ))}
             </>
           )}
-          {tooltipOpen && tooltipData && (
+          {tooltipData && (
             <>
               {tooltips.map((data) => (
                 <Annotation
