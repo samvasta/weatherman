@@ -1,15 +1,14 @@
 import * as React from "react";
 
 import * as SelectPrimitive from "@radix-ui/react-select";
+import { ChevronDownIcon, type LucideIcon } from "lucide-react";
 
-import { type createIcon } from "@/icons/createIcon";
-import { CaretDownIcon } from "@/icons/svgs/CaretDown";
 import { cn } from "@/utils/tailwind";
 
 export type SelectTriggerProps = React.ComponentPropsWithoutRef<
   typeof SelectPrimitive.Trigger
 > & {
-  icon?: ReturnType<typeof createIcon>;
+  icon?: LucideIcon;
 };
 
 const SelectTrigger = React.forwardRef<
@@ -17,7 +16,7 @@ const SelectTrigger = React.forwardRef<
   SelectTriggerProps
 >(
   (
-    { className, icon: IconComponent = CaretDownIcon, children, ...props },
+    { className, icon: IconComponent = ChevronDownIcon, children, ...props },
     ref
   ) => (
     <SelectPrimitive.Trigger
@@ -33,10 +32,7 @@ const SelectTrigger = React.forwardRef<
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <IconComponent
-          label="toggle"
-          className="h-6 w-6 min-w-[1.5rem] text-neutral-12"
-        />
+        <IconComponent className="h-6 w-6 min-w-[1.5rem] text-neutral-12" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
