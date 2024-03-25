@@ -55,7 +55,9 @@ export function graphToModel(
     const to = allVariables[toId];
 
     if (!from || !to) {
-      throw new Error("Couldn't find both sides of the edge");
+      throw new Error(
+        `Couldn't find both sides of the edge from=${from?.name} to=${to?.name}`
+      );
     }
 
     const type = to.type;

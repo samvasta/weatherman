@@ -19,6 +19,7 @@ import { Text } from "@visx/text";
 import { Txt } from "@/components/primitives/text/Text";
 
 import { type Percentiles, type Serie } from "@/types/results";
+import { formatNumber } from "@/utils/numberFormat";
 
 export type RiverChartData = {
   percentiles: Percentiles[];
@@ -222,6 +223,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
           <Axis
             orientation="left"
             scale={yScale}
+            tickFormat={(v) => formatNumber(Number(v))}
             tickLabelProps={{
               transform: "translate(-24,4)",
               fontSize: "12px",
@@ -316,9 +318,13 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                     }}
                   >
                     <Txt as="span" className="font-mono font-bold">
-                      {data.value.toFixed(2)}{" "}
+                      {formatNumber(data.value)}{" "}
                       <Txt as="span" intent="subtle" className="font-normal">
-                        ({data.percentile}th Percentile)
+                        {data.percentile === 100
+                          ? "(Maximum)"
+                          : data.percentile === 0
+                            ? "(Minimum)"
+                            : `(${data.percentile}th Percentile)`}
                       </Txt>
                     </Txt>
                   </HtmlLabel>

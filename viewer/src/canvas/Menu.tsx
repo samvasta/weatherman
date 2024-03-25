@@ -3,7 +3,7 @@ import React from "react";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { CheckCircleIcon, PlayIcon, TriangleAlertIcon } from "lucide-react";
-import { useNodesInitialized, useReactFlow } from "reactflow";
+import { useNodesInitialized, useReactFlow, useStoreApi } from "reactflow";
 import { useFilePicker } from "use-file-picker";
 import {
   type FileWithPath,
@@ -67,6 +67,7 @@ export function Menu() {
   const autoLayoutNodes = useLayoutNodes();
 
   const { setNodes, setEdges } = useReactFlow();
+  const store = useStoreApi();
 
   const isInitialized = useNodesInitialized();
   const [hasInitialized, setHasInitialized] = React.useState(isInitialized);
@@ -106,10 +107,13 @@ export function Menu() {
           model.variables
         );
 
+        setNodes([]);
+        setEdges([]);
         setNodes(nodes);
         setEdges(edges);
         initializeNodeNamesMap(nodeNameToId);
         setCompiledModel(model);
+        setSimulationResult(null);
         setHasInitialized(false);
       }
     },
@@ -117,7 +121,7 @@ export function Menu() {
   });
 
   return (
-    <div className="absolute left-0 top-0 z-30 flex w-screen justify-start gap-4 border-b-4 bg-neutral-3 px-2 py-1">
+    <div className="flex w-screen justify-start gap-4 border-b-4 bg-neutral-3 px-2 py-1">
       <Menubar>
         <MenubarMenu>
           <MenubarTrigger>File</MenubarTrigger>
@@ -132,7 +136,7 @@ export function Menu() {
                   variant="ghost"
                   colorScheme="primary"
                   size="md"
-                  className="w-full justify-start text-sm text-neutral-12"
+                  className="w-full justify-start px-2 text-sm font-normal text-neutral-12"
                 >
                   Export
                 </Button>

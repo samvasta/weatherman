@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { Heading } from "@/components/primitives/text/Heading";
-
 import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import {
@@ -16,18 +14,22 @@ import {
 import {
   ChoiceDistribution,
   ChoiceDistributionPreview,
+  ChoiceDistributionProperties,
 } from "@/types/distributions/impl/choice";
 import {
   ConstantDistribution,
   ConstantDistributionPreview,
+  ConstantDistributionProperties,
 } from "@/types/distributions/impl/constant";
 import {
   NormalDistribution,
   NormalDistributionPreview,
+  NormalDistributionProperties,
 } from "@/types/distributions/impl/normal";
 import {
   UniformDistribution,
   UniformDistributionPreview,
+  UniformDistributionProperties,
 } from "@/types/distributions/impl/uniform";
 
 import {
@@ -98,6 +100,52 @@ function useDistributionPreviewContent(
     "Unrecognized distribution type: " + JSON.stringify(distribution)
   );
 }
+function useDistributionPropertiesContent(
+  key: string,
+  distribution: AnyDistributionData,
+  onChange: (data: AnyDistributionData) => void
+): React.ReactNode {
+  if (isConstant(distribution)) {
+    return (
+      <ConstantDistributionProperties
+        data={distribution}
+        onChange={onChange}
+        key={key}
+      />
+    );
+  }
+  if (isUniform(distribution)) {
+    return (
+      <UniformDistributionProperties
+        data={distribution}
+        onChange={onChange}
+        key={key}
+      />
+    );
+  }
+  if (isNormal(distribution)) {
+    return (
+      <NormalDistributionProperties
+        data={distribution}
+        onChange={onChange}
+        key={key}
+      />
+    );
+  }
+  if (isChoice(distribution)) {
+    return (
+      <ChoiceDistributionProperties
+        data={distribution}
+        onChange={onChange}
+        key={key}
+      />
+    );
+  }
+
+  throw new Error(
+    "Unrecognized distribution type: " + JSON.stringify(distribution)
+  );
+}
 export function IVarNodePreview({ data }: { data: IVarData }) {
   const Content = useDistributionPreviewContent(data.distribution);
   return <div className="flex items-center gap-2 px-2 py-1 ">{Content}</div>;
@@ -107,9 +155,19 @@ export function IVarProperties({
   data,
   onChange,
 }: VariablePropertiesProps<IVarData>) {
+  const content = useDistributionPropertiesContent(
+    data.ui.id,
+    data.distribution,
+    (data) => {
+      onChange({
+        distribution: data,
+      });
+    }
+  );
+
   return (
     <WithCommonProperties data={data} onChange={onChange}>
-      <Heading size="sm">IVar</Heading>
+      {content}
     </WithCommonProperties>
   );
 }

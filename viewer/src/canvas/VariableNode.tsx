@@ -36,12 +36,15 @@ export const VariableNode = React.memo(
   ({ id, data, selected }: NodeProps<AnyVariableData>) => {
     const info = AllVariables[data.type];
 
-    const { setNodes } = useReactFlow();
+    const { setNodes, setEdges } = useReactFlow();
 
     const addSelectedNodes = useStore((state) => state.addSelectedNodes);
 
     const onDeleteClick = () => {
       setNodes((nodes) => nodes.filter((node) => node.id !== id));
+      setEdges((edges) =>
+        edges.filter((edge) => edge.source !== id && edge.target !== id)
+      );
     };
 
     const edges = useEdges();

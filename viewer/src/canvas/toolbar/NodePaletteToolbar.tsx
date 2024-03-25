@@ -27,10 +27,10 @@ export function NodePaletteToolbar() {
 
   return (
     <div className="max-w-full overflow-auto" ref={ref}>
-      <div className="flex w-fit gap-2 p-4">
+      <div className="flex w-full flex-col gap-2 p-4">
         <div className="flex flex-col">
           <Heading size="lg">Inputs</Heading>
-          <div className="flex grow gap-2">
+          <div className="flex grow flex-col gap-2">
             {Object.values(DistributionType).map((distributionType) => {
               const info = AllVariables[VariableType.IVar];
 
@@ -45,7 +45,7 @@ export function NodePaletteToolbar() {
                   data={data}
                   onDragStart={(event) => onDragStart(event, data)}
                   draggable
-                  className="w-[200px]"
+                  className="w-full"
                 />
               );
             })}
@@ -53,7 +53,7 @@ export function NodePaletteToolbar() {
         </div>
         <div className="flex flex-col">
           <Heading size="lg">Operators</Heading>
-          <div className="flex grow gap-2">
+          <div className="flex grow flex-col gap-2">
             {Object.values(VariableType)
               .filter(
                 (t) => t !== VariableType.IVar && t !== VariableType.Collector
@@ -67,7 +67,7 @@ export function NodePaletteToolbar() {
                     data={data}
                     onDragStart={(event) => onDragStart(event, data)}
                     draggable
-                    className="w-[200px]"
+                    className="w-full"
                   />
                 );
               })}
@@ -89,7 +89,7 @@ export function NodePaletteToolbar() {
               )
             }
             draggable
-            className="w-[200px] grow"
+            className="w-full grow"
           />
         </div>
       </div>

@@ -115,7 +115,7 @@ export function NodePropertiesToolbar({
   }
 
   return (
-    <div className="flex max-h-[50vh] w-fit gap-2 overflow-y-auto p-4">
+    <div className="flex w-fit max-w-[50vw] flex-col gap-2 overflow-y-auto p-4">
       <info.VariableProperties data={node.data} onChange={onUpdateNode} />
     </div>
   );

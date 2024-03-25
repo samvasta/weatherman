@@ -1,6 +1,7 @@
 import React, { type DragEventHandler, useEffect } from "react";
 
 import { useAtomValue, useSetAtom } from "jotai";
+import { nanoid } from "nanoid";
 import ReactFlow, {
   Background,
   type Connection,
@@ -17,6 +18,12 @@ import ReactFlow, {
   useUpdateNodeInternals,
 } from "reactflow";
 import "reactflow/dist/style.css";
+
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/primitives/resizable/Resizable";
 
 import {
   AllVariables,
@@ -58,12 +65,31 @@ export function Canvas(props: CanvasProps) {
   return (
     <ReactFlowProvider>
       <div className="flex h-screen w-screen flex-col overflow-hidden">
-        <div className="min-h-0 grow">
-          <CanvasInner {...props} />
-        </div>
-        <div className="h-fit min-h-0 grow-0 border-t-4 bg-neutral-3">
-          <Toolbar />
-        </div>
+        <Menu />
+
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="flex h-full min-h-[200px] w-full"
+        >
+          <ResizablePanel defaultSize={25}>
+            <div className="h-full border-r-4 bg-neutral-3">
+              <Toolbar />
+            </div>
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={75}>
+            <div className="h-full w-full">
+              <CanvasInner {...props} />
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+
+        {/* <div className="h-full w-[20vw] min-w-0 grow-0 border-r-4 bg-neutral-3">
+            <Toolbar />
+          </div>
+          <div className="min-w-0 grow">
+            <CanvasInner {...props} />
+          </div> */}
       </div>
     </ReactFlowProvider>
   );
@@ -219,9 +245,6 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
 
   const onDragOver = React.useCallback<DragEventHandler>(
     (event) => {
-      if (isSimulated) {
-        return;
-      }
       event.preventDefault();
       event.dataTransfer.dropEffect = "move";
     },
@@ -230,9 +253,6 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
 
   const onDrop = React.useCallback<DragEventHandler>(
     (event) => {
-      if (isSimulated) {
-        return;
-      }
       event.preventDefault();
 
       const data = JSON.parse(
@@ -261,12 +281,12 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       const existingNodes = getNodes();
       let name = data.name;
       let i = 2;
-      while (existingNodes.some((n) => n.id === name)) {
+      while (existingNodes.some((n) => n.data.name === name)) {
         name = `${data.name} ${i++}`;
       }
 
       const newNode: VariableNodeType = {
-        id: name,
+        id: nanoid(8),
         type: "var",
         position,
         data: {
@@ -289,7 +309,13 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       onNodesChange={(changes) => {
         if (
           !isSimulated &&
-          changes.some((c) => c.type === "add" || c.type === "remove")
+          changes.some(
+            (c) =>
+              c.type === "add" ||
+              c.type === "remove" ||
+              c.type === "reset" ||
+              c.type === "position"
+          )
         ) {
           onNodesChange(changes);
           const nextModel = graphToModel(
@@ -309,7 +335,9 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       onEdgesChange={(changes) => {
         if (
           !isSimulated &&
-          changes.some((c) => c.type === "add" || c.type === "remove")
+          changes.some(
+            (c) => c.type === "add" || c.type === "remove" || c.type === "reset"
+          )
         ) {
           onEdgesChange(changes);
 
@@ -334,13 +362,11 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       zoomOnScroll
       fitView
       multiSelectionKeyCode={null}
-      draggable={!isSimulated}
       zoomOnDoubleClick={false}
     >
       <Background />
       <Controls />
       <MiniMap className="absolute bottom-4 right-4" />
-      <Menu />
     </ReactFlow>
   );
 }

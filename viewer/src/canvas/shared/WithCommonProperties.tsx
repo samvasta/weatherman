@@ -18,7 +18,7 @@ export function WithCommonProperties<T extends CommonVariableInfoData>({
   const updateNodeName = useSetAtom(updateNodeNameAtom);
 
   return (
-    <div className="flex h-full gap-comfortable">
+    <div className="flex w-full flex-col gap-comfortable">
       <div className="flex flex-col gap-2">
         <div>
           <Heading size="sm">Name</Heading>
@@ -43,7 +43,7 @@ export function WithCommonProperties<T extends CommonVariableInfoData>({
           />
         </div>
       </div>
-      <div className="flex flex-col gap-2 p-3">{children}</div>
+      <div className="flex flex-col gap-2">{children}</div>
     </div>
   );
 }
