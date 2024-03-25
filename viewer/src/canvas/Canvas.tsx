@@ -112,12 +112,9 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
   >();
 
   useEffect(() => {
-    const nextModel = graphToModel(
-      getNodes() as VariableNodeType[],
-      getEdges()
-    );
+    const nextModel = graphToModel(nodes as VariableNodeType[], edges);
     setCompiledModel(nextModel);
-  }, [getNodes, getEdges, setCompiledModel]);
+  }, [nodes, edges, setCompiledModel]);
 
   const updateNodeInternals = useUpdateNodeInternals();
 
@@ -318,12 +315,12 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
           )
         ) {
           onNodesChange(changes);
-          const nextModel = graphToModel(
-            getNodes() as VariableNodeType[],
-            getEdges()
-          );
-
-          setCompiledModel(nextModel);
+          // const nextModel = graphToModel(
+          //   applyNodeChanges(changes, getNodes()) as VariableNodeType[],
+          //   getEdges()
+          // );
+          // console.log("next mod", nextModel);
+          // setCompiledModel(nextModel);
         } else {
           onNodesChange(
             changes.filter(
@@ -341,11 +338,11 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
         ) {
           onEdgesChange(changes);
 
-          const nextModel = graphToModel(
-            getNodes() as VariableNodeType[],
-            getEdges()
-          );
-          setCompiledModel(nextModel);
+          // const nextModel = graphToModel(
+          //   getNodes() as VariableNodeType[],
+          //   applyEdgeChanges(changes, getEdges())
+          // );
+          // setCompiledModel(nextModel);
         } else {
           onEdgesChange(changes.filter((c) => c.type === "select"));
         }

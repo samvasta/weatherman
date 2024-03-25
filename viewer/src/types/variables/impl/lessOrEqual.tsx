@@ -44,7 +44,7 @@ export function LessOrEqualNode({ data }: { data: LessOrEqualData }) {
 export function LessOrEqualNodePreview({ data }: { data: LessOrEqualData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={LessOrEqualIcon}>
-      <Heading size="md">LessOrEqual</Heading>
+      <Heading size="md">Less Than Or Equal</Heading>
     </WithLeftNodeIconPreview>
   );
 }
@@ -55,7 +55,7 @@ export function LessOrEqualProperties({
 }: VariablePropertiesProps<LessOrEqualData>) {
   return (
     <WithCommonProperties data={data} onChange={onChange}>
-      <Heading size="sm">LessOrEqual</Heading>
+      <Heading size="sm">Less Than Or Equal</Heading>
     </WithCommonProperties>
   );
 }

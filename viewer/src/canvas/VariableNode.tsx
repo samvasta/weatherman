@@ -41,10 +41,10 @@ export const VariableNode = React.memo(
     const addSelectedNodes = useStore((state) => state.addSelectedNodes);
 
     const onDeleteClick = () => {
-      setNodes((nodes) => nodes.filter((node) => node.id !== id));
       setEdges((edges) =>
         edges.filter((edge) => edge.source !== id && edge.target !== id)
       );
+      setNodes((nodes) => nodes.filter((node) => node.id !== id));
     };
 
     const edges = useEdges();
@@ -179,7 +179,7 @@ export const VariableNode = React.memo(
               </div>
             }
           >
-            <div className="bg-warning-9 absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2  rounded-full p-1 text-neutral-12">
+            <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full  bg-warning-9 p-1 text-neutral-12">
               <TriangleAlertIcon
                 size={sizeLookup.xs.width}
                 className="stroke-current"

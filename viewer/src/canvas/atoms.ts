@@ -58,7 +58,6 @@ export const compileErrorsAtom = selectAtom(compiledModelAtom, (model) => {
   const errorMap: {
     [name: string]: ZodIssue[];
   } = {};
-
   for (const variable of model.variables) {
     const result = AnyVariableSchema.safeParse(variable);
     if (!result.success) {

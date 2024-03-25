@@ -44,7 +44,7 @@ export function LessThanNode({ data }: { data: LessThanData }) {
 export function LessThanNodePreview({ data }: { data: LessThanData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={LessThanIcon}>
-      <Heading size="md">LessThan</Heading>
+      <Heading size="md">Less Than</Heading>
     </WithLeftNodeIconPreview>
   );
 }
@@ -55,7 +55,7 @@ export function LessThanProperties({
 }: VariablePropertiesProps<LessThanData>) {
   return (
     <WithCommonProperties data={data} onChange={onChange}>
-      <Heading size="sm">LessThan</Heading>
+      <Heading size="sm">Less Than</Heading>
     </WithCommonProperties>
   );
 }
