@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { CheckCircleIcon, PlayIcon, TriangleAlertIcon } from "lucide-react";
@@ -99,7 +98,7 @@ export function Menu() {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const filesContent = (data as SelectedFiles<string>).filesContent;
 
-      if (filesContent.length > 0) {
+      if (filesContent && filesContent.length > 0) {
         const file = filesContent[0]!;
         setFileName(file.name);
         const model = JSON.parse(file.content) as Model;

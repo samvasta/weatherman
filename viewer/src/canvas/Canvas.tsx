@@ -282,13 +282,18 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
         name = `${data.name} ${i++}`;
       }
 
+      const id = nanoid(8);
       const newNode: VariableNodeType = {
-        id: nanoid(8),
+        id,
         type: "var",
         position,
         data: {
           ...data,
           name,
+          ui: {
+            id,
+            ...position,
+          },
         },
       };
 
@@ -315,12 +320,6 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
           )
         ) {
           onNodesChange(changes);
-          // const nextModel = graphToModel(
-          //   applyNodeChanges(changes, getNodes()) as VariableNodeType[],
-          //   getEdges()
-          // );
-          // console.log("next mod", nextModel);
-          // setCompiledModel(nextModel);
         } else {
           onNodesChange(
             changes.filter(
@@ -337,12 +336,6 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
           )
         ) {
           onEdgesChange(changes);
-
-          // const nextModel = graphToModel(
-          //   getNodes() as VariableNodeType[],
-          //   applyEdgeChanges(changes, getEdges())
-          // );
-          // setCompiledModel(nextModel);
         } else {
           onEdgesChange(changes.filter((c) => c.type === "select"));
         }

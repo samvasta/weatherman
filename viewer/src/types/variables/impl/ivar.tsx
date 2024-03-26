@@ -8,6 +8,7 @@ import {
   DistributionType,
   isChoice,
   isConstant,
+  isLaplace,
   isNormal,
   isUniform,
 } from "@/types/distributions";
@@ -21,6 +22,11 @@ import {
   ConstantDistributionPreview,
   ConstantDistributionProperties,
 } from "@/types/distributions/impl/constant";
+import {
+  LaplaceDistribution,
+  LaplaceDistributionPreview,
+  LaplaceDistributionProperties,
+} from "@/types/distributions/impl/laplace";
 import {
   NormalDistribution,
   NormalDistributionPreview,
@@ -61,6 +67,9 @@ function useDistributionContent(
   if (isNormal(distribution)) {
     return <NormalDistribution data={distribution} />;
   }
+  if (isLaplace(distribution)) {
+    return <LaplaceDistribution data={distribution} />;
+  }
   if (isChoice(distribution)) {
     return <ChoiceDistribution data={distribution} />;
   }
@@ -91,6 +100,9 @@ function useDistributionPreviewContent(
   }
   if (isNormal(distribution)) {
     return <NormalDistributionPreview data={distribution} />;
+  }
+  if (isLaplace(distribution)) {
+    return <LaplaceDistributionPreview data={distribution} />;
   }
   if (isChoice(distribution)) {
     return <ChoiceDistributionPreview data={distribution} />;
@@ -126,6 +138,15 @@ function useDistributionPropertiesContent(
   if (isNormal(distribution)) {
     return (
       <NormalDistributionProperties
+        data={distribution}
+        onChange={onChange}
+        key={key}
+      />
+    );
+  }
+  if (isLaplace(distribution)) {
+    return (
+      <LaplaceDistributionProperties
         data={distribution}
         onChange={onChange}
         key={key}

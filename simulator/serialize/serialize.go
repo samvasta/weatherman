@@ -108,6 +108,7 @@ func DeserializeDistribution(d map[string]interface{}) (distributions.Distributi
 		var choice distributions.Choice
 		err := mapstructure.Decode(d, &choice)
 		return choice, err
+
 	case distributions.T_Constant:
 		var constant distributions.Constant
 		err := mapstructure.Decode(d, &constant)
@@ -117,6 +118,12 @@ func DeserializeDistribution(d map[string]interface{}) (distributions.Distributi
 		var normal distributions.Normal
 		err := mapstructure.Decode(d, &normal)
 		return normal, err
+
+	case distributions.T_Laplace:
+		var laplace distributions.Laplace
+		err := mapstructure.Decode(d, &laplace)
+		return laplace.ComputeBeta(), err
+
 	case distributions.T_Uniform:
 		var uniform distributions.Uniform
 		err := mapstructure.Decode(d, &uniform)

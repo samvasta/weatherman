@@ -63,6 +63,17 @@ export function NormalDistributionProperties({
           })
         }
       />
+      <Heading>Standard Deviation</Heading>
+      <Input
+        value={data.stdDev}
+        type="number"
+        onChange={(e) =>
+          onChange({
+            ...data,
+            stdDev: Number(e.target.value),
+          })
+        }
+      />
       <Heading>Range</Heading>
       <Txt intent="subtle">
         Set these numbers so that 80% of all possible scenarios will be in this
