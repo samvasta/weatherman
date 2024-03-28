@@ -9,6 +9,10 @@
       "path": "../viewer"
     },
     {
+      "name": "App",
+      "path": "../app"
+    },
+    {
       "name": "_meta",
       "path": "./"
     }
