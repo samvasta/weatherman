@@ -72,7 +72,7 @@ export function Canvas(props: CanvasProps) {
           className="flex h-full min-h-[200px] w-full"
         >
           <ResizablePanel defaultSize={25}>
-            <div className="h-full border-r-4 bg-neutral-3">
+            <div className="h-full overflow-auto border-r-4 bg-neutral-3">
               <Toolbar />
             </div>
           </ResizablePanel>

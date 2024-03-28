@@ -4,6 +4,7 @@ export enum DistributionType {
   Constant = "constant",
   Uniform = "uniform",
   Normal = "normal",
+  Laplace = "laplace",
   Choice = "choice",
 }
 
@@ -61,6 +62,22 @@ export function isNormal(
   return distribution.type === DistributionType.Normal;
 }
 
+export const LaplaceSchema = z.object({
+  type: z.literal(DistributionType.Laplace).default(DistributionType.Laplace),
+  mean: z.number().finite(),
+  stdDev: z
+    .number()
+    .finite()
+    .nonnegative("Standard deviation cannot be negative."),
+});
+
+export type LaplaceData = z.infer<typeof LaplaceSchema>;
+export function isLaplace(
+  distribution: AnyDistributionData
+): distribution is LaplaceData {
+  return distribution.type === DistributionType.Laplace;
+}
+
 export const ChoiceSchema = z.object({
   type: z.literal(DistributionType.Choice).default(DistributionType.Choice),
   options: z
@@ -84,6 +101,7 @@ export const AnyDistributionSchema = z.union([
   ConstantSchema,
   UniformSchema,
   NormalSchema,
+  LaplaceSchema,
   ChoiceSchema,
 ]);
 
@@ -115,6 +133,13 @@ export function getDefaultDistributionData(
       } as ConstantData;
 
     case DistributionType.Normal:
+      return {
+        type,
+        mean: 1,
+        stdDev: 0.5,
+      };
+
+    case DistributionType.Laplace:
       return {
         type,
         mean: 1,

@@ -15,8 +15,6 @@ import { useHorizontalScroll } from "@/utils/useHorizontalScroll";
 import { VariableNodePreview } from "../VariableNode";
 
 export function NodePaletteToolbar() {
-  const ref = useHorizontalScroll(0.4);
-
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
     data: AnyVariableData
@@ -26,7 +24,7 @@ export function NodePaletteToolbar() {
   };
 
   return (
-    <div className="max-w-full overflow-auto" ref={ref}>
+    <div className="max-w-full">
       <div className="flex w-full flex-col gap-2 p-4">
         <div className="flex flex-col">
           <Heading size="lg">Inputs</Heading>
