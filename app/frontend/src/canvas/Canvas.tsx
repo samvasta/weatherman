@@ -25,7 +25,7 @@ import { ConnectionLine } from "./ConnectionLine";
 import { Menu } from "./Menu";
 import { VariableEdge } from "./VariableEdge";
 import { VariableNode } from "./VariableNode";
-import { compiledModelAtom, isSimulatedAtom } from "./atoms";
+import { isSimulatedAtom, setCompiledModelAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { Toolbar } from "./toolbar/Toolbar";
 import {
@@ -96,7 +96,7 @@ export function Canvas(props: CanvasProps) {
 }
 
 function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
-  const setCompiledModel = useSetAtom(compiledModelAtom);
+  const setCompiledModel = useSetAtom(setCompiledModelAtom);
   const isSimulated = useAtomValue(isSimulatedAtom);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -282,13 +282,19 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
         name = `${data.name} ${i++}`;
       }
 
+      const id = nanoid(8);
       const newNode: VariableNodeType = {
-        id: nanoid(8),
+        id,
         type: "var",
         position,
         data: {
           ...data,
           name,
+          ui: {
+            ...data.ui,
+            ...position,
+            id: nanoid(8),
+          },
         },
       };
 

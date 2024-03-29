@@ -11,7 +11,6 @@ import {
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
-import { compiledModelAtom } from "@/canvas/atoms";
 import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import {
@@ -28,6 +27,7 @@ import {
   type VariablePropertiesProps,
   VariableType,
 } from "../common";
+import { getCompiledModelAtom } from "@/canvas/atoms";
 
 const CollectorSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Collector).default(VariableType.Collector),
@@ -58,7 +58,7 @@ export function CollectorProperties({
   data,
   onChange,
 }: VariablePropertiesProps<CollectorData>) {
-  const model = useAtomValue(compiledModelAtom);
+  const model = useAtomValue(getCompiledModelAtom);
 
   const ivars = React.useMemo(() => {
     const allIVars = model.variables.filter(
@@ -71,11 +71,17 @@ export function CollectorProperties({
       .map((v) => v.target)
       .filter(Boolean);
 
-    return allIVars
-      .filter((v) => !linkedIVarNames.includes(v.name))
-      .map<
-        SelectItemData<{ id: string; name: string }>
-      >((v) => ({ label: v.name, value: { id: v.ui.id, name: v.name } }));
+    return [
+      {
+        label: "(None)",
+        value: { id: "", name: "" },
+      },
+      ...allIVars
+        .filter((v) => !linkedIVarNames.includes(v.name))
+        .map<
+          SelectItemData<{ id: string; name: string }>
+        >((v) => ({ label: v.name, value: { id: v.ui.id, name: v.name } })),
+    ];
   }, [model.variables, data.ui.id]);
 
   return (

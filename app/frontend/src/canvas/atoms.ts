@@ -6,6 +6,8 @@ import { type Model } from "@/types/model";
 import { type CollectorStats, type SimulationResult } from "@/types/results";
 import { AnyVariableSchema } from "@/types/variables/allVariables";
 
+import { OnModelUpdated } from "~/go/main/App";
+
 export const nodeNameToIdAtom = atom<Record<string, string>>({});
 export const nodeIdToNameAtom = atom<Record<string, string>>({});
 
@@ -53,7 +55,16 @@ export const initializeNodeNamesMapAtom = atom(
   }
 );
 
-export const compiledModelAtom = atom<Model>({ variables: [] });
+const compiledModelAtom = atom<Model>({ variables: [] });
+export const getCompiledModelAtom = atom<Model>((get) =>
+  get(compiledModelAtom)
+);
+
+export const setCompiledModelAtom = atom(null, (_, set, model: Model) => {
+  set(compiledModelAtom, model);
+  OnModelUpdated(model);
+});
+
 export const compileErrorsAtom = selectAtom(compiledModelAtom, (model) => {
   const errorMap: {
     [name: string]: ZodIssue[];
@@ -84,8 +95,6 @@ export function useNodeErrors(nodeName: string) {
 
   return { errors: nodeErrors, hasError: nodeErrors.length > 0 };
 }
-
-export const fileNameAtom = atom<string>("model");
 
 export const simulationResultAtom = atom<SimulationResult | null>(null);
 

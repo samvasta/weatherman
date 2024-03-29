@@ -9,6 +9,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"samvasta.com/weatherman/app/serialize"
 	"samvasta.com/weatherman/app/shared"
+	"samvasta.com/weatherman/app/sim"
 )
 
 // App struct
@@ -47,52 +48,53 @@ func (a *App) shutdown(ctx context.Context) {
 	// Perform your teardown here
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
-
 type BodyData struct {
-	Iterations int             `json:"iterations"`
-	Steps      int             `json:"steps"`
-	RawModel   json.RawMessage `json:"model"`
+	Model json.RawMessage `json:"model"`
 }
 
-func (a *App) LoadFile() error {
+func (a *App) LoadFile() shared.Model {
 	path, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{})
 
 	if err != nil {
-		return err
+		return shared.NewModel()
 	}
 
 	fileContents, err := os.ReadFile(path)
 
 	if err != nil {
-		return err
+		return shared.NewModel()
 	}
 
-	var data BodyData
+	var data json.RawMessage
 
 	err = json.Unmarshal(fileContents, &data)
 
 	if err != nil {
-		return err
+		return shared.NewModel()
 	}
 
-	model, err := serialize.DeserializeModel(data.RawModel)
+	model, err := serialize.DeserializeModel(data)
 
 	if err != nil {
-		return err
+		return shared.NewModel()
 	}
 
 	a.Model = model
 	a.CurrentFilePath = path
 
-	return nil
+	return *a.Model
+}
+
+func (a *App) ClearModel() {
+	a.Model = &shared.Model{}
+	a.CurrentFilePath = ""
 }
 
 func (a *App) SaveFileAs() error {
-	path, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{})
+	path, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		DefaultFilename: "model.json",
+		Title:           "Save Model",
+	})
 
 	if err != nil {
 		return err
@@ -104,7 +106,7 @@ func (a *App) SaveFileAs() error {
 		return err
 	}
 
-	err = os.WriteFile(path, bytes, os.ModeAppend)
+	err = os.WriteFile(path, bytes, 0644)
 
 	if err != nil {
 		return err
@@ -117,17 +119,48 @@ func (a *App) SaveFileAs() error {
 
 func (a *App) SaveFile() error {
 
+	if a.CurrentFilePath == "" {
+		return a.SaveFileAs()
+	}
+
 	bytes, err := serialize.SerializeModel(a.Model)
 
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(a.CurrentFilePath, bytes, os.ModeAppend)
+	err = os.WriteFile(a.CurrentFilePath, bytes, 0644)
 
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (a *App) OnModelUpdated(body json.RawMessage) {
+
+	model, err := serialize.DeserializeModel(body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(a.Model)
+	a.Model = model
+}
+
+func (a *App) Simulate(iterations, steps int) map[string]sim.CollectorStats {
+	if a.Model == nil {
+		return make(map[string]sim.CollectorStats)
+	}
+
+	result := sim.MonteCarlo(a.Model, steps, iterations)
+
+	resultMap := make(map[string]sim.CollectorStats)
+
+	for _, collector := range a.Model.AllCollectors() {
+		resultMap[collector.Name] = result.GetStats(collector.Name)
+	}
+
+	return resultMap
 }

@@ -16,7 +16,7 @@ import { IconButton } from "@/components/primitives/button/Button";
 
 import { type AnyVariableData } from "@/types/variables/allVariables";
 
-import { compiledModelAtom, isSimulatedAtom } from "./atoms";
+import { isSimulatedAtom, setCompiledModelAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { type VariableNodeType } from "./useNodesAndEdges";
 
@@ -45,7 +45,7 @@ export function VariableEdge({
   const updateNodeInternals = useUpdateNodeInternals();
   const nodes = useNodes<AnyVariableData>();
   const { setEdges } = useReactFlow();
-  const setCompiledModel = useSetAtom(compiledModelAtom);
+  const setCompiledModel = useSetAtom(setCompiledModelAtom);
   const isSimulated = useAtomValue(isSimulatedAtom);
 
   const isNodeSelected = nodes.some(

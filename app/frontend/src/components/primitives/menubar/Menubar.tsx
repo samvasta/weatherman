@@ -15,6 +15,8 @@ const MenubarSub = MenubarPrimitive.Sub;
 
 const MenubarRadioGroup = MenubarPrimitive.RadioGroup;
 
+const MenubarItemIndicator = MenubarPrimitive.ItemIndicator;
+
 const Menubar = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>
@@ -165,7 +167,7 @@ const MenubarRadioItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenubarPrimitive.ItemIndicator>
-        <CircleDotIcon className="h-4 w-4 fill-current" />
+        <CircleDotIcon className="h-3 w-3 fill-primary-9" stroke="none" />
       </MenubarPrimitive.ItemIndicator>
     </span>
     {children}
@@ -236,4 +238,5 @@ export {
   MenubarGroup,
   MenubarSub,
   MenubarShortcut,
+  MenubarItemIndicator,
 };

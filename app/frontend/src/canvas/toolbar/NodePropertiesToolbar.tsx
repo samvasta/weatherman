@@ -10,7 +10,7 @@ import {
   type AnyVariableData,
 } from "@/types/variables/allVariables";
 
-import { compiledModelAtom } from "../atoms";
+import { setCompiledModelAtom } from "../atoms";
 import { graphToModel } from "../graphToModel";
 import { type VariableNodeType } from "../useNodesAndEdges";
 
@@ -61,7 +61,7 @@ export function NodePropertiesToolbar({
 
   const updateNodeInternals = useUpdateNodeInternals();
 
-  const updateCompiledModel = useSetAtom(compiledModelAtom);
+  const updateCompiledModel = useSetAtom(setCompiledModelAtom);
   const { setNodes, getEdges } = useReactFlow();
 
   const nodes = useNodes();
