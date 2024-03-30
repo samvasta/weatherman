@@ -3,7 +3,7 @@ import React from "react";
 import { MinusIcon, PlusIcon } from "lucide-react";
 
 import { Button, IconButton } from "@/components/primitives/button/Button";
-import { Input } from "@/components/primitives/input/Input";
+import { Input, NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { ChoiceIcon } from "@/components/icons/distributions/ChoiceIcon";
@@ -49,17 +49,16 @@ export function ChoiceDistributionProperties({
 
         {data.options.map((opt, i) => (
           <React.Fragment key={`${i}`}>
-            <Input
+            <NumberInput
               value={opt.value}
-              type="number"
-              onChange={(e) =>
+              onChange={(value) =>
                 onChange({
                   ...data,
                   options: data.options.map((option, idx) => {
                     if (i === idx) {
                       return {
                         ...option,
-                        value: Number(e.target.value),
+                        value,
                       };
                     }
                     return option;
@@ -67,17 +66,16 @@ export function ChoiceDistributionProperties({
                 })
               }
             />
-            <Input
+            <NumberInput
               value={opt.weight}
-              type="number"
-              onChange={(e) =>
+              onChange={(value) =>
                 onChange({
                   ...data,
                   options: data.options.map((option, idx) => {
                     if (i === idx) {
                       return {
                         ...option,
-                        weight: Number(e.target.value),
+                        weight: value,
                       };
                     }
                     return option;

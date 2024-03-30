@@ -1,4 +1,4 @@
-import { Input } from "@/components/primitives/input/Input";
+import { Input, NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { ConstantIcon } from "@/components/icons/distributions/ConstantIcon";
@@ -34,13 +34,12 @@ export function ConstantDistributionProperties({
   return (
     <div className="flex flex-col gap-4">
       <Heading>Value</Heading>
-      <Input
+      <NumberInput
         value={data.value}
-        type="number"
-        onChange={(e) =>
+        onChange={(value) =>
           onChange({
             ...data,
-            value: Number(e.target.value),
+            value,
           })
         }
       />

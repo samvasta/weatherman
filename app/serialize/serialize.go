@@ -88,6 +88,14 @@ func DeserializeVariable(v map[string]interface{}) (variables.Variable, error) {
 		distribution, err := DeserializeDistribution(varInfo.Rest["distribution"].(map[string]interface{}))
 		ivar := variables.IVar{VariableInfo: varInfo.Info, Distribution: distribution}
 		return ivar, err
+	case variables.T_LessThan:
+		var lessThan variables.LessThan
+		err := mapstructure.Decode(v, &lessThan)
+		return lessThan, err
+	case variables.T_LessOrEqual:
+		var lte variables.LessOrEqual
+		err := mapstructure.Decode(v, &lte)
+		return lte, err
 	case variables.T_Product:
 		var product variables.Product
 		err := mapstructure.Decode(v, &product)

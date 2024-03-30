@@ -1,4 +1,4 @@
-import { Input } from "@/components/primitives/input/Input";
+import { Input, NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
@@ -40,24 +40,22 @@ export function LaplaceDistributionProperties({
   return (
     <div className="flex flex-col gap-4">
       <Heading>Mean</Heading>
-      <Input
+      <NumberInput
         value={data.mean}
-        type="number"
-        onChange={(e) =>
+        onChange={(value) =>
           onChange({
             ...data,
-            mean: Number(e.target.value),
+            mean: value,
           })
         }
       />
       <Heading size="xs">Standard Deviation</Heading>
-      <Input
+      <NumberInput
         value={data.stdDev}
-        type="number"
-        onChange={(e) =>
+        onChange={(value) =>
           onChange({
             ...data,
-            stdDev: Number(e.target.value),
+            stdDev: value,
           })
         }
       />

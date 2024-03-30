@@ -20,7 +20,13 @@ export function graphToModel(
 
       const info = AllVariables[type];
 
-      const blankNode = { ...node.data };
+      const blankNode = {
+        ...node.data,
+        ui: {
+          ...node.position,
+          id: node.id,
+        },
+      };
 
       for (const port of info.getPorts(node.data)) {
         switch (port.connectionStrategy) {

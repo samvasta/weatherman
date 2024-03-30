@@ -33,27 +33,35 @@ export type RiverChartProps = {
   type: "river" | "hair";
 };
 
+const margin = { top: 48, right: 32, bottom: 48, left: 80 };
 export function RiverChart({ data, name, type }: RiverChartProps) {
   const { parentRef, width, height } = useParentSize({ debounceTime: 150 });
-  const margin = { top: 48, right: 32, bottom: 48, left: 80 };
 
   // bounds
   const yMax = height - margin.top - margin.bottom;
   const xMax = width - margin.left - margin.right;
 
   // scales
-  const xScale = scaleLinear<number>({
-    range: [0, xMax],
-    domain: [1, data.percentiles.length],
-  });
-  const yScale = scaleLinear<number>({
-    range: [0, yMax],
-    // Go in opposite order so big numbers are on top
-    domain: [
-      maxByKey(data.percentiles, "p100"),
-      minByKey(data.percentiles, "p00"),
-    ],
-  });
+  const xScale = React.useMemo(
+    () =>
+      scaleLinear<number>({
+        range: [0, xMax],
+        domain: [1, data.percentiles.length],
+      }),
+    [data.percentiles.length, xMax]
+  );
+  const yScale = React.useMemo(
+    () =>
+      scaleLinear<number>({
+        range: [0, yMax],
+        // Go in opposite order so big numbers are on top
+        domain: [
+          maxByKey(data.percentiles, "p100"),
+          minByKey(data.percentiles, "p00"),
+        ],
+      }),
+    [data.percentiles, yMax]
+  );
 
   const points = React.useMemo(
     () =>
@@ -182,6 +190,13 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
     return tooltips;
   }, [tooltipData, xScale, yScale, points.length, height, yMax]);
 
+  const { getLineX, getLineY } = React.useMemo(() => {
+    return {
+      getLineX: (_: number, i: number) => xScale(i + 1) ?? 0,
+      getLineY: (d: number) => yScale(d) ?? 0,
+    };
+  }, [xScale, yScale]);
+
   return (
     <div ref={parentRef} className="h-full w-full">
       <svg width={width} height={height}>
@@ -286,8 +301,8 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                 <LinePath
                   key={i}
                   data={s}
-                  x={(_, i) => xScale(i + 1) ?? 0}
-                  y={(d) => yScale(d) ?? 0}
+                  x={getLineX}
+                  y={getLineY}
                   stroke="#193b2d44"
                   strokeWidth={2}
                   shapeRendering="geometricPrecision"

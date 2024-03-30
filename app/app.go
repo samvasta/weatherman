@@ -145,7 +145,8 @@ func (a *App) OnModelUpdated(body json.RawMessage) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(a.Model)
+	fmt.Println("BODY", string(body))
+	fmt.Println("COMPILED", a.Model)
 	a.Model = model
 }
 

@@ -15,6 +15,8 @@ type VariableInfo struct {
 	Units string `json:"units"`
 
 	Type string `json:"type"`
+
+	Ui map[string]interface{} `json:"ui"`
 }
 
 type Variable interface {

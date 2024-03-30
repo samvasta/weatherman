@@ -21,19 +21,37 @@ export const CommonVariableInfoSchema = z.object({
 
   type: z.nativeEnum(VariableType),
 
-  ui: z
-    .object({
-      id: z.string(),
-      x: z.number(),
-      y: z.number(),
-    })
-    .optional()
-    .default({
-      id: "",
-      x: 0,
-      y: 0,
-    }),
+  ui: z.object({
+    id: z.string(),
+    x: z.number(),
+    y: z.number(),
+  }),
 });
+
+export const SafeUiSchema = z
+  .object({
+    ui: z
+      .object({
+        id: z.string(),
+        x: z.number(),
+        y: z.number(),
+      })
+      .nullish()
+      .default({
+        id: "",
+        x: 0,
+        y: 0,
+      })
+      .transform(
+        (data) =>
+          data ?? {
+            id: "",
+            x: 0,
+            y: 0,
+          }
+      ),
+  })
+  .passthrough();
 
 export type CommonVariableInfoData = z.TypeOf<typeof CommonVariableInfoSchema>;
 

@@ -95,7 +95,7 @@ export function CollectorProperties({
       <SimpleSelect
         items={ivars}
         selectedId={
-          ivars.find((v) => v.value.name === data.target)?.value?.id || ""
+          ivars.find((v) => v.value.name === data.target)?.value.id || ""
         }
         onSelect={({ name }) => {
           onChange({

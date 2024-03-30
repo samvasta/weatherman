@@ -19,7 +19,7 @@ import { Validator } from "use-file-picker/validators";
 import { Button } from "@/components/primitives/button/Button";
 import { Dialog } from "@/components/primitives/floating/dialog/Dialog";
 import { Tooltip } from "@/components/primitives/floating/tooltip/Tooltip";
-import { Input } from "@/components/primitives/input/Input";
+import { Input, NumberInput } from "@/components/primitives/input/Input";
 import {
   Menubar,
   MenubarContent,
@@ -44,19 +44,22 @@ import {
   simulationResultAtom,
 } from "./atoms";
 import useLayoutNodes from "./useLayoutNodes";
-import { variablesToNodesAndEdges } from "./useNodesAndEdges";
+import { VariableNodeType, variablesToNodesAndEdges } from "./useNodesAndEdges";
 import {
   LoadFile,
   SaveFile,
   SaveFileAs,
   ClearModel,
   Simulate,
+  OnModelUpdated,
 } from "~/go/main/App";
 import {
   AnyVariableData,
   AnyVariableSchema,
+  SafeAnyVariableSchema,
 } from "@/types/variables/allVariables";
 import { SimulationResult } from "@/types/results";
+import { graphToModel } from "./graphToModel";
 
 class ModelValidator extends Validator {
   async validateBeforeParsing() {
@@ -86,7 +89,7 @@ class ModelValidator extends Validator {
 export function Menu() {
   const autoLayoutNodes = useLayoutNodes();
 
-  const { setNodes, setEdges } = useReactFlow();
+  const { setNodes, setEdges, getNodes, getEdges } = useReactFlow();
 
   const isInitialized = useNodesInitialized();
   const [hasInitialized, setHasInitialized] = React.useState(isInitialized);
@@ -114,14 +117,18 @@ export function Menu() {
     const model = await LoadFile();
     const compiledVariables: AnyVariableData[] = [];
 
+    let modelHasPositions = true;
     for (const v of model.variables) {
-      const result = AnyVariableSchema.safeParse(v);
+      const result = SafeAnyVariableSchema.safeParse(v);
       if (!result.success) {
-        console.error(result.error);
+        console.error(v, result.error);
         await ClearModel();
         return;
       }
       compiledVariables.push(result.data);
+      if (modelHasPositions && result.data.ui?.id === "") {
+        modelHasPositions = false;
+      }
     }
 
     const { nodes, edges, nodeNameToId } =
@@ -133,7 +140,7 @@ export function Menu() {
     initializeNodeNamesMap(nodeNameToId);
     setCompiledModel({ variables: compiledVariables });
     setSimulationResult(null);
-    setHasInitialized(false);
+    setHasInitialized(!modelHasPositions);
   };
 
   const onSaveAs = async () => {
@@ -216,19 +223,18 @@ export function Menu() {
             <MenubarLabel>Iterations</MenubarLabel>
 
             <MenubarLabel>
-              <Input
+              <NumberInput
                 size="md"
                 className="font-normal text-sm text-right"
                 dir="rtl"
-                type="number"
                 min={1}
                 max={100}
                 step={10}
                 value={simSettings.steps}
-                onChange={(e) =>
+                onChange={(value) =>
                   setSimSettings({
                     ...simSettings,
-                    steps: Number(e.target.value),
+                    steps: value,
                   })
                 }
               />
@@ -239,11 +245,6 @@ export function Menu() {
               disabled={hasErrors || simulationResult !== null}
               onSelect={() => {
                 if (!hasErrors) {
-                  // void simulate.mutateAsync({
-                  //   model: compiledModel,
-                  //   iterations: 10000,
-                  //   steps: 50,
-                  // });
                   onSimulate();
                 }
               }}

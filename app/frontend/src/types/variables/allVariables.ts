@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { type VariableInfo, VariableType } from "./common";
-import { CollectorInfo } from "./impl/collector";
+import { type VariableInfo, VariableType, SafeUiSchema } from "./common";
+import { CollectorData, CollectorInfo } from "./impl/collector";
 import { DivideInfo } from "./impl/divide";
 import { EqualsInfo } from "./impl/equals";
 import { InvertInfo } from "./impl/invert";
@@ -11,6 +11,7 @@ import { LessThanInfo } from "./impl/lessThan";
 import { PowerInfo } from "./impl/power";
 import { ProductInfo } from "./impl/product";
 import { SumInfo } from "./impl/sum";
+import { WithNonNullKey } from "@/utils/types";
 
 export const AnyVariableSchema = z.union([
   CollectorInfo.schema,
@@ -25,7 +26,33 @@ export const AnyVariableSchema = z.union([
   IVarInfo.schema,
 ]);
 
-export type AnyVariableData = z.TypeOf<typeof AnyVariableSchema>;
+export const SafeAnyVariableSchema = SafeUiSchema.pipe(
+  z.union([
+    CollectorInfo.schema,
+    DivideInfo.schema,
+    EqualsInfo.schema,
+    InvertInfo.schema,
+    LessThanInfo.schema,
+    LessOrEqualInfo.schema,
+    PowerInfo.schema,
+    ProductInfo.schema,
+    SumInfo.schema,
+    IVarInfo.schema,
+  ])
+);
+
+export type AnyVariableData = WithNonNullKey<
+  z.TypeOf<
+    Omit<typeof AnyVariableSchema, "ui"> & {
+      ui: {
+        x: number;
+        y: number;
+        id: string;
+      };
+    }
+  >,
+  "ui"
+>;
 
 export const AllVariables: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

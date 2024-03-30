@@ -1,4 +1,4 @@
-import { Input } from "@/components/primitives/input/Input";
+import { Input, NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { UniformIcon } from "@/components/icons/distributions/UniformIcon";
@@ -36,25 +36,23 @@ export function UniformDistributionProperties({
   return (
     <div className="flex flex-col gap-4">
       <Heading>Minimum</Heading>
-      <Input
+      <NumberInput
         value={data.min}
-        type="number"
-        onChange={(e) =>
+        onChange={(value) =>
           onChange({
             ...data,
-            min: Number(e.target.value),
+            min: value,
           })
         }
       />
       <Heading>Maximum</Heading>
 
-      <Input
+      <NumberInput
         value={data.max}
-        type="number"
-        onChange={(e) =>
+        onChange={(value) =>
           onChange({
             ...data,
-            max: Number(e.target.value),
+            max: value,
           })
         }
       />

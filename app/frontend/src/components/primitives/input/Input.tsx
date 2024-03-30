@@ -3,6 +3,8 @@ import React from "react";
 import { type VariantProps, cva } from "class-variance-authority";
 
 import { cn } from "@/utils/tailwind";
+import { isValidNumberInput, formatSafeNumberInput } from "./NumberInput";
+import { useMergeRefs } from "@floating-ui/react";
 
 export const inputVariants = cva(
   "flex w-full bg-neutral-1 text-neutral-12 disabled:cursor-not-allowed focus:rounded-none active:rounded-none focus-visible:rounded-none enabled:rounded-none outline-none disabled:border-neutral-11 disabled:text-neutral-11 disabled:bg-bAlpha-3 box-border placeholder:overflow-visible",
@@ -106,3 +108,64 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   }
 );
 Textarea.displayName = "Textarea";
+
+export const NumberInput = React.forwardRef<
+  HTMLInputElement,
+  Omit<InputProps, "onChange" | "type"> & {
+    onChange: (value: number) => void;
+  }
+>(
+  (
+    {
+      className,
+      size = "md",
+      variant = "outline",
+      value,
+      charSize,
+      onChange,
+      ...props
+    },
+    ref
+  ) => {
+    const [strVal, setStrVal] = React.useState<string>(value?.toString() ?? "");
+
+    return (
+      <input
+        type="text"
+        className={cn(
+          inputVariants({ size, variant }),
+          "text-end font-mono",
+          className
+        )}
+        ref={ref}
+        size={charSize}
+        value={strVal}
+        onKeyDownCapture={(e) => {
+          if (!isValidNumberInput(e)) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+        }}
+        onChange={(e) => {
+          const input = e.currentTarget.value;
+
+          setStrVal(input);
+
+          if (
+            input === Number(input).toString() &&
+            Number(value) !== Number(input)
+          ) {
+            onChange(Number(input));
+          }
+        }}
+        onBlur={(e) => {
+          onChange(Number(formatSafeNumberInput(strVal)));
+          setStrVal(formatSafeNumberInput(strVal));
+          props.onBlur?.(e);
+        }}
+        {...props}
+      />
+    );
+  }
+);
+Input.displayName = "Input";

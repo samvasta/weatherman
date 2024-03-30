@@ -13,6 +13,7 @@ import { type IVarData } from "@/types/variables/impl/ivar";
 import { useHorizontalScroll } from "@/utils/useHorizontalScroll";
 
 import { VariableNodePreview } from "../VariableNode";
+import { nanoid } from "nanoid";
 
 export function NodePaletteToolbar() {
   const onDragStart = (
@@ -36,6 +37,11 @@ export function NodePaletteToolbar() {
                 ...info.defaultConfig,
                 name: `New ${distributionType}`,
                 distribution: getDefaultDistributionData(distributionType),
+                ui: {
+                  id: nanoid(8),
+                  x: 0,
+                  y: 0,
+                },
               } as IVarData;
               return (
                 <VariableNodePreview
@@ -43,7 +49,7 @@ export function NodePaletteToolbar() {
                   data={data}
                   onDragStart={(event) => onDragStart(event, data)}
                   draggable
-                  className="w-full"
+                  className="w-full select-none"
                 />
               );
             })}
@@ -63,9 +69,18 @@ export function NodePaletteToolbar() {
                   <VariableNodePreview
                     key={varType}
                     data={data}
-                    onDragStart={(event) => onDragStart(event, data)}
+                    onDragStart={(event) =>
+                      onDragStart(event, {
+                        ...data,
+                        ui: {
+                          id: nanoid(8),
+                          x: 0,
+                          y: 0,
+                        },
+                      })
+                    }
                     draggable
-                    className="w-full"
+                    className="w-full select-none"
                   />
                 );
               })}
@@ -80,14 +95,18 @@ export function NodePaletteToolbar() {
                 .defaultConfig as AnyVariableData
             }
             onDragStart={(event) =>
-              onDragStart(
-                event,
-                AllVariables[VariableType.Collector]
-                  .defaultConfig as AnyVariableData
-              )
+              onDragStart(event, {
+                ...(AllVariables[VariableType.Collector]
+                  .defaultConfig as AnyVariableData),
+                ui: {
+                  id: nanoid(8),
+                  x: 0,
+                  y: 0,
+                },
+              })
             }
             draggable
-            className="w-full grow"
+            className="w-full select-none grow"
           />
         </div>
       </div>

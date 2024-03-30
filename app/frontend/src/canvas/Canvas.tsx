@@ -366,6 +366,8 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       fitView
       multiSelectionKeyCode={null}
       zoomOnDoubleClick={false}
+      snapGrid={[1, 1]}
+      snapToGrid
     >
       <Background color="#8C8C8C" />
       <Controls />
