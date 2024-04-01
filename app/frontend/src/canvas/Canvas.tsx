@@ -83,13 +83,6 @@ export function Canvas(props: CanvasProps) {
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
-
-        {/* <div className="h-full w-[20vw] min-w-0 grow-0 border-r-4 bg-neutral-3">
-            <Toolbar />
-          </div>
-          <div className="min-w-0 grow">
-            <CanvasInner {...props} />
-          </div> */}
       </div>
     </ReactFlowProvider>
   );
@@ -151,9 +144,6 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
         }
       }
 
-      // if (portIsAlreadyFull({ connection, nodes: nodes, edges })) {
-      //   return false;
-      // }
       return true;
     },
     [getNodes, getEdges, isSimulated]
@@ -321,12 +311,6 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
           )
         ) {
           onNodesChange(changes);
-          // const nextModel = graphToModel(
-          //   applyNodeChanges(changes, getNodes()) as VariableNodeType[],
-          //   getEdges()
-          // );
-          // console.log("next mod", nextModel);
-          // setCompiledModel(nextModel);
         } else {
           onNodesChange(
             changes.filter(
@@ -343,12 +327,6 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
           )
         ) {
           onEdgesChange(changes);
-
-          // const nextModel = graphToModel(
-          //   getNodes() as VariableNodeType[],
-          //   applyEdgeChanges(changes, getEdges())
-          // );
-          // setCompiledModel(nextModel);
         } else {
           onEdgesChange(changes.filter((c) => c.type === "select"));
         }
@@ -365,6 +343,7 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       zoomOnScroll
       fitView
       multiSelectionKeyCode={null}
+      minZoom={0.01}
       zoomOnDoubleClick={false}
       snapGrid={[1, 1]}
       snapToGrid

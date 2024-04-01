@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useAtomValue, useSetAtom } from "jotai";
 import { X } from "lucide-react";
@@ -19,6 +19,7 @@ import { type AnyVariableData } from "@/types/variables/allVariables";
 import { isSimulatedAtom, setCompiledModelAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { type VariableNodeType } from "./useNodesAndEdges";
+import { Txt } from "@/components/primitives/text/Text";
 
 export function VariableEdge({
   id,
@@ -48,9 +49,13 @@ export function VariableEdge({
   const setCompiledModel = useSetAtom(setCompiledModelAtom);
   const isSimulated = useAtomValue(isSimulatedAtom);
 
-  const isNodeSelected = nodes.some(
-    (n) => n.selected && (n.id === source || n.id === target)
+  const connectedNodes = nodes.filter(
+    (n) => n.id === source || n.id === target
   );
+  const isNodeSelected = connectedNodes.some((n) => n.selected);
+
+  const sourceNode = connectedNodes.find((n) => n.id === source);
+
   const anyNodeSelected = nodes.some((n) => n.selected);
 
   const onEdgeClick = () => {
@@ -66,6 +71,33 @@ export function VariableEdge({
 
     updateNodeInternals(source);
   };
+
+  if (sourceNode?.data.ui.isOutputFloating) {
+    return (
+      <>
+        <EdgeLabelRenderer>
+          <div
+            style={{
+              position: "absolute",
+              transform: `translate(-100%, -50%) translate(${targetX - 80}px,${targetY}px)`,
+              // everything inside EdgeLabelRenderer has no pointer events by default
+              // if you have an interactive element, set pointer-events: all
+              pointerEvents: "all",
+            }}
+            className="nodrag nopan bg-magic-3 text-magic-12 grid place-items-center w-fit px-1 h-6 leading-none rounded-none border-0 text-lg font-medium border-magic-9 border-r-4 max-w-[500px]"
+          >
+            <Txt className="truncate max-w-full">{sourceNode.data.name}</Txt>
+          </div>
+        </EdgeLabelRenderer>
+        <path
+          d={`M ${targetX - 80} ${targetY} h 100`}
+          className="stroke-magic-9"
+          strokeWidth={4}
+          strokeDasharray={"8 6"}
+        />
+      </>
+    );
+  }
 
   return (
     <>

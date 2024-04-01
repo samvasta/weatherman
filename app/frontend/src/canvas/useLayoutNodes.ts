@@ -100,13 +100,14 @@ export const getLayoutedNodes = async (
           x: layoutedNode?.x ?? 0,
           y: layoutedNode?.y ?? 0,
           id: node.id,
+          isOutputFloating: node.data.ui.isOutputFloating ?? false,
         },
       },
       position: {
         x: layoutedNode?.x ?? 0,
         y: layoutedNode?.y ?? 0,
       },
-    };
+    } as VariableNodeType;
   });
 
   return { layoutedNodes, layoutedEdges: edges };

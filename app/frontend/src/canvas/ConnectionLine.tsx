@@ -9,6 +9,7 @@ import {
 import { cn } from "@/utils/tailwind";
 
 import { isSimulatedAtom } from "./atoms";
+import { VariableNodeType } from "./useNodesAndEdges";
 
 export function ConnectionLine({
   fromX,
@@ -18,6 +19,7 @@ export function ConnectionLine({
   fromPosition,
   toPosition,
   connectionStatus,
+  fromNode,
 }: ConnectionLineComponentProps) {
   const [edgePath] = getSmoothStepPath({
     sourceX: fromX,
@@ -38,6 +40,8 @@ export function ConnectionLine({
         strokeWidth={6}
         className={cn(
           "animated stroke-primary-11",
+          (fromNode as VariableNodeType).data.ui.isOutputFloating &&
+            "stroke-magic-9",
           isSimulated && "stroke-neutral-6",
           connectionStatus === "invalid" && "stroke-danger-10"
         )}

@@ -18,6 +18,16 @@ import {
   type VariablePropertiesProps,
   VariableType,
 } from "../common";
+import { useAtomValue } from "jotai";
+import { getCompiledModelAtom, nodeNameToIdAtom } from "@/canvas/atoms";
+import React from "react";
+import {
+  SelectItemData,
+  SimpleSelect,
+} from "@/components/primitives/select/SimpleSelect";
+import { Connection, useStore, useStoreApi } from "reactflow";
+import { OUTPUT_PORT_NAME } from "@/canvas/useNodesAndEdges";
+import { Txt } from "@/components/primitives/text/Text";
 
 const SumSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Sum).default(VariableType.Sum),
@@ -47,9 +57,65 @@ export function SumProperties({
   data,
   onChange,
 }: VariablePropertiesProps<SumData>) {
+  const model = useAtomValue(getCompiledModelAtom);
+  const { isValidConnection, onConnect } = useStore((state) => ({
+    isValidConnection: state.isValidConnection ?? (() => true),
+    onConnect: state.onConnect ?? (() => {}),
+  }));
+
+  const nameToIdMap = useAtomValue(nodeNameToIdAtom);
+
+  const inputs = model.variables
+    .filter((v) => {
+      return isValidConnection({
+        source: nameToIdMap[v.name]!,
+        sourceHandle: `${nameToIdMap[v.name]!}-${OUTPUT_PORT_NAME}`,
+        target: data.ui.id,
+        targetHandle: `${data.ui.id}-inputs`,
+      } as Connection);
+    })
+    .map<SelectItemData<{ id: string; name: string; enabled: boolean }>>(
+      (v) => ({
+        label: v.name,
+        value: { id: v.ui.id, name: v.name, enabled: v.ui.id !== data.ui.id },
+      })
+    );
+
   return (
     <WithCommonProperties data={data} onChange={onChange}>
       <Heading size="sm">Sum</Heading>
+
+      {data.inputs.map((input, idx) => (
+        <SimpleSelect
+          items={inputs}
+          selectedId={nameToIdMap[input] || ""}
+          onSelect={({ name }) => {
+            onChange({
+              ...data,
+              inputs: [
+                ...data.inputs.slice(0, idx),
+                name,
+                ...data.inputs.slice(idx + 1),
+              ],
+            });
+          }}
+        />
+      ))}
+
+      <Txt>Add input</Txt>
+
+      <SimpleSelect
+        items={inputs}
+        selectedId={""}
+        onSelect={({ name }) => {
+          onConnect({
+            source: nameToIdMap[name]!,
+            sourceHandle: `${nameToIdMap[name]!}-${OUTPUT_PORT_NAME}`,
+            target: data.ui.id,
+            targetHandle: `${data.ui.id}-inputs`,
+          });
+        }}
+      />
     </WithCommonProperties>
   );
 }

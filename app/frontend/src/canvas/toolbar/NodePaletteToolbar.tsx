@@ -41,6 +41,7 @@ export function NodePaletteToolbar() {
                   id: nanoid(8),
                   x: 0,
                   y: 0,
+                  isOutputFloating: false,
                 },
               } as IVarData;
               return (
@@ -76,6 +77,7 @@ export function NodePaletteToolbar() {
                           id: nanoid(8),
                           x: 0,
                           y: 0,
+                          isOutputFloating: false,
                         },
                       })
                     }
@@ -102,6 +104,7 @@ export function NodePaletteToolbar() {
                   id: nanoid(8),
                   x: 0,
                   y: 0,
+                  isOutputFloating: false,
                 },
               })
             }

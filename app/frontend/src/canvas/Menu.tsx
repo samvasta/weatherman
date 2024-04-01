@@ -59,32 +59,7 @@ import {
   SafeAnyVariableSchema,
 } from "@/types/variables/allVariables";
 import { SimulationResult } from "@/types/results";
-import { graphToModel } from "./graphToModel";
-
-class ModelValidator extends Validator {
-  async validateBeforeParsing() {
-    return new Promise<void>((res, _rej) => res());
-  }
-  async validateAfterParsing(
-    _config: UseFilePickerConfig<unknown>,
-    file: FileWithPath,
-    _reader: FileReader
-  ) {
-    return new Promise<void>(async (res, rej) => {
-      const content = await file.text();
-
-      const data = JSON.parse(content) as unknown;
-
-      const parseResult = ModelSchema.safeParse(data);
-
-      if (parseResult.success) {
-        res();
-      } else {
-        rej(parseResult);
-      }
-    });
-  }
-}
+import { migrate } from "@/serialize/migrate";
 
 export function Menu() {
   const autoLayoutNodes = useLayoutNodes();
@@ -95,23 +70,12 @@ export function Menu() {
   const [hasInitialized, setHasInitialized] = React.useState(isInitialized);
 
   const [isSimulating, setIsSimulating] = React.useState(false);
-  const [simSettings, setSimSettings] = React.useState({
-    steps: 50,
-    iterations: 5000,
-  });
   const [simulationResult, setSimulationResult] = useAtom(simulationResultAtom);
 
   const compiledModel = useAtomValue(getCompiledModelAtom);
   const setCompiledModel = useSetAtom(setCompiledModelAtom);
   const hasErrors = useAtomValue(hasErrorsAtom);
   const initializeNodeNamesMap = useSetAtom(initializeNodeNamesMapAtom);
-
-  // useEffect(() => {
-  //   if (!hasInitialized && isInitialized) {
-  //     void autoLayoutNodes();
-  //     setHasInitialized(true);
-  //   }
-  // }, [hasInitialized, isInitialized]);
 
   const onLoad = async () => {
     const model = await LoadFile();
@@ -131,14 +95,17 @@ export function Menu() {
       }
     }
 
-    const { nodes, edges, nodeNameToId } =
-      variablesToNodesAndEdges(compiledVariables);
+    const migratedModel = migrate({ ...model, variables: compiledVariables });
+
+    const { nodes, edges, nodeNameToId } = variablesToNodesAndEdges(
+      migratedModel.variables
+    );
     setNodes([]);
     setEdges([]);
     setNodes(nodes);
     setEdges(edges);
     initializeNodeNamesMap(nodeNameToId);
-    setCompiledModel({ variables: compiledVariables });
+    setCompiledModel(migratedModel);
     setSimulationResult(null);
     setHasInitialized(!modelHasPositions);
   };
@@ -154,10 +121,7 @@ export function Menu() {
   const onSimulate = async () => {
     setSimulationResult(null);
     setIsSimulating(true);
-    const results = (await Simulate(
-      simSettings.iterations,
-      simSettings.steps
-    )) as SimulationResult;
+    const results = (await Simulate()) as SimulationResult;
     setSimulationResult(results);
     setIsSimulating(false);
   };
@@ -205,9 +169,9 @@ export function Menu() {
           </MenubarTrigger>
           <MenubarContent>
             <MenubarRadioGroup
-              value={simSettings.iterations.toString()}
+              value={compiledModel.iterations.toString()}
               onValueChange={(val) =>
-                setSimSettings({ ...simSettings, iterations: Number(val) })
+                setCompiledModel({ iterations: Number(val) })
               }
             >
               <MenubarLabel>Iterations</MenubarLabel>
@@ -230,13 +194,8 @@ export function Menu() {
                 min={1}
                 max={100}
                 step={10}
-                value={simSettings.steps}
-                onChange={(value) =>
-                  setSimSettings({
-                    ...simSettings,
-                    steps: value,
-                  })
-                }
+                value={compiledModel.steps}
+                onChange={(value) => setCompiledModel({ steps: value })}
               />
             </MenubarLabel>
 

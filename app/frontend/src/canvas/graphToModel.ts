@@ -9,22 +9,24 @@ import {
   type VariableEdgeType,
   type VariableNodeType,
 } from "./useNodesAndEdges";
+import { CURRENT_VERSION } from "@/serialize/migrate";
 
 export function graphToModel(
   nodes: VariableNodeType[],
   edges: VariableEdgeType[]
-): Model {
+): Pick<Model, "variables"> {
   const allVariables: { [id: string]: AnyVariableData } = nodes.reduce(
     (map, node) => {
       const type = node.data.type;
 
       const info = AllVariables[type];
 
-      const blankNode = {
+      const blankNode: AnyVariableData = {
         ...node.data,
         ui: {
           ...node.position,
           id: node.id,
+          isOutputFloating: node.data.ui.isOutputFloating ?? false,
         },
       };
 

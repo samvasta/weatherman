@@ -7,7 +7,7 @@ import { cn } from "@/utils/tailwind";
 import { CheckIcon } from "lucide-react";
 
 export const checkboxVariants = cva(
-  "border-cur-scheme-12 focus-visible:ring-ring data-[state=checked]:bg-cur-scheme-9 data-[state=checked]:border-cur-scheme-9 data-[state=checked]:text-neutral-12 peer h-6 w-6 shrink-0 border focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:bg-neutral-3 disabled:text-neutral-10 disabled:border-neutral-6",
+  "border-cur-scheme-12 focus-visible:ring-ring data-[state=checked]:bg-cur-scheme-9 data-[state=checked]:border-neutral-12 data-[state=checked]:text-neutral-12 peer h-6 w-6 shrink-0 border focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:bg-neutral-3 disabled:text-neutral-10 disabled:border-neutral-6",
   {
     variants: {
       size: {
@@ -35,8 +35,8 @@ export const checkboxVariants = cva(
 
 export const checkboxSizeToIndicatorSize = {
   lg: "w-6 h-6",
-  md: "w-4 h-4",
-  sm: "w-3 h-3",
+  md: "w-5 h-5",
+  sm: "w-4 h-4",
 } as const;
 
 export type CheckboxVariants = VariantProps<typeof checkboxVariants>;

@@ -150,12 +150,12 @@ func (a *App) OnModelUpdated(body json.RawMessage) {
 	a.Model = model
 }
 
-func (a *App) Simulate(iterations, steps int) map[string]sim.CollectorStats {
+func (a *App) Simulate() map[string]sim.CollectorStats {
 	if a.Model == nil {
 		return make(map[string]sim.CollectorStats)
 	}
 
-	result := sim.MonteCarlo(a.Model, steps, iterations)
+	result := sim.MonteCarlo(a.Model, a.Model.Steps, a.Model.Iterations)
 
 	resultMap := make(map[string]sim.CollectorStats)
 

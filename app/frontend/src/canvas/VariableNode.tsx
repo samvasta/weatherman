@@ -150,7 +150,8 @@ export const VariableNode = React.memo(
               position={Position.Right}
               className={cn(
                 "!border-0-2 !relative !-right-1 !top-0 !h-3 !w-2 !translate-x-[100%] !translate-y-0 !rounded-l-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12",
-                isSimulated && "!border-cur-scheme-10 !bg-cur-scheme-10"
+                isSimulated && "!border-cur-scheme-10 !bg-cur-scheme-10",
+                data.ui.isOutputFloating && "!bg-magic-9"
               )}
             />
           )}

@@ -3,11 +3,11 @@ import { AnyVariableData } from "@/types/variables/allVariables";
 
 export const CURRENT_VERSION = 1;
 
-export function migrate(input: Record<string, unknown>) {
+export function migrate(input: Record<string, unknown>): Model {
   let output = { ...input };
   let version = 0;
-  if (!("meta" in input)) {
-    version = 0;
+  if ("meta" in input) {
+    version = (input.meta as { version: number }).version;
   }
 
   if (version === 0) {
