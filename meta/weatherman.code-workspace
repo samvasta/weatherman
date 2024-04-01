@@ -1,14 +1,6 @@
 {
   "folders": [
     {
-      "name": "Simulator",
-      "path": "../simulator"
-    },
-    {
-      "name": "Viewer",
-      "path": "../viewer"
-    },
-    {
       "name": "App",
       "path": "../app"
     },
