@@ -7,6 +7,7 @@ import { type CollectorStats, type SimulationResult } from "@/types/results";
 import { AnyVariableSchema } from "@/types/variables/allVariables";
 
 import { OnModelUpdated } from "~/go/main/App";
+import { CURRENT_VERSION } from "@/serialize/migrate";
 
 export const nodeNameToIdAtom = atom<Record<string, string>>({});
 export const nodeIdToNameAtom = atom<Record<string, string>>({});
@@ -55,15 +56,25 @@ export const initializeNodeNamesMapAtom = atom(
   }
 );
 
-const compiledModelAtom = atom<Model>({ variables: [] });
+const compiledModelAtom = atom<Model>({
+  meta: { version: CURRENT_VERSION },
+  variables: [],
+  steps: 50,
+  iterations: 5_000,
+});
 export const getCompiledModelAtom = atom<Model>((get) =>
   get(compiledModelAtom)
 );
 
-export const setCompiledModelAtom = atom(null, (_, set, model: Model) => {
-  set(compiledModelAtom, model);
-  OnModelUpdated(model);
-});
+export const setCompiledModelAtom = atom(
+  null,
+  (get, set, model: Partial<Model>) => {
+    const current = get(compiledModelAtom);
+    const next: Model = { ...current, ...model };
+    set(compiledModelAtom, next);
+    OnModelUpdated(next);
+  }
+);
 
 export const compileErrorsAtom = selectAtom(compiledModelAtom, (model) => {
   const errorMap: {

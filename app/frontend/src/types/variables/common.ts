@@ -13,6 +13,13 @@ export enum VariableType {
   Sum = "sum",
 }
 
+const BaseUISchema = z.object({
+  id: z.string(),
+  x: z.number(),
+  y: z.number(),
+  isOutputFloating: z.boolean().default(false),
+});
+
 export const CommonVariableInfoSchema = z.object({
   name: z.string().min(1),
   description: z.string().default(""),
@@ -21,26 +28,17 @@ export const CommonVariableInfoSchema = z.object({
 
   type: z.nativeEnum(VariableType),
 
-  ui: z.object({
-    id: z.string(),
-    x: z.number(),
-    y: z.number(),
-  }),
+  ui: BaseUISchema,
 });
 
 export const SafeUiSchema = z
   .object({
-    ui: z
-      .object({
-        id: z.string(),
-        x: z.number(),
-        y: z.number(),
-      })
-      .nullish()
+    ui: BaseUISchema.nullish()
       .default({
         id: "",
         x: 0,
         y: 0,
+        isOutputFloating: false,
       })
       .transform(
         (data) =>
@@ -48,6 +46,7 @@ export const SafeUiSchema = z
             id: "",
             x: 0,
             y: 0,
+            isOutputFloating: false,
           }
       ),
   })
@@ -63,6 +62,7 @@ export const DEFAULT_COMMON_DATA: Omit<CommonVariableInfoData, "type"> = {
     id: "",
     x: 0,
     y: 0,
+    isOutputFloating: false,
   },
 };
 

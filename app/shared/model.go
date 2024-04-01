@@ -4,12 +4,28 @@ import (
 	"samvasta.com/weatherman/app/variables"
 )
 
+const CURRENT_VERSION = 1
+
+type ModelMeta struct {
+	Version int `json:"version"`
+}
+
 type Model struct {
+	Meta         ModelMeta            `json:"meta"`
 	AllVariables []variables.Variable `json:"variables"`
+	Steps        int                  `json:"steps"`
+	Iterations   int                  `json:"iterations"`
 }
 
 func NewModel() Model {
-	return Model{}
+	return Model{
+		Meta: ModelMeta{
+			Version: CURRENT_VERSION,
+		},
+		AllVariables: []variables.Variable{},
+		Steps:        50,
+		Iterations:   5_000,
+	}
 }
 
 func (m *Model) AllCollectors() []variables.Collector {

@@ -106,12 +106,12 @@ export function Menu() {
   const hasErrors = useAtomValue(hasErrorsAtom);
   const initializeNodeNamesMap = useSetAtom(initializeNodeNamesMapAtom);
 
-  useEffect(() => {
-    if (!hasInitialized && isInitialized) {
-      void autoLayoutNodes();
-      setHasInitialized(true);
-    }
-  }, [hasInitialized, isInitialized]);
+  // useEffect(() => {
+  //   if (!hasInitialized && isInitialized) {
+  //     void autoLayoutNodes();
+  //     setHasInitialized(true);
+  //   }
+  // }, [hasInitialized, isInitialized]);
 
   const onLoad = async () => {
     const model = await LoadFile();

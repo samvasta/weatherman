@@ -39,6 +39,7 @@ func ReadModelFromFile(path string) (*shared.Model, error) {
 
 func DeserializeModel(bytes []byte) (*shared.Model, error) {
 	var m struct {
+		shared.Model
 		AllVariables [](map[string]interface{}) `json:"variables"`
 	}
 	err := json.Unmarshal(bytes, &m)
