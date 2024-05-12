@@ -55,6 +55,10 @@ func DeserializeModel(bytes []byte) (*shared.Model, error) {
 		model.AddVariable(variable)
 	}
 
+	model.Steps = m.Steps
+	model.Iterations = m.Iterations
+	model.Meta = m.Meta
+
 	return &model, err
 }
 
@@ -97,6 +101,11 @@ func DeserializeVariable(v map[string]interface{}) (variables.Variable, error) {
 		var lte variables.LessOrEqual
 		err := mapstructure.Decode(v, &lte)
 		return lte, err
+	case variables.T_Multiplexer:
+		var mux variables.Multiplexer
+		err := mapstructure.Decode(v, &mux)
+		mux.Prepare()
+		return mux, err
 	case variables.T_Product:
 		var product variables.Product
 		err := mapstructure.Decode(v, &product)
@@ -105,6 +114,11 @@ func DeserializeVariable(v map[string]interface{}) (variables.Variable, error) {
 		var sum variables.Sum
 		err := mapstructure.Decode(v, &sum)
 		return sum, err
+	case variables.T_Timer:
+		var timer variables.Timer
+		err := mapstructure.Decode(v, &timer)
+		timer.Prepare()
+		return timer, err
 
 	default:
 		return nil, fmt.Errorf("unknown variable type: %v (%v)", v["type"], v)

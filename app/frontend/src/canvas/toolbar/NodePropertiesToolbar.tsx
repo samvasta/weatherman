@@ -66,10 +66,7 @@ export function NodePropertiesToolbar({
 
   const nodes = useNodes();
 
-  const node = React.useMemo(
-    () => nodes.find((n) => n.id === selected.id),
-    [nodes, selected.id]
-  );
+  const node = nodes.find((n) => n.id === selected.id);
 
   const onUpdateNode = React.useCallback(
     (nextData: Partial<AnyVariableData>) => {

@@ -20,7 +20,6 @@ func InitModelState(model *shared.Model) ModelState {
 		Model: model,
 		Step:  0,
 	}
-
 	state.sortedVariables = TopologicalSort(model.AllCollectors(), shared.GetVariablesMap(model.AllVariables))
 
 	return state
@@ -58,7 +57,6 @@ func Simulate(model *shared.Model, steps int) []ModelState {
 	state := InitModelState(model)
 
 	states := make([]ModelState, steps)
-	// states[0] = state
 
 	for i := 0; i < steps; i++ {
 		state = SimulateOneStep(&state)

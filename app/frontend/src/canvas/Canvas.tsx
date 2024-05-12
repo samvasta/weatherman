@@ -283,7 +283,7 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
           ui: {
             ...data.ui,
             ...position,
-            id: nanoid(8),
+            id: id,
           },
         },
       };
@@ -292,6 +292,8 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
     },
     [reactFlowInstance, isSimulated]
   );
+
+  console.log(nodes, edges);
 
   return (
     <ReactFlow

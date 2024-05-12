@@ -77,7 +77,34 @@ func TestTimer2(t *testing.T) {
 		result := variable.Compute(inputs, i)
 
 		if result != expected[i] {
-			t.Errorf("Expected %v on step 0, got %v", expected[i], result)
+			t.Errorf("Expected %v on step %v, got %v", expected[i], i, result)
+		}
+
+	}
+}
+
+func TestTimer3(t *testing.T) {
+	inputs := map[string]float64{
+		"a": 1,
+		"b": 2,
+		"c": 3,
+	}
+
+	variable := NewTimer("result", "a", []TimeRange{
+		{2, "b"},
+		{4, "c"},
+		{5, "a"},
+		{7, "c"},
+	})
+
+	expected := []float64{1, 1, 2, 2, 3, 1, 1, 3, 3, 3, 3}
+
+	for i := 0; i < len(expected); i++ {
+
+		result := variable.Compute(inputs, i)
+
+		if result != expected[i] {
+			t.Errorf("Expected %v on step %v, got %v", expected[i], i, result)
 		}
 
 	}

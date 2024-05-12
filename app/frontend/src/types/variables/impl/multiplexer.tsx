@@ -27,12 +27,16 @@ import {
   type VariableInfo,
   type VariablePropertiesProps,
 } from "../common";
+import { useEdges } from "reactflow";
+import { singleToList } from "@/utils/singleToList";
+import { NumberInput } from "@/components/primitives/input/Input";
+import { Button } from "@/components/primitives/button/Button";
 
 const MultiplexerSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Multiplexer).default(VariableType.Multiplexer),
 
-  defaultInput: z.string().min(1),
-  selectorInput: z.string().min(1),
+  defaultInput: z.string().min(1, "Must select a default input"),
+  selector: z.string().min(1, "Must provide a selector"),
   muxInputs: z.array(
     z.object({
       input: z.string().min(1),
@@ -64,79 +68,147 @@ export function MultiplexerProperties({
   onChange,
 }: VariablePropertiesProps<MultiplexerData>) {
   const model = useAtomValue(getCompiledModelAtom);
+  const edges = useEdges();
 
-  const ivars = React.useMemo(() => {
-    const allIVars = model.variables.filter(
-      (v) => v.type === VariableType.IVar
-    );
+  const inputs = React.useMemo(() => {
+    const incomingNodes = edges
+      .filter(
+        (e) =>
+          e.target === data.ui.id &&
+          !(e.targetHandle || "").includes("selector")
+      )
+      .map((e) => e.source);
 
-    const linkedIVarNames = model.variables
-      .filter(isCollector)
+    return model.variables
       .filter((v) => v.ui.id !== data.ui.id)
-      .map((v) => v.target)
-      .filter(Boolean);
+      .filter((v) => incomingNodes.includes(v.ui.id))
+      .map<SelectItemData<{ id: string; name: string }>>((v) => ({
+        label: v.name,
+        value: { id: v.ui.id, name: v.name },
+      }));
+  }, [model.variables, data.ui.id, edges]);
 
-    return [
-      {
-        label: "(None)",
-        value: { id: "", name: "" },
-      },
-      ...allIVars
-        .filter((v) => !linkedIVarNames.includes(v.name))
-        .map<
-          SelectItemData<{ id: string; name: string }>
-        >((v) => ({ label: v.name, value: { id: v.ui.id, name: v.name } })),
-    ];
-  }, [model.variables, data.ui.id]);
+  const sortedInputs = [...data.muxInputs];
+  sortedInputs.sort((a, b) => a.minValue - b.minValue);
 
   return (
     <WithCommonProperties data={data} onChange={onChange}>
       <Heading size="sm">Multiplexed Inputs</Heading>
 
-      <Label>Selector</Label>
-      <Txt intent="subtle">
-        The multiplexer will choose an output depending on the value of the
-        selector input.
-      </Txt>
-      <SimpleSelect
-        items={ivars}
-        selectedId={
-          ivars.find((v) => v.value.name === data.target)?.value.id || ""
-        }
-        onSelect={({ name }) => {
-          onChange({
-            ...data,
-            target: name ?? null,
-          });
-        }}
-      />
-
-      <Heading size="sm">Multiplexed Inputs</Heading>
-
-      <Label>Default Output</Label>
-      <Txt intent="subtle">
-        The multiplexer will use this value if none of the other inputs match
-        the selector.
-      </Txt>
-      <SimpleSelect
-        items={ivars}
-        selectedId={
-          ivars.find((v) => v.value.name === data.target)?.value.id || ""
-        }
-        onSelect={({ name }) => {
-          onChange({
-            ...data,
-            target: name ?? null,
-          });
-        }}
-      />
-
+      <Label>Selectable Outputs</Label>
       <Txt intent="subtle">
         The multiplexer will output one of these inputs depending on the value
         of the selector input.
       </Txt>
+      <div className="grid grid-cols-[minmax(min-content,_8rem)_auto] gap-x-tight gap-y-0">
+        <SimpleSelect
+          items={inputs}
+          selectedId={
+            inputs.find((v) => v.value.name === data.defaultInput)?.value.id ||
+            ""
+          }
+          onSelect={({ name }) => {
+            onChange({
+              ...data,
+              defaultInput: name ?? null,
+            });
+          }}
+          trigger={{
+            style: {
+              gridRow: 1,
+              gridColumn: 2,
+            },
+            className: "h-min place-self-center",
+          }}
+        />
+        {data.muxInputs.map((input, i) => {
+          const row = data.muxInputs.filter(
+            (tr, j) =>
+              (i > j && tr.minValue === input.minValue) ||
+              tr.minValue < input.minValue
+          ).length;
+          return (
+            <React.Fragment key={`input-${i}-${input.input}-${input.minValue}`}>
+              <NumberInput
+                style={{
+                  gridRow: 2 * row + 2,
+                  gridColumn: 1,
+                }}
+                variant="flushed"
+                className="h-min"
+                value={input.minValue}
+                onChange={(nextValue) => {
+                  onChange({
+                    ...data,
+                    muxInputs: data.muxInputs.map((dInput, dI) => {
+                      if (dI === i) {
+                        return {
+                          input: input.input,
+                          minValue: nextValue,
+                        };
+                      }
+                      return dInput;
+                    }),
+                  });
+                }}
+              />
+              <div
+                style={{
+                  gridRow: 2 * row + 3,
+                  gridColumn: 1,
+                }}
+                className="h-10 w-[2px] bg-primary-10 place-self-end mr-regular"
+              ></div>
+              <SimpleSelect
+                trigger={{
+                  style: {
+                    gridRow: 2 * row + 3,
+                    gridColumn: 2,
+                  },
+                  className: "h-min place-self-center",
+                }}
+                items={inputs}
+                selectedId={
+                  inputs.find((v) => v.value.name === input.input)?.value.id ||
+                  ""
+                }
+                onSelect={({ name }) => {
+                  onChange({
+                    ...data,
+                    muxInputs: data.muxInputs.map((dInput, dI) => {
+                      if (dI === i) {
+                        return {
+                          input: name,
+                          minValue: input.minValue,
+                        };
+                      }
+                      return dInput;
+                    }),
+                  });
+                }}
+              />
+            </React.Fragment>
+          );
+        })}
+      </div>
 
-      <div className=""></div>
+      <Button
+        colorScheme="neutral"
+        onClick={() =>
+          onChange({
+            ...data,
+            muxInputs: data.muxInputs.concat([
+              {
+                input: "",
+                minValue:
+                  (sortedInputs[sortedInputs.length - 1]?.minValue || 0) + 1,
+              },
+            ]),
+          })
+        }
+      >
+        Add output
+      </Button>
     </WithCommonProperties>
   );
 }
@@ -150,13 +222,13 @@ export const MultiplexerInfo: VariableInfo<MultiplexerData> = {
     ...DEFAULT_COMMON_DATA,
     name: "multiplexer",
     type: VariableType.Multiplexer,
-    selectorInput: "",
+    selector: "",
     defaultInput: "",
     muxInputs: [],
   },
   hasOutput: true,
   getInputs: (multiplexer) => ({
-    selector: [multiplexer.selectorInput],
+    selector: singleToList(multiplexer.selector),
     inputs: [
       multiplexer.defaultInput,
       ...multiplexer.muxInputs.map((tr) => tr.input),

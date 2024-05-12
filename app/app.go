@@ -53,15 +53,20 @@ type BodyData struct {
 }
 
 func (a *App) LoadFile() shared.Model {
+	fmt.Println("LOADING FILE")
 	path, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{})
 
 	if err != nil {
+		fmt.Println("Error ocurred during open dialog")
+		fmt.Println(err)
 		return shared.NewModel()
 	}
 
 	fileContents, err := os.ReadFile(path)
 
 	if err != nil {
+		fmt.Println("Error ocurred during read file")
+		fmt.Println(err)
 		return shared.NewModel()
 	}
 
@@ -70,12 +75,16 @@ func (a *App) LoadFile() shared.Model {
 	err = json.Unmarshal(fileContents, &data)
 
 	if err != nil {
+		fmt.Println("Error ocurred during unmarshal")
+		fmt.Println(err)
 		return shared.NewModel()
 	}
 
 	model, err := serialize.DeserializeModel(data)
 
 	if err != nil {
+		fmt.Println("Error ocurred during deserialize")
+		fmt.Println(err)
 		return shared.NewModel()
 	}
 
@@ -145,8 +154,6 @@ func (a *App) OnModelUpdated(body json.RawMessage) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("BODY", string(body))
-	fmt.Println("COMPILED", a.Model)
 	a.Model = model
 }
 

@@ -79,18 +79,13 @@ export function Menu() {
 
   const onLoad = async () => {
     const model = await LoadFile();
+
     const compiledVariables: AnyVariableData[] = [];
 
     let modelHasPositions = true;
     for (const v of model.variables) {
-      const result = SafeAnyVariableSchema.safeParse(v);
-      if (!result.success) {
-        console.error(v, result.error);
-        await ClearModel();
-        return;
-      }
-      compiledVariables.push(result.data);
-      if (modelHasPositions && result.data.ui?.id === "") {
+      compiledVariables.push(v);
+      if (modelHasPositions && v.ui?.id === "") {
         modelHasPositions = false;
       }
     }
@@ -100,6 +95,7 @@ export function Menu() {
     const { nodes, edges, nodeNameToId } = variablesToNodesAndEdges(
       migratedModel.variables
     );
+
     setNodes([]);
     setEdges([]);
     setNodes(nodes);

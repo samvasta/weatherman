@@ -29,7 +29,7 @@ export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
   const nodeNameToId: Record<string, string> = {};
 
   for (const v of variables) {
-    const id = nanoid(8);
+    const id = v.ui?.id || nanoid(8);
     nodeNameToId[v.name] = id;
     nodes.push({
       id,

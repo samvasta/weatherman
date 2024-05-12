@@ -7,7 +7,7 @@ toolchain go1.22.1
 require (
 	github.com/google/uuid v1.6.0
 	github.com/mitchellh/mapstructure v1.5.0
-	github.com/wailsapp/wails/v2 v2.8.2
+	github.com/wailsapp/wails/v2 v2.8.0
 )
 
 require (

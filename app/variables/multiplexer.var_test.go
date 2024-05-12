@@ -15,8 +15,8 @@ func TestNewMultiplexer(t *testing.T) {
 		t.Errorf("Expected result, got %v", variable.Name)
 	}
 
-	if variable.SelectorInput != "a" {
-		t.Errorf("Expected a, got %v", variable.SelectorInput)
+	if variable.Selector != "a" {
+		t.Errorf("Expected a, got %v", variable.Selector)
 	}
 
 	if variable.DefaultInput != "b" {

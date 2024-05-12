@@ -13,6 +13,7 @@ import { PowerInfo } from "./impl/power";
 import { ProductInfo } from "./impl/product";
 import { SumInfo } from "./impl/sum";
 import { TimerInfo } from "./impl/timer";
+import { MultiplexerInfo } from "./impl/multiplexer";
 
 export const AnyVariableSchema = z.union([
   CollectorInfo.schema,
@@ -21,6 +22,7 @@ export const AnyVariableSchema = z.union([
   InvertInfo.schema,
   LessThanInfo.schema,
   LessOrEqualInfo.schema,
+  MultiplexerInfo.schema,
   PowerInfo.schema,
   ProductInfo.schema,
   SumInfo.schema,
@@ -36,6 +38,7 @@ export const SafeAnyVariableSchema = SafeUiSchema.pipe(
     InvertInfo.schema,
     LessThanInfo.schema,
     LessOrEqualInfo.schema,
+    MultiplexerInfo.schema,
     PowerInfo.schema,
     ProductInfo.schema,
     SumInfo.schema,
@@ -67,6 +70,7 @@ export const AllVariables: {
   [VariableType.Invert]: InvertInfo,
   [VariableType.LessThan]: LessThanInfo,
   [VariableType.LessOrEqual]: LessOrEqualInfo,
+  [VariableType.Multiplexer]: MultiplexerInfo,
   [VariableType.Power]: PowerInfo,
   [VariableType.Product]: ProductInfo,
   [VariableType.Sum]: SumInfo,

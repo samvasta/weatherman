@@ -1,6 +1,8 @@
 package variables
 
-import "sort"
+import (
+	"sort"
+)
 
 const (
 	T_Timer string = "timer"
@@ -21,12 +23,7 @@ type Timer struct {
 }
 
 func NewTimer(name string, defaultInput string, timeRanges []TimeRange) Timer {
-	sortedTimeRanges := make([]TimeRange, len(timeRanges))
-	copy(sortedTimeRanges, timeRanges)
-	sort.Slice(sortedTimeRanges, func(i, j int) bool {
-		return sortedTimeRanges[i].StartStep < sortedTimeRanges[j].StartStep
-	})
-	return Timer{
+	timer := Timer{
 		VariableInfo: VariableInfo{
 			Name: name,
 			Type: T_Timer,
@@ -35,12 +32,22 @@ func NewTimer(name string, defaultInput string, timeRanges []TimeRange) Timer {
 		DefaultInput: defaultInput,
 		TimeRanges:   timeRanges,
 
-		sortedTimeRanges: sortedTimeRanges,
+		sortedTimeRanges: make([]TimeRange, 0),
 	}
+	timer.Prepare()
+	return timer
+}
+
+func (v *Timer) Prepare() {
+	v.sortedTimeRanges = make([]TimeRange, len(v.TimeRanges))
+	copy(v.sortedTimeRanges, v.TimeRanges)
+	sort.Slice(v.sortedTimeRanges, func(i, j int) bool {
+		return v.sortedTimeRanges[i].StartStep > v.sortedTimeRanges[j].StartStep
+	})
 }
 
 func (v Timer) Compute(inputs map[string]float64, step int) float64 {
-	for _, timeRange := range v.TimeRanges {
+	for _, timeRange := range v.sortedTimeRanges {
 		if step >= timeRange.StartStep {
 			return inputs[timeRange.Input]
 		}
