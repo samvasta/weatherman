@@ -123,6 +123,8 @@ func (a *App) SaveFileAs() error {
 
 	a.CurrentFilePath = path
 
+	runtime.WindowSetTitle(a.ctx, path)
+
 	return nil
 }
 
@@ -143,6 +145,8 @@ func (a *App) SaveFile() error {
 	if err != nil {
 		return err
 	}
+
+	runtime.WindowSetTitle(a.ctx, a.CurrentFilePath)
 
 	return nil
 }

@@ -25,9 +25,9 @@ export function NodePaletteToolbar() {
   };
 
   return (
-    <div className="max-w-full">
-      <div className="flex w-full flex-col gap-2 p-4">
-        <div className="flex flex-col">
+    <div className="max-w-full select-none">
+      <div className="flex w-full flex-col gap-2 p-4 select-none">
+        <div className="flex flex-col select-none">
           <Heading size="lg">Inputs</Heading>
           <div className="flex grow flex-col gap-2">
             {Object.values(DistributionType).map((distributionType) => {
@@ -56,7 +56,7 @@ export function NodePaletteToolbar() {
             })}
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col select-none">
           <Heading size="lg">Operators</Heading>
           <div className="flex grow flex-col gap-2">
             {Object.values(VariableType)
@@ -88,7 +88,7 @@ export function NodePaletteToolbar() {
               })}
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col select-none">
           <Heading size="lg">Results</Heading>
           <VariableNodePreview
             key="collector"
