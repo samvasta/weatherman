@@ -14,6 +14,7 @@ import { ProductInfo } from "./impl/product";
 import { SumInfo } from "./impl/sum";
 import { TimerInfo } from "./impl/timer";
 import { MultiplexerInfo } from "./impl/multiplexer";
+import { RegionInfo } from "./impl/region";
 
 export const AnyVariableSchema = z.union([
   CollectorInfo.schema,
@@ -25,27 +26,11 @@ export const AnyVariableSchema = z.union([
   MultiplexerInfo.schema,
   PowerInfo.schema,
   ProductInfo.schema,
+  RegionInfo.schema,
   SumInfo.schema,
   TimerInfo.schema,
   IVarInfo.schema,
 ]);
-
-export const SafeAnyVariableSchema = SafeUiSchema.pipe(
-  z.union([
-    CollectorInfo.schema,
-    DivideInfo.schema,
-    EqualsInfo.schema,
-    InvertInfo.schema,
-    LessThanInfo.schema,
-    LessOrEqualInfo.schema,
-    MultiplexerInfo.schema,
-    PowerInfo.schema,
-    ProductInfo.schema,
-    SumInfo.schema,
-    TimerInfo.schema,
-    IVarInfo.schema,
-  ])
-);
 
 export type AnyVariableData = WithNonNullKey<
   z.TypeOf<
@@ -73,6 +58,7 @@ export const AllVariables: {
   [VariableType.Multiplexer]: MultiplexerInfo,
   [VariableType.Power]: PowerInfo,
   [VariableType.Product]: ProductInfo,
+  [VariableType.Region]: RegionInfo,
   [VariableType.Sum]: SumInfo,
   [VariableType.Timer]: TimerInfo,
   [VariableType.IVar]: IVarInfo,

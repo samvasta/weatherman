@@ -31,6 +31,7 @@ import {
   useSimulationResultForNode,
 } from "./atoms";
 import { OUTPUT_PORT_NAME, PORT_NAME_SEPARATOR } from "./useNodesAndEdges";
+import { VariableType } from "@/types/variables/common";
 
 export const VariableNode = React.memo(
   ({ id, data, selected }: NodeProps<AnyVariableData>) => {
@@ -60,6 +61,10 @@ export const VariableNode = React.memo(
 
     const results = useSimulationResultForNode(data.name);
     const isSimulated = useAtomValue(isSimulatedAtom);
+
+    if (data.type === VariableType.Region) {
+      return <Content data={data} />;
+    }
 
     return (
       <div

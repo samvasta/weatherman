@@ -286,14 +286,13 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
             id: id,
           },
         },
+        zIndex: data.type === VariableType.Region ? data.layer : 20,
       };
 
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance, isSimulated]
   );
-
-  console.log(nodes, edges);
 
   return (
     <ReactFlow

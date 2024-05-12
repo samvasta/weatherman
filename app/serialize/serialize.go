@@ -110,6 +110,10 @@ func DeserializeVariable(v map[string]interface{}) (variables.Variable, error) {
 		var product variables.Product
 		err := mapstructure.Decode(v, &product)
 		return product, err
+	case variables.T_Region:
+		var region variables.Region
+		err := mapstructure.Decode(v, &region)
+		return region, err
 	case variables.T_Sum:
 		var sum variables.Sum
 		err := mapstructure.Decode(v, &sum)

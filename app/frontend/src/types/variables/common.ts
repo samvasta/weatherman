@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { Node } from "reactflow";
+import { AnyVariableData } from "./allVariables";
 
 export enum VariableType {
   Collector = "collector",
@@ -11,6 +13,7 @@ export enum VariableType {
   Multiplexer = "multiplexer",
   Power = "power",
   Product = "product",
+  Region = "region",
   Sum = "sum",
   Timer = "timer",
 }
@@ -79,7 +82,8 @@ export type PortDef = {
 };
 
 export type OnUpdateVariable<T extends CommonVariableInfoData> = (
-  nextData: Partial<T>
+  nextData: Partial<T>,
+  otherProps?: Partial<Omit<Node<AnyVariableData>, "data">>
 ) => void;
 
 export type VariablePropertiesProps<T extends CommonVariableInfoData> = {

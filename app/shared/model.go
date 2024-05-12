@@ -50,7 +50,9 @@ func GetVariablesMap(allVariables []variables.Variable) map[string]variables.Var
 	vars := make(map[string]variables.Variable)
 
 	for _, v := range allVariables {
-		vars[v.GetInfo().Name] = v
+		if v.GetInfo().Type != variables.T_Region {
+			vars[v.GetInfo().Name] = v
+		}
 	}
 
 	return vars

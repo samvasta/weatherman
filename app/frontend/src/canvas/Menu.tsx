@@ -56,7 +56,6 @@ import {
 import {
   AnyVariableData,
   AnyVariableSchema,
-  SafeAnyVariableSchema,
 } from "@/types/variables/allVariables";
 import { SimulationResult } from "@/types/results";
 import { migrate } from "@/serialize/migrate";
