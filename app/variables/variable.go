@@ -21,7 +21,7 @@ type VariableInfo struct {
 
 type Variable interface {
 	GetInfo() VariableInfo
-	Compute(inputs map[string]float64) float64
+	Compute(inputs map[string]float64, step int) float64
 	GetInputs() []string
 }
 
@@ -45,7 +45,7 @@ func (v IVar) GetInfo() VariableInfo {
 	return v.VariableInfo
 }
 
-func (v IVar) Compute(inputs map[string]float64) float64 {
+func (v IVar) Compute(inputs map[string]float64, step int) float64 {
 	val, ok := inputs[v.Name]
 
 	if ok {

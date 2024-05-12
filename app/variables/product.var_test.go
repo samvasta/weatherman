@@ -32,7 +32,7 @@ func TestProduct(t *testing.T) {
 
 	variable := NewProduct("result", []string{"a", "b"})
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 40 {
 		t.Errorf("Expected 40, got %v", result)
@@ -47,7 +47,7 @@ func TestProduct2(t *testing.T) {
 
 	variable := NewProduct("result", []string{"a", "b"})
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 32.1 {
 		t.Errorf("Expected 32.1, got %v", result)

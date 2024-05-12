@@ -21,7 +21,7 @@ func NewInvert(name string, input string) Invert {
 	}
 }
 
-func (v Invert) Compute(inputs map[string]float64) float64 {
+func (v Invert) Compute(inputs map[string]float64, step int) float64 {
 	return -1 * inputs[v.Input]
 }
 

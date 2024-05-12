@@ -31,7 +31,7 @@ func TestPower(t *testing.T) {
 	}
 	variable := NewPower("result", "base", "exp")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 100 {
 		t.Errorf("Expected 100, got %v", result)
@@ -46,7 +46,7 @@ func TestPower2(t *testing.T) {
 
 	variable := NewPower("result", "base", "exp")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 0.01 {
 		t.Errorf("Expected 0.01, got %v", result)

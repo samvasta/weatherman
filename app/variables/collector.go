@@ -28,7 +28,7 @@ func (v Collector) GetInfo() VariableInfo {
 	return info
 }
 
-func (v Collector) Compute(inputs map[string]float64) float64 {
+func (v Collector) Compute(inputs map[string]float64, step int) float64 {
 	return inputs[v.Input]
 }
 

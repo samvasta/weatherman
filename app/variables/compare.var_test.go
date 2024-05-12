@@ -42,7 +42,7 @@ func TestEquals(t *testing.T) {
 
 	variable := NewEquals("result", "testA", "testB", "true", "false")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 0 {
 		t.Errorf("Expected 0, got %v", result)
@@ -50,7 +50,7 @@ func TestEquals(t *testing.T) {
 
 	inputs["testB"] = inputs["testA"]
 
-	result = variable.Compute(inputs)
+	result = variable.Compute(inputs, 0)
 
 	if result != 1 {
 		t.Errorf("Expected 1, got %v", result)
@@ -95,7 +95,7 @@ func TestLessThan(t *testing.T) {
 
 	variable := NewLessThan("result", "testA", "testB", "true", "false")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 0 {
 		t.Errorf("Expected 0, got %v", result)
@@ -103,7 +103,7 @@ func TestLessThan(t *testing.T) {
 
 	inputs["testB"] = inputs["testA"]
 
-	result = variable.Compute(inputs)
+	result = variable.Compute(inputs, 0)
 
 	if result != 0 {
 		t.Errorf("Expected 0, got %v", result)
@@ -111,7 +111,7 @@ func TestLessThan(t *testing.T) {
 
 	inputs["testB"] = inputs["testA"] + 1
 
-	result = variable.Compute(inputs)
+	result = variable.Compute(inputs, 0)
 
 	if result != 1 {
 		t.Errorf("Expected 1, got %v", result)
@@ -156,7 +156,7 @@ func TestLessOrEqual(t *testing.T) {
 
 	variable := NewLessOrEqual("result", "testA", "testB", "true", "false")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 0 {
 		t.Errorf("Expected 0, got %v", result)
@@ -164,7 +164,7 @@ func TestLessOrEqual(t *testing.T) {
 
 	inputs["testB"] = inputs["testA"]
 
-	result = variable.Compute(inputs)
+	result = variable.Compute(inputs, 0)
 
 	if result != 1 {
 		t.Errorf("Expected 1, got %v", result)
@@ -172,7 +172,7 @@ func TestLessOrEqual(t *testing.T) {
 
 	inputs["testB"] = inputs["testA"] + 1
 
-	result = variable.Compute(inputs)
+	result = variable.Compute(inputs, 0)
 
 	if result != 1 {
 		t.Errorf("Expected 1, got %v", result)

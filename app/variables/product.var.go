@@ -20,7 +20,7 @@ func NewProduct(name string, inputs []string) Product {
 	}
 }
 
-func (v Product) Compute(inputs map[string]float64) float64 {
+func (v Product) Compute(inputs map[string]float64, step int) float64 {
 	sum := 1.0
 
 	for _, dep := range v.Inputs {

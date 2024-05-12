@@ -20,7 +20,7 @@ func NewSum(name string, inputs []string) Sum {
 	}
 }
 
-func (v Sum) Compute(inputs map[string]float64) float64 {
+func (v Sum) Compute(inputs map[string]float64, step int) float64 {
 	sum := 0.0
 
 	for _, dep := range v.Inputs {

@@ -32,7 +32,7 @@ func TestSum(t *testing.T) {
 
 	variable := NewSum("result", []string{"a", "b"})
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 18.5 {
 		t.Errorf("Expected 18.5, got %v", result)
@@ -47,7 +47,7 @@ func TestSum2(t *testing.T) {
 
 	variable := NewSum("result", []string{"a", "b"})
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 321.1 {
 		t.Errorf("Expected 321.1, got %v", result)

@@ -38,7 +38,7 @@ func SimulateOneStep(prevState *ModelState) ModelState {
 	}
 
 	for _, v := range prevState.sortedVariables {
-		result := v.Compute(inputs)
+		result := v.Compute(inputs, prevState.Step+1)
 		inputs[v.GetInfo().Name] = result
 
 		if _, ok := collectorValues[v.GetInfo().Name]; ok {

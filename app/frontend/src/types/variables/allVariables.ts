@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-import { type VariableInfo, VariableType, SafeUiSchema } from "./common";
-import { CollectorData, CollectorInfo } from "./impl/collector";
+import { WithNonNullKey } from "@/utils/types";
+import { SafeUiSchema, VariableType, type VariableInfo } from "./common";
+import { CollectorInfo } from "./impl/collector";
 import { DivideInfo } from "./impl/divide";
 import { EqualsInfo } from "./impl/equals";
 import { InvertInfo } from "./impl/invert";
@@ -11,7 +12,7 @@ import { LessThanInfo } from "./impl/lessThan";
 import { PowerInfo } from "./impl/power";
 import { ProductInfo } from "./impl/product";
 import { SumInfo } from "./impl/sum";
-import { WithNonNullKey } from "@/utils/types";
+import { TimerInfo } from "./impl/timer";
 
 export const AnyVariableSchema = z.union([
   CollectorInfo.schema,
@@ -23,6 +24,7 @@ export const AnyVariableSchema = z.union([
   PowerInfo.schema,
   ProductInfo.schema,
   SumInfo.schema,
+  TimerInfo.schema,
   IVarInfo.schema,
 ]);
 
@@ -37,6 +39,7 @@ export const SafeAnyVariableSchema = SafeUiSchema.pipe(
     PowerInfo.schema,
     ProductInfo.schema,
     SumInfo.schema,
+    TimerInfo.schema,
     IVarInfo.schema,
   ])
 );
@@ -67,5 +70,6 @@ export const AllVariables: {
   [VariableType.Power]: PowerInfo,
   [VariableType.Product]: ProductInfo,
   [VariableType.Sum]: SumInfo,
+  [VariableType.Timer]: TimerInfo,
   [VariableType.IVar]: IVarInfo,
 };

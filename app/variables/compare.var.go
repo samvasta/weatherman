@@ -31,7 +31,7 @@ func NewEquals(name string, testA, testB, trueCase, falseCase string) Equals {
 	}
 }
 
-func (v Equals) Compute(inputs map[string]float64) float64 {
+func (v Equals) Compute(inputs map[string]float64, step int) float64 {
 	if inputs[v.TestA] == inputs[v.TestB] {
 		return inputs[v.True]
 	}
@@ -73,7 +73,7 @@ func NewLessThan(name string, testA, testB, trueCase, falseCase string) LessThan
 	}
 }
 
-func (v LessThan) Compute(inputs map[string]float64) float64 {
+func (v LessThan) Compute(inputs map[string]float64, step int) float64 {
 	if inputs[v.TestA] < inputs[v.TestB] {
 		return inputs[v.True]
 	}
@@ -115,7 +115,7 @@ func NewLessOrEqual(name string, testA, testB, trueCase, falseCase string) LessO
 	}
 }
 
-func (v LessOrEqual) Compute(inputs map[string]float64) float64 {
+func (v LessOrEqual) Compute(inputs map[string]float64, step int) float64 {
 	if inputs[v.TestA] <= inputs[v.TestB] {
 		return inputs[v.True]
 	}

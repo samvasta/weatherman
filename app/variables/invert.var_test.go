@@ -28,7 +28,7 @@ func TestInvert(t *testing.T) {
 
 	variable := NewInvert("result", "source")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != -10 {
 		t.Errorf("Expected -10, got %v", result)
@@ -42,7 +42,7 @@ func TestInvert2(t *testing.T) {
 
 	variable := NewInvert("result", "source")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 10 {
 		t.Errorf("Expected -10, got %v", result)

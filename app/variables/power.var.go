@@ -24,7 +24,7 @@ func NewPower(name string, base string, exponent string) Power {
 	}
 }
 
-func (v Power) Compute(inputs map[string]float64) float64 {
+func (v Power) Compute(inputs map[string]float64, step int) float64 {
 	return math.Pow(inputs[v.Base], inputs[v.Exponent])
 }
 

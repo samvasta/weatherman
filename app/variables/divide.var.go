@@ -22,7 +22,7 @@ func NewDivide(name string, dividend string, divisor string) Divide {
 	}
 }
 
-func (v Divide) Compute(inputs map[string]float64) float64 {
+func (v Divide) Compute(inputs map[string]float64, step int) float64 {
 	return inputs[v.Dividend] / inputs[v.Divisor]
 }
 

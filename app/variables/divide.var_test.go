@@ -32,7 +32,7 @@ func TestDivide(t *testing.T) {
 
 	variable := NewDivide("result", "dividend", "divisor")
 
-	result := variable.Compute(inputs)
+	result := variable.Compute(inputs, 0)
 
 	if result != 5 {
 		t.Errorf("Expected 5, got %v", result)

@@ -8,9 +8,11 @@ export enum VariableType {
   IVar = "ivar",
   LessThan = "less",
   LessOrEqual = "lessOrEqual",
+  Multiplexer = "multiplexer",
   Power = "power",
   Product = "product",
   Sum = "sum",
+  Timer = "timer",
 }
 
 const BaseUISchema = z.object({
