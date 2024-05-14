@@ -1,33 +1,35 @@
 # .github/workflows/release.yaml
 
-on: release
+on:
+  release:
+    types: [published]
 name: Build Release
 jobs:
   release-linux-amd64:
     name: release linux/amd64
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@master
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - uses: pnpm/action-setup@v4
+        if: success()
         name: Install pnpm
         with:
           version: 8
           run_install: false
 
-      - name: Install dependencies
+      - name: JS Install & Bundle
+        if: success()
         working-directory: frontend
-        run: pnpm install
-
-      - name: Build JS bundle
-        working-directory: frontend
-        run: pnpm run build
+        run: pnpm install && pnpm run build
 
       - name: compile and release
+        if: success()
         uses: ngs/go-release.action@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
