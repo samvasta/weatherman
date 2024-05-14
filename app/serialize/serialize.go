@@ -37,11 +37,13 @@ func ReadModelFromFile(path string) (*shared.Model, error) {
 	return DeserializeModel(bytes)
 }
 
+type SerializedModel struct {
+	shared.Model
+	AllVariables [](map[string]interface{}) `json:"variables"`
+}
+
 func DeserializeModel(bytes []byte) (*shared.Model, error) {
-	var m struct {
-		shared.Model
-		AllVariables [](map[string]interface{}) `json:"variables"`
-	}
+	var m SerializedModel
 	err := json.Unmarshal(bytes, &m)
 
 	model := shared.NewModel()
@@ -57,7 +59,6 @@ func DeserializeModel(bytes []byte) (*shared.Model, error) {
 
 	model.Steps = m.Steps
 	model.Iterations = m.Iterations
-	model.Meta = m.Meta
 
 	return &model, err
 }

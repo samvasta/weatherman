@@ -34,6 +34,7 @@ import { useSetAtom } from "jotai";
 import { setCompiledModelAtom } from "@/canvas/atoms";
 import { useOnUpdateNode } from "@/canvas/useOnUpdateNode";
 import { SimpleSelect } from "@/components/primitives/select/SimpleSelect";
+import { Txt } from "@/components/primitives/text/Text";
 
 const RegionSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Region).default(VariableType.Region),
@@ -158,6 +159,22 @@ export function RegionProperties({
           label: `Layer ${layer}`,
           value: { id: layer },
         }))}
+        renderItem={(item) => {
+          return (
+            <div className="flex gap-xtight items-center">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{
+                  backgroundColor:
+                    layerToSwatch[
+                      Number(item.id) as keyof typeof layerToSwatch
+                    ],
+                }}
+              />
+              <Txt>Layer {item.id}</Txt>
+            </div>
+          );
+        }}
         selectedId={data.layer.toString()}
         onSelect={({ id }) => {
           onChange(

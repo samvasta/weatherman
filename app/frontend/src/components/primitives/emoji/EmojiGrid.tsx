@@ -50,7 +50,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridListProps>((ctx, ref) => (
       ...ctx.style,
       gridTemplateColumns: `repeat(${EMOJI_COLS}, 1fr)`,
     }}
-    data-testid={ctx["data-test-id"]}
+    data-testid={(ctx as any)["data-test-id"]}
     ref={ref}
   >
     {ctx.children}
