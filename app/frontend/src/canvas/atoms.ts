@@ -6,8 +6,14 @@ import { type Model } from "@/types/model";
 import { type CollectorStats, type SimulationResult } from "@/types/results";
 import { AnyVariableSchema } from "@/types/variables/allVariables";
 
-import { OnModelUpdated } from "~/go/main/App";
 import { CURRENT_VERSION } from "@/serialize/migrate";
+import { nanoid } from "nanoid";
+
+import { AuthModel } from "pocketbase";
+
+export const authAtom = atom<AuthModel>(null as AuthModel);
+
+export const isLoggedInAtom = selectAtom(authAtom, (auth) => auth !== null);
 
 export const nodeNameToIdAtom = atom<Record<string, string>>({});
 export const nodeIdToNameAtom = atom<Record<string, string>>({});
@@ -56,12 +62,19 @@ export const initializeNodeNamesMapAtom = atom(
   }
 );
 
-const compiledModelAtom = atom<Model>({
-  meta: { version: CURRENT_VERSION },
+export const makeEmptyModel = (): Model => ({
+  id: "",
+  created: new Date(),
+  updated: new Date(),
+  schemaVersion: CURRENT_VERSION,
+  name: "",
   variables: [],
   steps: 50,
   iterations: 5_000,
 });
+
+const compiledModelAtom = atom<Model>(makeEmptyModel());
+
 export const getCompiledModelAtom = atom<Model>((get) =>
   get(compiledModelAtom)
 );
@@ -72,7 +85,6 @@ export const setCompiledModelAtom = atom(
     const current = get(compiledModelAtom);
     const next: Model = { ...current, ...model };
     set(compiledModelAtom, next);
-    OnModelUpdated(next);
   }
 );
 

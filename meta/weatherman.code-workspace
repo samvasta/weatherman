@@ -32,11 +32,13 @@
     "cSpell.ignoreWords": ["samvasta"],
     "cSpell.words": [
       "goccy",
+      "labstack",
       "Lucide",
       "mapstructure",
       "mitchellh",
       "outgoer",
-      "Outgoers"
+      "Outgoers",
+      "pocketbase"
     ]
   }
 }

@@ -11,7 +11,6 @@ type ModelMeta struct {
 }
 
 type Model struct {
-	Meta         ModelMeta            `json:"meta"`
 	AllVariables []variables.Variable `json:"variables"`
 	Steps        int                  `json:"steps"`
 	Iterations   int                  `json:"iterations"`
@@ -19,9 +18,6 @@ type Model struct {
 
 func NewModel() Model {
 	return Model{
-		Meta: ModelMeta{
-			Version: CURRENT_VERSION,
-		},
 		AllVariables: []variables.Variable{},
 		Steps:        50,
 		Iterations:   5_000,
