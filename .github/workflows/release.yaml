@@ -25,7 +25,7 @@ jobs:
 
       - name: JS Install & Bundle
         if: success()
-        working-directory: frontend
+        working-directory: app/frontend
         run: pnpm install && pnpm run build
 
       - name: compile and release
