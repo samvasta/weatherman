@@ -38,6 +38,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
+          workdir: app
           # 'latest', 'nightly', or a semver
           varsion: "~> v1"
           args: release --clean
