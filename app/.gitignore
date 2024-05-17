@@ -2,3 +2,4 @@ build/bin
 pb_data
 app
 tmp
+frontend_dist
