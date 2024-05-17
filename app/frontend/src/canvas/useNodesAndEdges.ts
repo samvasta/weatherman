@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { type Edge, MarkerType, type Node } from "reactflow";
+import { MarkerType, type Edge, type Node } from "reactflow";
 
 import {
   AllVariables,
@@ -40,7 +40,7 @@ export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
       height: v.type === VariableType.Region ? v.height : 300,
       type: "var",
       zIndex: v.type === VariableType.Region ? v.layer : 20,
-      draggable: v.type === VariableType.Region ? v.locked : true,
+      draggable: v.type === VariableType.Region ? !v.locked : true,
     });
   }
 
