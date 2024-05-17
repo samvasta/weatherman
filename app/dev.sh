@@ -1,0 +1,1 @@
+air & cd frontend && pnpm run dev && fg
