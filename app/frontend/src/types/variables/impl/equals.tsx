@@ -12,12 +12,12 @@ import {
 import { singleToList } from "@/utils/singleToList";
 
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
 
 const EqualsSchema = CommonVariableInfoSchema.extend({
@@ -43,7 +43,7 @@ export function EqualsNode({ data }: { data: EqualsData }) {
 export function EqualsNodePreview({ data }: { data: EqualsData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={Equal}>
-      <Heading size="md">Equals</Heading>
+      <Heading size="sm">Equals</Heading>
     </WithLeftNodeIconPreview>
   );
 }

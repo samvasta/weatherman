@@ -3,7 +3,7 @@ import React from "react";
 import { MinusIcon, PlusIcon } from "lucide-react";
 
 import { Button, IconButton } from "@/components/primitives/button/Button";
-import { Input, NumberInput } from "@/components/primitives/input/Input";
+import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { ChoiceIcon } from "@/components/icons/distributions/ChoiceIcon";
@@ -26,7 +26,7 @@ export function ChoiceDistributionPreview({ data }: { data: ChoiceData }) {
   return (
     <>
       <ChoiceIcon label="Normal" size="xl" className="text-neutral-10" />
-      <Heading size="md">Spin the wheel</Heading>
+      <Heading size="sm">Spin the wheel</Heading>
     </>
   );
 }

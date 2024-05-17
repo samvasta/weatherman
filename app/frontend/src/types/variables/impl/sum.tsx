@@ -10,24 +10,23 @@ import {
   WithLeftNodeIconPreview,
 } from "@/canvas/shared/WithLeftNodeIcon";
 
-import {
-  type CommonVariableInfoData,
-  CommonVariableInfoSchema,
-  DEFAULT_COMMON_DATA,
-  type VariableInfo,
-  type VariablePropertiesProps,
-  VariableType,
-} from "../common";
-import { useAtomValue } from "jotai";
 import { getCompiledModelAtom, nodeNameToIdAtom } from "@/canvas/atoms";
-import React from "react";
+import { OUTPUT_PORT_NAME } from "@/canvas/useNodesAndEdges";
 import {
   SelectItemData,
   SimpleSelect,
 } from "@/components/primitives/select/SimpleSelect";
-import { Connection, useStore, useStoreApi } from "reactflow";
-import { OUTPUT_PORT_NAME } from "@/canvas/useNodesAndEdges";
 import { Txt } from "@/components/primitives/text/Text";
+import { useAtomValue } from "jotai";
+import { Connection, useStore } from "reactflow";
+import {
+  CommonVariableInfoSchema,
+  DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
+  type VariableInfo,
+  type VariablePropertiesProps,
+} from "../common";
 
 const SumSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Sum).default(VariableType.Sum),
@@ -48,7 +47,7 @@ export function SumNode({ data }: { data: SumData }) {
 export function SumNodePreview({ data }: { data: SumData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={Plus}>
-      <Heading size="md">Sum</Heading>
+      <Heading size="sm">Sum</Heading>
     </WithLeftNodeIconPreview>
   );
 }

@@ -1,11 +1,13 @@
-import { z } from "zod";
 import { Node } from "reactflow";
+import { z } from "zod";
 import { AnyVariableData } from "./allVariables";
 
 export enum VariableType {
+  Ceil = "ceil",
   Collector = "collector",
   Divide = "divide",
   Equals = "equals",
+  Floor = "floor",
   Invert = "invert",
   IVar = "ivar",
   LessThan = "less",
@@ -14,6 +16,7 @@ export enum VariableType {
   Power = "power",
   Product = "product",
   Region = "region",
+  Round = "round",
   Sum = "sum",
   Timer = "timer",
 }

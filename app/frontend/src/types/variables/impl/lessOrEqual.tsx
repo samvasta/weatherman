@@ -13,12 +13,12 @@ import {
 import { singleToList } from "@/utils/singleToList";
 
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
 
 const LessOrEqualSchema = CommonVariableInfoSchema.extend({
@@ -44,7 +44,7 @@ export function LessOrEqualNode({ data }: { data: LessOrEqualData }) {
 export function LessOrEqualNodePreview({ data }: { data: LessOrEqualData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={LessOrEqualIcon}>
-      <Heading size="md">Less Than Or Equal</Heading>
+      <Heading size="sm">Less Than Or Equal</Heading>
     </WithLeftNodeIconPreview>
   );
 }

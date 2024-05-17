@@ -1,4 +1,4 @@
-import { Input, NumberInput } from "@/components/primitives/input/Input";
+import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { UniformIcon } from "@/components/icons/distributions/UniformIcon";
@@ -21,7 +21,7 @@ export function UniformDistributionPreview({ data }: { data: UniformData }) {
   return (
     <>
       <UniformIcon label="Normal" size="xl" className="text-neutral-10" />
-      <Heading size="md">Random Value</Heading>
+      <Heading size="sm">Random Value</Heading>
     </>
   );
 }

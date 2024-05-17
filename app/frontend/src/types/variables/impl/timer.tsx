@@ -10,7 +10,17 @@ import {
   WithLeftNodeIconPreview,
 } from "@/canvas/shared/WithLeftNodeIcon";
 
+import { getCompiledModelAtom } from "@/canvas/atoms";
+import { Button } from "@/components/primitives/button/Button";
+import { NumberInput } from "@/components/primitives/input/Input";
+import {
+  SelectItemData,
+  SimpleSelect,
+} from "@/components/primitives/select/SimpleSelect";
 import { Txt } from "@/components/primitives/text/Text";
+import { useAtomValue } from "jotai";
+import React from "react";
+import { useEdges } from "reactflow";
 import {
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
@@ -19,16 +29,6 @@ import {
   type VariableInfo,
   type VariablePropertiesProps,
 } from "../common";
-import { useAtomValue } from "jotai";
-import { useEdges } from "reactflow";
-import { getCompiledModelAtom } from "@/canvas/atoms";
-import React from "react";
-import {
-  SelectItemData,
-  SimpleSelect,
-} from "@/components/primitives/select/SimpleSelect";
-import { NumberInput } from "@/components/primitives/input/Input";
-import { Button } from "@/components/primitives/button/Button";
 
 const TimerSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Timer).default(VariableType.Timer),
@@ -55,7 +55,7 @@ export function TimerNode({ data }: { data: TimerData }) {
 export function TimerNodePreview({ data }: { data: TimerData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={Timer}>
-      <Heading size="md">Timer</Heading>
+      <Heading size="sm">Timer</Heading>
     </WithLeftNodeIconPreview>
   );
 }

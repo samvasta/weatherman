@@ -10,10 +10,9 @@ import {
 } from "@/types/variables/allVariables";
 import { VariableType } from "@/types/variables/common";
 import { type IVarData } from "@/types/variables/impl/ivar";
-import { useHorizontalScroll } from "@/utils/useHorizontalScroll";
 
-import { VariableNodePreview } from "../VariableNode";
 import { nanoid } from "nanoid";
+import { VariableNodePreview } from "../VariableNode";
 
 export function NodePaletteToolbar() {
   const onDragStart = (
@@ -29,7 +28,7 @@ export function NodePaletteToolbar() {
       <div className="flex w-full flex-col gap-2 p-4 select-none">
         <div className="flex flex-col select-none">
           <Heading size="lg">Inputs</Heading>
-          <div className="flex grow flex-col gap-2">
+          <div className="grid grid-cols-2 grow gap-2">
             {Object.values(DistributionType).map((distributionType) => {
               const info = AllVariables[VariableType.IVar];
 
@@ -58,17 +57,20 @@ export function NodePaletteToolbar() {
         </div>
         <div className="flex flex-col select-none">
           <Heading size="lg">Operators</Heading>
-          <div className="flex grow flex-col gap-2">
+          <div className="grid grid-cols-2 grow gap-2">
             {Object.values(VariableType)
               .filter(
                 (t) => t !== VariableType.IVar && t !== VariableType.Collector
               )
               .map((varType) => {
                 const info = AllVariables[varType];
-                const data = info.defaultConfig as AnyVariableData;
+                return info.defaultConfig as AnyVariableData;
+              })
+              .toSorted((a, b) => a.name.localeCompare(b.name))
+              .map((data) => {
                 return (
                   <VariableNodePreview
-                    key={varType}
+                    key={data.type}
                     data={data}
                     onDragStart={(event) =>
                       onDragStart(event, {

@@ -1,40 +1,24 @@
-import { ArrowDownRight, ArrowDownUp } from "lucide-react";
+import { ArrowDownRight, BoxSelectIcon } from "lucide-react";
 import { z } from "zod";
 
 import { Heading } from "@/components/primitives/text/Heading";
 
-import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
-import {
-  WithLeftNodeIcon,
-  WithLeftNodeIconPreview,
-} from "@/canvas/shared/WithLeftNodeIcon";
-import { singleToList } from "@/utils/singleToList";
+import { WithLeftNodeIconPreview } from "@/canvas/shared/WithLeftNodeIcon";
 
-import {
-  type CommonVariableInfoData,
-  CommonVariableInfoSchema,
-  DEFAULT_COMMON_DATA,
-  type VariableInfo,
-  type VariablePropertiesProps,
-  VariableType,
-} from "../common";
-import {
-  NodeResizeControl,
-  useNodes,
-  useReactFlow,
-  useUpdateNodeInternals,
-} from "reactflow";
-import { CheckboxWithLabel } from "@/components/primitives/checkbox/Checkbox";
-import { VariableNodeType } from "@/canvas/useNodesAndEdges";
-import React from "react";
-import { AnyVariableData } from "../allVariables";
-import { graphToModel } from "@/canvas/graphToModel";
-import { useSetAtom } from "jotai";
-import { setCompiledModelAtom } from "@/canvas/atoms";
 import { useOnUpdateNode } from "@/canvas/useOnUpdateNode";
+import { CheckboxWithLabel } from "@/components/primitives/checkbox/Checkbox";
 import { SimpleSelect } from "@/components/primitives/select/SimpleSelect";
 import { Txt } from "@/components/primitives/text/Text";
+import { NodeResizeControl } from "reactflow";
+import {
+  CommonVariableInfoSchema,
+  DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
+  type VariableInfo,
+  type VariablePropertiesProps,
+} from "../common";
 
 const RegionSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Region).default(VariableType.Region),
@@ -104,6 +88,7 @@ export function RegionNode({ data }: { data: RegionData }) {
           <ArrowDownRight className="text-neutral-11 w-4 h-4" />
         </NodeResizeControl>
       )}
+
       <div
         style={{
           backgroundColor: `${layerToSwatch[data.layer]}22`,
@@ -122,8 +107,8 @@ export function RegionNode({ data }: { data: RegionData }) {
 
 export function RegionNodePreview({ data }: { data: RegionData }) {
   return (
-    <WithLeftNodeIconPreview IconComponent={ArrowDownUp}>
-      <Heading size="md">Region</Heading>
+    <WithLeftNodeIconPreview IconComponent={BoxSelectIcon}>
+      <Heading size="sm">Region</Heading>
     </WithLeftNodeIconPreview>
   );
 }

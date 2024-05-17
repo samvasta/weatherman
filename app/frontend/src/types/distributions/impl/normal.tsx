@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Input, NumberInput } from "@/components/primitives/input/Input";
+import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
@@ -27,7 +27,7 @@ export function NormalDistributionPreview({ data }: { data: NormalData }) {
   return (
     <>
       <NormalIcon label="Normal" size="xl" className="text-neutral-10" />
-      <Heading size="md">Bell Curve</Heading>
+      <Heading size="sm">Bell Curve</Heading>
     </>
   );
 }

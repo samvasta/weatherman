@@ -1,4 +1,4 @@
-import { Input, NumberInput } from "@/components/primitives/input/Input";
+import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
@@ -25,7 +25,7 @@ export function LaplaceDistributionPreview({ data }: { data: LaplaceData }) {
   return (
     <>
       <NormalIcon label="Laplace" size="xl" className="text-neutral-10" />
-      <Heading size="md">Laplace</Heading>
+      <Heading size="sm">Laplace</Heading>
     </>
   );
 }

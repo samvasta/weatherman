@@ -12,12 +12,12 @@ import {
 import { singleToList } from "@/utils/singleToList";
 
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
 
 const InvertSchema = CommonVariableInfoSchema.extend({
@@ -39,7 +39,7 @@ export function InvertNode({ data }: { data: InvertData }) {
 export function InvertNodePreview({ data }: { data: InvertData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={ArrowDownUp}>
-      <Heading size="md">Invert</Heading>
+      <Heading size="sm">Invert</Heading>
     </WithLeftNodeIconPreview>
   );
 }

@@ -65,6 +65,10 @@ func DeserializeModel(bytes []byte) (*shared.Model, error) {
 
 func DeserializeVariable(v map[string]interface{}) (variables.Variable, error) {
 	switch v["type"] {
+	case variables.T_Ceil:
+		var ceil variables.Ceil
+		err := mapstructure.Decode(v, &ceil)
+		return ceil, err
 	case variables.T_Collector:
 		var collector variables.Collector
 		err := mapstructure.Decode(v, &collector)
@@ -73,6 +77,10 @@ func DeserializeVariable(v map[string]interface{}) (variables.Variable, error) {
 		var divide variables.Divide
 		err := mapstructure.Decode(v, &divide)
 		return divide, err
+	case variables.T_Floor:
+		var floor variables.Floor
+		err := mapstructure.Decode(v, &floor)
+		return floor, err
 	case variables.T_Invert:
 		var invert variables.Invert
 		err := mapstructure.Decode(v, &invert)
@@ -115,6 +123,10 @@ func DeserializeVariable(v map[string]interface{}) (variables.Variable, error) {
 		var region variables.Region
 		err := mapstructure.Decode(v, &region)
 		return region, err
+	case variables.T_Round:
+		var round variables.Round
+		err := mapstructure.Decode(v, &round)
+		return round, err
 	case variables.T_Sum:
 		var sum variables.Sum
 		err := mapstructure.Decode(v, &sum)

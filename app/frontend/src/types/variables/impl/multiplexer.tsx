@@ -11,14 +11,18 @@ import {
 } from "@/canvas/shared/WithLeftNodeIcon";
 
 import { getCompiledModelAtom } from "@/canvas/atoms";
+import { Button } from "@/components/primitives/button/Button";
+import { NumberInput } from "@/components/primitives/input/Input";
 import { Label } from "@/components/primitives/label/Label";
 import {
   SelectItemData,
   SimpleSelect,
 } from "@/components/primitives/select/SimpleSelect";
 import { Txt } from "@/components/primitives/text/Text";
+import { singleToList } from "@/utils/singleToList";
 import { useAtomValue } from "jotai";
 import React from "react";
+import { useEdges } from "reactflow";
 import {
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
@@ -27,10 +31,6 @@ import {
   type VariableInfo,
   type VariablePropertiesProps,
 } from "../common";
-import { useEdges } from "reactflow";
-import { singleToList } from "@/utils/singleToList";
-import { NumberInput } from "@/components/primitives/input/Input";
-import { Button } from "@/components/primitives/button/Button";
 
 const MultiplexerSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Multiplexer).default(VariableType.Multiplexer),
@@ -58,7 +58,7 @@ export function MultiplexerNode({ data }: { data: MultiplexerData }) {
 export function MultiplexerNodePreview({ data }: { data: MultiplexerData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={CircuitBoard}>
-      <Heading size="md">Multiplexer</Heading>
+      <Heading size="sm">Multiplexer</Heading>
     </WithLeftNodeIconPreview>
   );
 }

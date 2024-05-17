@@ -13,12 +13,12 @@ import {
 import { singleToList } from "@/utils/singleToList";
 
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
 
 const LessThanSchema = CommonVariableInfoSchema.extend({
@@ -44,7 +44,7 @@ export function LessThanNode({ data }: { data: LessThanData }) {
 export function LessThanNodePreview({ data }: { data: LessThanData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={LessThanIcon}>
-      <Heading size="md">Less Than</Heading>
+      <Heading size="sm">Less Than</Heading>
     </WithLeftNodeIconPreview>
   );
 }

@@ -5,8 +5,8 @@ import { LineChart } from "lucide-react";
 import { z } from "zod";
 
 import {
-  type SelectItemData,
   SimpleSelect,
+  type SelectItemData,
 } from "@/components/primitives/select/SimpleSelect";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
@@ -19,15 +19,15 @@ import {
 } from "@/canvas/shared/WithLeftNodeIcon";
 import { singleToList } from "@/utils/singleToList";
 
+import { getCompiledModelAtom } from "@/canvas/atoms";
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
-import { getCompiledModelAtom } from "@/canvas/atoms";
 
 const CollectorSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Collector).default(VariableType.Collector),
@@ -49,7 +49,7 @@ export function CollectorNode({ data }: { data: CollectorData }) {
 export function CollectorNodePreview({ data }: { data: CollectorData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={LineChart}>
-      <Heading size="md">Collector</Heading>
+      <Heading size="sm">Collector</Heading>
     </WithLeftNodeIconPreview>
   );
 }

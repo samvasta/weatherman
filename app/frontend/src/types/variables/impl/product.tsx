@@ -11,12 +11,12 @@ import {
 } from "@/canvas/shared/WithLeftNodeIcon";
 
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
 
 const ProductSchema = CommonVariableInfoSchema.extend({
@@ -38,7 +38,7 @@ export function ProductNode({ data }: { data: ProductData }) {
 export function ProductNodePreview({ data }: { data: ProductData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={X}>
-      <Heading size="md">Product</Heading>
+      <Heading size="sm">Product</Heading>
     </WithLeftNodeIconPreview>
   );
 }

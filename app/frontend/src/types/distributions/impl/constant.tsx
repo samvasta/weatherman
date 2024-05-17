@@ -1,4 +1,4 @@
-import { Input, NumberInput } from "@/components/primitives/input/Input";
+import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { ConstantIcon } from "@/components/icons/distributions/ConstantIcon";
@@ -19,7 +19,7 @@ export function ConstantDistributionPreview({ data }: { data: ConstantData }) {
   return (
     <>
       <ConstantIcon label="Normal" size="xl" className="text-neutral-10" />
-      <Heading size="md">Constant Value</Heading>
+      <Heading size="sm">Constant Value</Heading>
     </>
   );
 }

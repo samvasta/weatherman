@@ -12,12 +12,12 @@ import {
 import { singleToList } from "@/utils/singleToList";
 
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
 
 const PowerSchema = CommonVariableInfoSchema.extend({
@@ -40,7 +40,7 @@ export function PowerNode({ data }: { data: PowerData }) {
 export function PowerNodePreview({ data }: { data: PowerData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={Superscript}>
-      <Heading size="md">Power</Heading>
+      <Heading size="sm">Power</Heading>
     </WithLeftNodeIconPreview>
   );
 }

@@ -12,12 +12,12 @@ import {
 import { singleToList } from "@/utils/singleToList";
 
 import {
-  type CommonVariableInfoData,
   CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
+  VariableType,
+  type CommonVariableInfoData,
   type VariableInfo,
   type VariablePropertiesProps,
-  VariableType,
 } from "../common";
 
 const DivideSchema = CommonVariableInfoSchema.extend({
@@ -40,7 +40,7 @@ export function DivideNode({ data }: { data: DivideData }) {
 export function DivideNodePreview({ data }: { data: DivideData }) {
   return (
     <WithLeftNodeIconPreview IconComponent={Divide}>
-      <Heading size="md">Divide</Heading>
+      <Heading size="sm">Divide</Heading>
     </WithLeftNodeIconPreview>
   );
 }
