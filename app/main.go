@@ -18,6 +18,8 @@ import (
 	"samvasta.com/weatherman/app/serialize"
 	"samvasta.com/weatherman/app/shared"
 	"samvasta.com/weatherman/app/sim"
+
+	_ "samvasta.com/weatherman/app/migrations"
 )
 
 var (
