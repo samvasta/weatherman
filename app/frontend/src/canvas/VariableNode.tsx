@@ -4,11 +4,12 @@ import { useAtomValue } from "jotai";
 import { TrashIcon, TriangleAlertIcon } from "lucide-react";
 import {
   Handle,
-  type NodeProps,
   Position,
+  ReactFlowState,
   useEdges,
   useReactFlow,
   useStore,
+  type NodeProps,
 } from "reactflow";
 
 import { IconButton } from "@/components/primitives/button/Button";
@@ -24,6 +25,7 @@ import {
 } from "@/types/variables/allVariables";
 import { cn } from "@/utils/tailwind";
 
+import { VariableType } from "@/types/variables/common";
 import {
   isSimulatedAtom,
   nodeIdToNameAtom,
@@ -31,7 +33,10 @@ import {
   useSimulationResultForNode,
 } from "./atoms";
 import { OUTPUT_PORT_NAME, PORT_NAME_SEPARATOR } from "./useNodesAndEdges";
-import { VariableType } from "@/types/variables/common";
+
+const zoomSelector = (s: ReactFlowState) => {
+  return s.transform[2] >= 0.25;
+};
 
 export const VariableNode = React.memo(
   ({ id, data, selected }: NodeProps<AnyVariableData>) => {
@@ -40,6 +45,8 @@ export const VariableNode = React.memo(
     const { setNodes, setEdges } = useReactFlow();
 
     const addSelectedNodes = useStore((state) => state.addSelectedNodes);
+
+    const showContent = useStore(zoomSelector);
 
     const onDeleteClick = () => {
       setEdges((edges) =>
@@ -139,7 +146,7 @@ export const VariableNode = React.memo(
           })}
         </div>
         <div className="relative h-full w-full">
-          <Content data={data} />
+          {showContent && <Content data={data} />}
         </div>
         <div
           className={cn(
