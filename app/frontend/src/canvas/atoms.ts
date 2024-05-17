@@ -7,11 +7,11 @@ import { type CollectorStats, type SimulationResult } from "@/types/results";
 import { AnyVariableSchema } from "@/types/variables/allVariables";
 
 import { CURRENT_VERSION } from "@/serialize/migrate";
-import { nanoid } from "nanoid";
 
+import { getAuthModel } from "@/io/serverFns";
 import { AuthModel } from "pocketbase";
 
-export const authAtom = atom<AuthModel>(null as AuthModel);
+export const authAtom = atom<AuthModel>(getAuthModel());
 
 export const isLoggedInAtom = selectAtom(authAtom, (auth) => auth !== null);
 
