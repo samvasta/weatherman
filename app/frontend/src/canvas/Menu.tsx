@@ -209,6 +209,8 @@ export function Menu() {
               }
             >
               <MenubarLabel>Iterations</MenubarLabel>
+              <MenubarRadioItem value="1">Debug (1)</MenubarRadioItem>
+              <MenubarRadioItem value="500">Testing (500)</MenubarRadioItem>
               <MenubarRadioItem value="5000">Rough (5,000)</MenubarRadioItem>
               <MenubarRadioItem value="10000">
                 Standard (10,000)
