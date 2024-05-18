@@ -152,7 +152,7 @@ export function Menu() {
             <MenubarSeparator />
 
             <MenubarItem
-              disabled={hasErrors || !compiledModel.id}
+              disabled={!compiledModel.id}
               onSelect={() => onSave()}
             >
               Save

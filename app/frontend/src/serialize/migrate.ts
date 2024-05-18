@@ -20,10 +20,6 @@ export function migrate(input: Record<string, unknown>): Model {
       iterations: 5_000,
     };
 
-    for (const variable of output.variables as AnyVariableData[]) {
-      variable.ui.isOutputFloating = false;
-    }
-
     version = 1;
   }
 
