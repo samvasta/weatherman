@@ -1,30 +1,29 @@
 import {
   type DismissableLayerProps,
-  type FocusOutsideEvent,
-  type PointerDownOutsideEvent,
 } from "@radix-ui/react-dismissable-layer";
 
-function blockOnEscapeKeyDown(e: KeyboardEvent) {
+const blockOnEscapeKeyDown: DismissableLayerProps["onEscapeKeyDown"] = (e) => {
   e.preventDefault();
   e.stopPropagation();
-}
+};
 
-function blockOnPointerDownOutside(e: PointerDownOutsideEvent) {
-  e.preventDefault();
-  e.stopPropagation();
-}
+const blockOnPointerDownOutside: DismissableLayerProps["onPointerDownOutside"] =
+  (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
-function blockOnFocusOutside(e: FocusOutsideEvent) {
+const blockOnFocusOutside: DismissableLayerProps["onFocusOutside"] = (e) => {
   e.preventDefault();
   e.stopPropagation();
-}
+};
 
-function blockOnInteractOutside(
-  e: PointerDownOutsideEvent | FocusOutsideEvent
-) {
+const blockOnInteractOutside: DismissableLayerProps["onInteractOutside"] = (
+  e
+) => {
   e.preventDefault();
   e.stopPropagation();
-}
+};
 
 export const blockDismissEvents: DismissableLayerProps = {
   onEscapeKeyDown: blockOnEscapeKeyDown,

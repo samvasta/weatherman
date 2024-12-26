@@ -22,7 +22,7 @@ export type DialogProps = CommonDialogProps & {
   content:
     | React.ReactNode
     | ((props: { onClose: () => void }) => React.ReactNode);
-  triggerProps?: DialogPrimitive.PrimitiveButtonProps;
+  triggerProps?: DialogPrimitive.DialogTriggerProps;
 };
 
 export function Dialog(props: DialogProps) {

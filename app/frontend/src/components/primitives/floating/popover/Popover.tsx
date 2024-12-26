@@ -34,7 +34,7 @@ export type PopoverProps = VariantProps<typeof popoverVariants> & {
     | ((props: { onClose: () => void }) => React.ReactNode);
   explicitClose?: boolean;
   contentProps?: PopoverPrimitive.PopoverContentProps;
-  triggerProps?: PopoverPrimitive.PrimitiveButtonProps;
+  triggerProps?: PopoverPrimitive.PopoverTriggerProps;
   usePortal?: boolean;
 };
 
