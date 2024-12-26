@@ -33,9 +33,16 @@ var (
 
 func main() {
 	app := pocketbase.New()
+	var migrateFlag bool
+	app.RootCmd.PersistentFlags().BoolVar(
+		&migrateFlag,
+		"migrate",
+		false,
+		"Automatically run migrations",
+	)
 
 	// loosely check if it was executed using "go run"
-	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir()) || migrateFlag
 
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 		// enable auto creation of migration files when making collection changes in the Admin UI
