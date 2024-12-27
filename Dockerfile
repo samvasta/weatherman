@@ -25,7 +25,9 @@ COPY --from=build-exe /app/app /app/app
 
 VOLUME /app/pb_data
 
-EXPOSE 8080
+ENV port 8080
+
+EXPOSE ${port}
 
 # start PocketBase
-CMD ["/app/app", "serve", "--http=0.0.0.0:8080", "--migrate"]
+CMD ["/app/app", "serve", "--http=0.0.0.0:${port}", "--migrate"]
