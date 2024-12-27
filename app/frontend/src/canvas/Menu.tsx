@@ -44,7 +44,7 @@ import {
   Simulate,
   getAuthModel,
 } from "@/io/serverFns";
-import { ModelFileInfo } from "@/types/model";
+import { Model, ModelFileInfo } from "@/types/model";
 import { Dialog } from "@/components/primitives/floating/dialog/Dialog";
 import { Label } from "@/components/primitives/label/Label";
 
@@ -81,6 +81,7 @@ export function Menu() {
   const onLoad = async (modelId: string) => {
     const model = await LoadModel(modelId);
     document.title = model.name;
+    console.log(model);
 
     const compiledVariables: AnyVariableData[] = [];
 
@@ -110,6 +111,11 @@ export function Menu() {
 
   const onSave = async () => {
     setCompiledModel(await SaveModel(compiledModel.id, compiledModel));
+  };
+  const setAndSave = async (model: Partial<Model>) => {
+    setCompiledModel(
+      await SaveModel(compiledModel.id, { ...compiledModel, ...model })
+    );
   };
 
   const onClearModel = () => {
@@ -151,10 +157,7 @@ export function Menu() {
 
             <MenubarSeparator />
 
-            <MenubarItem
-              disabled={!compiledModel.id}
-              onSelect={() => onSave()}
-            >
+            <MenubarItem disabled={!compiledModel.id} onSelect={() => onSave()}>
               Save
             </MenubarItem>
             <SaveAsModal />
@@ -205,7 +208,7 @@ export function Menu() {
             <MenubarRadioGroup
               value={compiledModel.iterations.toString()}
               onValueChange={(val) =>
-                setCompiledModel({ iterations: Number(val) })
+                setAndSave({ iterations: Number(val) })
               }
             >
               <MenubarLabel>Iterations</MenubarLabel>
@@ -231,7 +234,7 @@ export function Menu() {
                 max={100}
                 step={10}
                 value={compiledModel.steps}
-                onChange={(value) => setCompiledModel({ steps: value })}
+                onChange={(value) => setAndSave({ steps: value })}
               />
             </MenubarLabel>
 

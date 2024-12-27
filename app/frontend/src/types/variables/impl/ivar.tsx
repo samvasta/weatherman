@@ -6,6 +6,7 @@ import {
   type AnyDistributionData,
   AnyDistributionSchema,
   DistributionType,
+  isAsymmetricNormal,
   isChoice,
   isConstant,
   isLaplace,
@@ -46,6 +47,7 @@ import {
   type VariablePropertiesProps,
   VariableType,
 } from "../common";
+import { AsymmetricNormalDistribution, AsymmetricNormalDistributionPreview, AsymmetricNormalDistributionProperties } from "@/types/distributions/impl/asymmetric_normal";
 
 const IVarSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.IVar).default(VariableType.IVar),
@@ -66,6 +68,9 @@ function useDistributionContent(
   }
   if (isNormal(distribution)) {
     return <NormalDistribution data={distribution} />;
+  }
+  if(isAsymmetricNormal(distribution)) {
+    return <AsymmetricNormalDistribution data={distribution} />;
   }
   if (isLaplace(distribution)) {
     return <LaplaceDistribution data={distribution} />;
@@ -100,6 +105,9 @@ function useDistributionPreviewContent(
   }
   if (isNormal(distribution)) {
     return <NormalDistributionPreview data={distribution} />;
+  }
+  if(isAsymmetricNormal(distribution)) {
+    return <AsymmetricNormalDistributionPreview data={distribution} />;
   }
   if (isLaplace(distribution)) {
     return <LaplaceDistributionPreview data={distribution} />;
@@ -138,6 +146,15 @@ function useDistributionPropertiesContent(
   if (isNormal(distribution)) {
     return (
       <NormalDistributionProperties
+        data={distribution}
+        onChange={onChange}
+        key={key}
+      />
+    );
+  }
+  if(isAsymmetricNormal(distribution)) {
+    return (
+      <AsymmetricNormalDistributionProperties
         data={distribution}
         onChange={onChange}
         key={key}

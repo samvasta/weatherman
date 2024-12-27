@@ -4,6 +4,7 @@ export enum DistributionType {
   Constant = "constant",
   Uniform = "uniform",
   Normal = "normal",
+  AsymmetricNormal = "asymmetric_normal",
   Laplace = "laplace",
   Choice = "choice",
 }
@@ -62,6 +63,60 @@ export function isNormal(
   return distribution.type === DistributionType.Normal;
 }
 
+export const AsymmetricNormalSchema = z
+  .object({
+    type: z
+      .literal(DistributionType.AsymmetricNormal)
+      .default(DistributionType.AsymmetricNormal),
+    mean: z.number().finite(),
+    stdDevLow: z
+      .number()
+      .finite()
+      .nonnegative("Standard deviation cannot be negative."),
+    stdDevHigh: z
+      .number()
+      .finite()
+      .nonnegative("Standard deviation cannot be negative."),
+    min: z.number().finite(),
+    max: z.number().finite(),
+  })
+  .superRefine(({ min, max, mean, stdDevLow, stdDevHigh }, ctx) => {
+    if (min >= max) {
+      ctx.addIssue({
+        code: "too_big",
+        maximum: max,
+        type: "number",
+        inclusive: false,
+        message: "The minimum value must be less than the maximum value",
+      });
+    }
+    if (mean <= min) {
+      ctx.addIssue({
+        code: "too_small",
+        minimum: min,
+        type: "number",
+        inclusive: false,
+        message: "The mean value must be greater than the minimum value",
+      });
+    }
+    if (mean >= max) {
+      ctx.addIssue({
+        code: "too_big",
+        maximum: max,
+        type: "number",
+        inclusive: false,
+        message: "The mean value must be less than the maximum value",
+      });
+    }
+  });
+
+export type AsymmetricNormalData = z.infer<typeof AsymmetricNormalSchema>;
+export function isAsymmetricNormal(
+  distribution: AnyDistributionData
+): distribution is AsymmetricNormalData {
+  return distribution.type === DistributionType.AsymmetricNormal;
+}
+
 export const LaplaceSchema = z.object({
   type: z.literal(DistributionType.Laplace).default(DistributionType.Laplace),
   mean: z.number().finite(),
@@ -101,6 +156,7 @@ export const AnyDistributionSchema = z.union([
   ConstantSchema,
   UniformSchema,
   NormalSchema,
+  AsymmetricNormalSchema,
   LaplaceSchema,
   ChoiceSchema,
 ]);
@@ -137,6 +193,16 @@ export function getDefaultDistributionData(
         type,
         mean: 1,
         stdDev: 0.5,
+      };
+
+    case DistributionType.AsymmetricNormal:
+      return {
+        type,
+        mean: 5,
+        stdDevLow: 1,
+        stdDevHigh: 2,
+        min: 0,
+        max: 10,
       };
 
     case DistributionType.Laplace:

@@ -158,6 +158,11 @@ func DeserializeDistribution(d map[string]interface{}) (distributions.Distributi
 		err := mapstructure.Decode(d, &normal)
 		return normal, err
 
+	case distributions.T_Asymmetric_Normal:
+		var asymNormal distributions.Asymmetric_Normal
+		err := mapstructure.Decode(d, &asymNormal)
+		return asymNormal, err
+
 	case distributions.T_Laplace:
 		var laplace distributions.Laplace
 		err := mapstructure.Decode(d, &laplace)

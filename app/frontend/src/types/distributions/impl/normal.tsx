@@ -15,7 +15,7 @@ export function NormalDistribution({ data }: { data: NormalData }) {
       <Heading size="2xl">
         {formatNumber(data.mean)}{" "}
         <Txt intent="subtle" as="span" size="md">
-          {formatNumber(data.stdDev)}
+          ±{formatNumber(data.stdDev)}
         </Txt>
       </Heading>
       <NormalIcon label="Normal" size="xl" className="text-neutral-10" />

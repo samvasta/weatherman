@@ -5,7 +5,7 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}", "./**/*.html"],
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./index.html"],
   theme: {
     colors: {
       transparent: "transparent",

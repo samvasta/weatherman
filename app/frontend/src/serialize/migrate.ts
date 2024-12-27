@@ -6,16 +6,14 @@ export const CURRENT_VERSION = 1;
 export function migrate(input: Record<string, unknown>): Model {
   let output = { ...input };
   let version = 0;
-  if ("meta" in input) {
-    version = (input.meta as { version: number }).version;
+  if ("schemaVersion" in input) {
+    version = (input as { schemaVersion: number }).schemaVersion;
   }
 
   if (version === 0) {
     output = {
       ...input,
-      meta: {
-        version: 1,
-      },
+      schemaVersion: 1,
       steps: 50,
       iterations: 5_000,
     };
