@@ -26,6 +26,7 @@ COPY --from=build-exe /app/app /app/app
 VOLUME /app/pb_data
 
 ARG PORT=8090
+ENV PORT ${PORT}
 
 EXPOSE ${PORT}
 
