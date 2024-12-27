@@ -6,6 +6,7 @@ import {
 } from "@/types/distributions";
 import {
   AllVariables,
+  VariableGroups,
   type AnyVariableData,
 } from "@/types/variables/allVariables";
 import { VariableType } from "@/types/variables/common";
@@ -13,6 +14,7 @@ import { type IVarData } from "@/types/variables/impl/ivar";
 
 import { nanoid } from "nanoid";
 import { VariableNodePreview } from "../VariableNode";
+
 
 export function NodePaletteToolbar() {
   const onDragStart = (
@@ -22,6 +24,9 @@ export function NodePaletteToolbar() {
     event.dataTransfer.setData("application/reactflow", JSON.stringify(data));
     event.dataTransfer.effectAllowed = "move";
   };
+
+
+
 
   return (
     <div className="max-w-full select-none">
@@ -55,13 +60,15 @@ export function NodePaletteToolbar() {
             })}
           </div>
         </div>
-        <div className="flex flex-col select-none">
-          <Heading size="lg">Operators</Heading>
+        {Object.entries(VariableGroups).map(([group, variables]) => {
+          if(group === "Variables") {
+            return null;
+          }
+          return (
+            <div className="flex flex-col select-none" key={group}>
+          <Heading size="lg">{group}</Heading>
           <div className="grid grid-cols-2 grow gap-2">
-            {Object.values(VariableType)
-              .filter(
-                (t) => t !== VariableType.IVar && t !== VariableType.Collector
-              )
+            {variables
               .map((varType) => {
                 const info = AllVariables[varType];
                 return info.defaultConfig as AnyVariableData;
@@ -90,30 +97,9 @@ export function NodePaletteToolbar() {
               })}
           </div>
         </div>
-        <div className="flex flex-col select-none">
-          <Heading size="lg">Results</Heading>
-          <VariableNodePreview
-            key="collector"
-            data={
-              AllVariables[VariableType.Collector]
-                .defaultConfig as AnyVariableData
-            }
-            onDragStart={(event) =>
-              onDragStart(event, {
-                ...(AllVariables[VariableType.Collector]
-                  .defaultConfig as AnyVariableData),
-                ui: {
-                  id: nanoid(8),
-                  x: 0,
-                  y: 0,
-                  isOutputFloating: false,
-                },
-              })
-            }
-            draggable
-            className="w-full select-none grow"
-          />
-        </div>
+          )
+        })}
+       
       </div>
     </div>
   );

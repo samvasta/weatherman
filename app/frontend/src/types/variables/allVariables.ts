@@ -72,3 +72,26 @@ export const AllVariables: {
   [VariableType.Timer]: TimerInfo,
   [VariableType.IVar]: IVarInfo,
 };
+
+export const VariableGroups = {
+  Variables: [VariableType.IVar],
+  Operators: [
+    VariableType.Ceil,
+    VariableType.Divide,
+    VariableType.Equals,
+    VariableType.Floor,
+    VariableType.Invert,
+    VariableType.Power,
+    VariableType.Product,
+    VariableType.Round,
+    VariableType.Sum,
+  ],
+  Logic: [
+    VariableType.LessThan,
+    VariableType.LessOrEqual,
+    VariableType.Multiplexer,
+  ],
+  Timing: [VariableType.Timer],
+  Results: [VariableType.Collector],
+  Organization: [VariableType.Region],
+} as const;
