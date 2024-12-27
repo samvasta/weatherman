@@ -26,9 +26,9 @@ COPY --from=build-exe /app/app /app/app
 VOLUME /app/pb_data
 
 ARG PORT
-ENV PORT=${PORT}
+ENV PB_PORT=${PORT}
 
 EXPOSE ${PORT}
 
 # start PocketBase
-CMD ["/app/app", "serve", "--http=0.0.0.0:$PORT", "--migrate"]
+CMD ["/app/app", "serve", "--http=0.0.0.0:$PB_PORT", "--migrate"]
