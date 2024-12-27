@@ -199,8 +199,8 @@ export function getDefaultDistributionData(
       return {
         type,
         mean: 5,
-        stdDevLow: 1,
-        stdDevHigh: 2,
+        stdDevLow: 3 / 1.285,
+        stdDevHigh: 3 / 1.285,
         min: 0,
         max: 10,
       };
