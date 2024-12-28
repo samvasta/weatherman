@@ -23,11 +23,9 @@ RUN go build
 FROM alpine:latest
 COPY --from=build-exe /app/app /app/app
 
-VOLUME /app/pb_data
-
 ARG PORT
 
-ENV DEPLOY_COMMAND="/app/app serve --http=0.0.0.0:${PORT} --migrate"
+ENV DEPLOY_COMMAND="/app/app serve --http=0.0.0.0:${PORT} --dir='/data/pb_data' --migrationsDir='/data/pb_migrations' --migrate"
 
 EXPOSE ${PORT}
 
