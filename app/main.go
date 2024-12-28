@@ -1,7 +1,6 @@
 package main
 
 import (
-	"embed"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -20,15 +19,6 @@ import (
 	"samvasta.com/weatherman/app/sim"
 
 	_ "samvasta.com/weatherman/app/migrations"
-)
-
-var (
-	//go:embed all:frontend/dist
-	dist embed.FS
-	//go:embed frontend/dist/index.html
-	indexHTML     embed.FS
-	distDirFS     = echo.MustSubFS(dist, "frontend/dist")
-	distIndexHtml = echo.MustSubFS(indexHTML, "frontend/dist")
 )
 
 func main() {
@@ -51,9 +41,6 @@ func main() {
 	})
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		e.Router.FileFS("/", "index.html", distIndexHtml)
-		e.Router.StaticFS("/", distDirFS)
-
 		e.Router.AddRoute(echo.Route{
 			Method: http.MethodPost,
 			Path:   "/simulate",

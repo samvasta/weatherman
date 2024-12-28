@@ -1,0 +1,16 @@
+.gitkeep
+.env*
+*.ico
+*.lock
+public/
+.next
+.yarn
+.pnp.*
+node_modules
+README.md
+package.json
+pnpm-lock.yaml
+schema.gqlj
+*rc.json
+next-env.d.ts
+dist/

@@ -1,0 +1,65 @@
+import React from "react";
+
+import { useAtomValue } from "jotai";
+import {
+  type ConnectionLineComponentProps,
+  ConnectionLineComponent,
+  getSmoothStepPath,
+} from "@xyflow/react";
+
+import { cn } from "@/utils/tailwind";
+
+import { isSimulatedAtom } from "./atoms";
+import { type VariableNodeType } from "./useNodesAndEdges";
+
+export const ConnectionLine: ConnectionLineComponent<VariableNodeType> = ({
+  fromX,
+  fromY,
+  toX,
+  toY,
+  fromPosition,
+  toPosition,
+  connectionStatus,
+  fromNode,
+}: ConnectionLineComponentProps<VariableNodeType>) => {
+  const [edgePath] = getSmoothStepPath({
+    sourceX: fromX,
+    sourceY: fromY,
+    sourcePosition: fromPosition,
+
+    targetX: toX,
+    targetY: toY,
+    targetPosition: toPosition,
+  });
+
+  const isSimulated = useAtomValue(isSimulatedAtom);
+
+  return (
+    <g>
+      <path
+        fill="none"
+        strokeWidth={6}
+        className={cn(
+          "animated stroke-primary-11",
+          (fromNode as VariableNodeType).data.ui.isOutputFloating &&
+            "stroke-magic-9",
+          isSimulated && "stroke-neutral-6",
+          connectionStatus === "invalid" && "stroke-danger-10"
+        )}
+        d={edgePath}
+      />
+      <circle
+        cx={toX}
+        cy={toY}
+        fill="#FCFBF8"
+        r={9}
+        strokeWidth={6}
+        className={cn(
+          "stroke-primary-11",
+          isSimulated && "stroke-neutral-6",
+          connectionStatus === "invalid" && "stroke-danger-10"
+        )}
+      />
+    </g>
+  );
+}

@@ -2,4 +2,4 @@
 
 cd app
 
-air & cd frontend && pnpm run dev && fg
+air & cd ../frontend && pnpm run dev && fg
