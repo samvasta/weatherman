@@ -177,7 +177,7 @@ export function Menu() {
               <>
                 <MenubarLabel>Recent Models</MenubarLabel>
                 {recentModels.map((model) => (
-                  <MenubarItem onSelect={() => onLoad(model.id)}>
+                  <MenubarItem onSelect={() => onLoad(model.id)} key={model.id}>
                     {model.name}
                   </MenubarItem>
                 ))}
