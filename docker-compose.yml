@@ -5,3 +5,8 @@ services:
       - VITE_API_URL=${API_URL}
   api:
     build: ./app
+    volumes:
+      - pb_data:/pb_data
+volumes:
+  pb_data:
+    name: "weatherman-data"
