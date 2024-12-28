@@ -9,5 +9,9 @@ FROM base-fe AS build-fe
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
-FROM nginx:stable-alpine
-COPY --from=build-fe /frontend/dist /usr/share/nginx/html
+FROM lipanski/docker-static-website:latest
+
+# Copy your static files
+COPY --from=build-fe /frontend/dist .
+
+CMD ["/busybox-httpd", "-f", "-v", "-p", "8091", "-c", "httpd.conf"]
