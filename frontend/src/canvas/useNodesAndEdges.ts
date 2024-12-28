@@ -1,5 +1,5 @@
-import { nanoid } from "nanoid";
 import { type Edge, MarkerType, type Node } from "@xyflow/react";
+import { nanoid } from "nanoid";
 
 import {
   AllVariables,
@@ -36,11 +36,18 @@ export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
       id,
       data: v,
       position: { x: v.ui?.x ?? 0, y: v.ui?.y ?? 0 },
-      width: v.type === VariableType.Region ? v.width : 300,
-      height: v.type === VariableType.Region ? v.height : 300,
       type: "var",
-      zIndex: v.type === VariableType.Region ? v.layer : 20,
-      draggable: v.type === VariableType.Region ? !v.locked : true,
+      ...(
+        v.type === VariableType.Region ? {
+          width: v.width,
+          height: v.height,
+          zIndex: v.layer,
+          draggable: !v.locked,
+        } : {
+          zIndex: 20,
+          draggable: true,
+        }
+      )
     });
   }
 

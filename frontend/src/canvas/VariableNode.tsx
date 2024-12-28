@@ -107,12 +107,12 @@ export const VariableNode = React.memo(
               <div
                 key={port.name}
                 className={cn(
-                  "!relative !-left-0.5 !top-0 !-translate-x-[100%] !translate-y-0 ",
+                  "!relative !left-0.5 !top-0 !-translate-x-[100%] !translate-y-0 ",
                   isSimulated && "pointer-events-none"
                 )}
               >
                 <Txt
-                  className="absolute bottom-2 right-1 w-fit leading-none"
+                  className="absolute bottom-2 right-2 w-max leading-none"
                   size="xs"
                 >
                   {selected && edge && edge.length === 1 ? (
