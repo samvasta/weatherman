@@ -9,11 +9,5 @@ RUN go build
 FROM alpine:latest
 COPY --from=base /app/app /app
 
-ARG PORT
-
-ENV DEPLOY_COMMAND="/app serve --http=0.0.0.0:${PORT} --migrate"
-
-EXPOSE ${PORT}
-
 # start PocketBase
-CMD $DEPLOY_COMMAND
+CMD ["/app", "serve", "--http=0.0.0.0:8090", "--migrate"]
