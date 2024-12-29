@@ -12,7 +12,7 @@ import {
 import { useAtomValue } from "jotai";
 import { TrashIcon, TriangleAlertIcon } from "lucide-react";
 
-import { IconButton } from "@/components/primitives/button/Button";
+import { Button, IconButton } from "@/components/primitives/button/Button";
 import { Tooltip } from "@/components/primitives/floating/tooltip/Tooltip";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
@@ -46,7 +46,7 @@ export const VariableNode = React.memo(
   ({ id, data, selected }: NodeProps<VariableNodeType>) => {
     const info = AllVariables[data.type];
 
-    const { setNodes, setEdges } = useReactFlow();
+    const { setNodes, setEdges, getNode, fitView } = useReactFlow();
 
     const addSelectedNodes = useStore((state) => state.addSelectedNodes);
 
@@ -115,27 +115,47 @@ export const VariableNode = React.memo(
                   isSimulated && "pointer-events-none"
                 )}
               >
-                <Txt
-                  className="absolute bottom-2 right-2 w-max leading-none"
-                  size="xs"
+                <Button
+                  variant="link"
+                  className="pointer-events-auto absolute bottom-2 right-2 w-max leading-none"
+                  onClick={() => {
+                    const sourceNode = getNode(edge[0]!.source);
+                    if (sourceNode) {
+                      fitView({
+                        nodes: [
+                          {
+                            id: edge[0]!.source,
+                          },
+                        ],
+                        maxZoom: 1.5,
+                        duration: 1200,
+                      });
+                    }
+                  }}
                 >
-                  {selected && edge && edge.length === 1 ? (
-                    <>
-                      <span
-                        onClick={() => {
-                          addSelectedNodes([edge[0]!.source]);
-                        }}
-                      >
-                        {nodeIdsToNames[edge[0]!.source]}
-                      </span>
-                      <Txt as="span" intent="subtle" className="scheme-neutral">
-                        ({port.name})
-                      </Txt>
-                    </>
-                  ) : targetPorts.length > 1 ? (
-                    port.name.length > 1 && port.name
-                  ) : null}
-                </Txt>
+                  <Txt size="xs">
+                    {selected && edge && edge.length === 1 ? (
+                      <>
+                        <span
+                          onClick={() => {
+                            addSelectedNodes([edge[0]!.source]);
+                          }}
+                        >
+                          {nodeIdsToNames[edge[0]!.source]}
+                        </span>
+                        <Txt
+                          as="span"
+                          intent="subtle"
+                          className="scheme-neutral"
+                        >
+                          ({port.name})
+                        </Txt>
+                      </>
+                    ) : targetPorts.length > 1 ? (
+                      port.name.length > 1 && port.name
+                    ) : null}
+                  </Txt>
+                </Button>
                 <Handle
                   id={`${id}${PORT_NAME_SEPARATOR}${port.name}`}
                   type="target"
