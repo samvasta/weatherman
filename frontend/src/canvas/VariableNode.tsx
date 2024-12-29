@@ -1,7 +1,5 @@
 import React, { type HTMLAttributes } from "react";
 
-import { useAtomValue } from "jotai";
-import { TrashIcon, TriangleAlertIcon } from "lucide-react";
 import {
   Handle,
   type NodeProps,
@@ -11,6 +9,8 @@ import {
   useReactFlow,
   useStore,
 } from "@xyflow/react";
+import { useAtomValue } from "jotai";
+import { TrashIcon, TriangleAlertIcon } from "lucide-react";
 
 import { IconButton } from "@/components/primitives/button/Button";
 import { Tooltip } from "@/components/primitives/floating/tooltip/Tooltip";
@@ -32,7 +32,11 @@ import {
   useNodeErrors,
   useSimulationResultForNode,
 } from "./atoms";
-import { OUTPUT_PORT_NAME, PORT_NAME_SEPARATOR, VariableNodeType } from "./useNodesAndEdges";
+import {
+  OUTPUT_PORT_NAME,
+  PORT_NAME_SEPARATOR,
+  VariableNodeType,
+} from "./useNodesAndEdges";
 
 const zoomSelector = (s: ReactFlowState) => {
   return s.transform[2] >= 0.25;

@@ -1,4 +1,5 @@
 import { type Model } from "@/types/model";
+import { VariableType } from "@/types/variables/common";
 
 export const CURRENT_VERSION = 1;
 
@@ -18,6 +19,25 @@ export function migrate(input: Record<string, unknown>): Model {
     };
 
     version = 1;
+  }
+
+  if (version === 1) {
+    output = {
+      ...input,
+      schemaVersion: 2,
+      variables: (input.variables as Record<string, unknown>[]).map(
+        (variable) => {
+          if (variable.type === VariableType.IVar) {
+            return {
+              ...variable,
+              inputSheetIds: [],
+            };
+          }
+          return variable;
+        }
+      ),
+    };
+    version = 2;
   }
 
   return output as Model;
