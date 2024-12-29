@@ -1,7 +1,5 @@
 import React from "react";
 
-import { useAtomValue, useSetAtom } from "jotai";
-import { X } from "lucide-react";
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -11,6 +9,8 @@ import {
   useReactFlow,
   useUpdateNodeInternals,
 } from "@xyflow/react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { X } from "lucide-react";
 
 import { IconButton } from "@/components/primitives/button/Button";
 import { Txt } from "@/components/primitives/text/Text";
@@ -19,7 +19,11 @@ import { type AnyVariableData } from "@/types/variables/allVariables";
 
 import { isSimulatedAtom, setCompiledModelAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
-import { VariableEdgeData, VariableEdgeType, type VariableNodeType } from "./useNodesAndEdges";
+import {
+  VariableEdgeData,
+  VariableEdgeType,
+  type VariableNodeType,
+} from "./useNodesAndEdges";
 
 export function VariableEdge({
   id,
@@ -84,7 +88,7 @@ export function VariableEdge({
               // if you have an interactive element, set pointer-events: all
               pointerEvents: "all",
             }}
-            className="nodrag nopan grid h-6 w-fit max-w-[500px] place-items-center rounded-none border-0 border-r-4 border-magic-9 bg-magic-3 px-1 text-lg font-medium leading-none text-magic-12"
+            className="nodrag nopan z-edgeLabel grid h-6 w-fit max-w-[500px] place-items-center rounded-none border-0 border-r-4 border-magic-9 bg-magic-3 px-1 text-lg font-medium leading-none text-magic-12"
           >
             <Txt className="max-w-full truncate">{sourceNode.data.name}</Txt>
           </div>
@@ -125,7 +129,7 @@ export function VariableEdge({
               // if you have an interactive element, set pointer-events: all
               pointerEvents: "all",
             }}
-            className="nodrag nopan"
+            className="nodrag nopan z-edgeLabel"
           >
             <IconButton
               onClick={onEdgeClick}

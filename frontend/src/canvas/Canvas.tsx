@@ -383,6 +383,9 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
           onEdgesChange(changes.filter((c) => c.type === "select"));
         }
       }}
+      defaultEdgeOptions={{
+        zIndex: 15
+      }}
       connectionLineComponent={ConnectionLine as ConnectionLineComponent}
       onConnect={onConnect}
       isValidConnection={isValidConnection}
