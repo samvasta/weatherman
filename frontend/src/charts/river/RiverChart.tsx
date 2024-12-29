@@ -85,7 +85,6 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
     (event: React.MouseEvent<SVGRectElement>) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const point = localPoint(event);
-      console.log("tooltip", point);
 
       if (!point) {
         return;

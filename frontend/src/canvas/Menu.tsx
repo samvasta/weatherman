@@ -1,9 +1,9 @@
 import React, { type ChangeEvent, useEffect } from "react";
 
+import { useNodesInitialized, useReactFlow } from "@xyflow/react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { CheckCircleIcon, PlayIcon, TriangleAlertIcon } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { useNodesInitialized, useReactFlow } from "@xyflow/react";
 
 import { Button } from "@/components/primitives/button/Button";
 import { Dialog } from "@/components/primitives/floating/dialog/Dialog";
@@ -128,6 +128,7 @@ export function Menu() {
   const onSimulate = async () => {
     setSimulationResult(null);
     setIsSimulating(true);
+    await onSave();
     const results = await Simulate(compiledModel.id);
     setSimulationResult(results);
     setIsSimulating(false);
@@ -186,7 +187,9 @@ export function Menu() {
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
-          <MenubarTrigger disabled={!isLoggedIn || !compiledModel.id}>Model</MenubarTrigger>
+          <MenubarTrigger disabled={!isLoggedIn || !compiledModel.id}>
+            Model
+          </MenubarTrigger>
           <MenubarContent>
             <MenubarItem onSelect={() => autoLayoutNodes()}>
               Auto-layout
@@ -194,7 +197,7 @@ export function Menu() {
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
-          <MenubarTrigger disabled={!isLoggedIn|| !compiledModel.id} asChild>
+          <MenubarTrigger disabled={!isLoggedIn || !compiledModel.id} asChild>
             <Button variant="link" size="sm" className="text-neutral-12">
               Simulate
               {simulationResult === null && hasErrors ? (

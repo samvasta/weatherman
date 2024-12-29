@@ -162,7 +162,8 @@ export const VariableNode = React.memo(
                   position={Position.Left}
                   className={cn(
                     "!absolute !left-0 !h-3 !w-2  !rounded-r-none !border-0 !border-cur-scheme-12 !bg-cur-scheme-12",
-                    isSimulated && "!border-cur-scheme-10 !bg-cur-scheme-10"
+                    isSimulated &&
+                      "pointer-events-none !border-cur-scheme-10 !bg-cur-scheme-10"
                   )}
                 ></Handle>
               </div>
