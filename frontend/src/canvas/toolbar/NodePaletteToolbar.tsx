@@ -2,7 +2,6 @@ import { nanoid } from "nanoid";
 
 import { Heading } from "@/components/primitives/text/Heading";
 
-import { AllDistributions } from "@/types/distributions/allDistrubutions";
 import { DistributionType } from "@/types/distributions/common";
 import {
   AllVariables,
@@ -10,9 +9,9 @@ import {
   VariableGroups,
 } from "@/types/variables/allVariables";
 import { VariableType } from "@/types/variables/common";
-import { type IVarData } from "@/types/variables/impl/ivar";
 
 import { VariableNodePreview } from "../VariableNode";
+import { AllDistributions } from "@/types/distributions/allDistributions";
 
 export function NodePaletteToolbar() {
   const onDragStart = (
@@ -42,7 +41,7 @@ export function NodePaletteToolbar() {
                   y: 0,
                   isOutputFloating: false,
                 },
-              } as IVarData;
+              } ;
               return (
                 <VariableNodePreview
                   key={distributionType}

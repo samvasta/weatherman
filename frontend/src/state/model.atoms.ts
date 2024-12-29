@@ -1,15 +1,8 @@
-import { atom, useAtomValue } from "jotai";
-import { selectAtom } from "jotai/utils";
-import { type AuthModel } from "pocketbase";
-import { type ZodIssue } from "zod";
+import { atom } from "jotai";
 
-import { getAuthModel } from "@/io/serverFns";
 import { CURRENT_VERSION } from "@/serialize/migrate";
 import { type Model } from "@/types/model";
-import { type CollectorStats, type SimulationResult } from "@/types/results";
-import { AnyVariableSchema } from "@/types/variables/allVariables";
-import { VariableType } from "@/types/variables/common";
-import { IVarData, IVarInfo } from "@/types/variables/impl/ivar";
+import { type IVarData, IVarInfo } from "@/types/variables/impl/ivar";
 
 export const nodeNameToIdAtom = atom<Record<string, string>>({});
 export const nodeIdToNameAtom = atom<Record<string, string>>({});

@@ -1,15 +1,7 @@
 import { atom, useAtomValue } from "jotai";
-import { selectAtom } from "jotai/utils";
-import { type AuthModel } from "pocketbase";
 import { type ZodIssue } from "zod";
 
-import { getAuthModel } from "@/io/serverFns";
-import { CURRENT_VERSION } from "@/serialize/migrate";
-import { type Model } from "@/types/model";
-import { type CollectorStats, type SimulationResult } from "@/types/results";
 import { AnyVariableSchema } from "@/types/variables/allVariables";
-import { VariableType } from "@/types/variables/common";
-import { IVarData, IVarInfo } from "@/types/variables/impl/ivar";
 
 import { getCompiledModelAtom } from "./model.atoms";
 

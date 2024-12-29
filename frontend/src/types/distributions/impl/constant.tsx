@@ -1,7 +1,5 @@
-import { LockIcon, LockOpenIcon } from "lucide-react";
 import { z } from "zod";
 
-import { Checkbox } from "@/components/primitives/checkbox/Checkbox";
 import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 

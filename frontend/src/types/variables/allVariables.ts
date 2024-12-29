@@ -9,7 +9,6 @@ import { DivideInfo } from "./impl/divide";
 import { EqualsInfo } from "./impl/equals";
 import { FloorInfo } from "./impl/floor";
 import { InvertInfo } from "./impl/invert";
-import { IVarInfo } from "./impl/ivar";
 import { LessOrEqualInfo } from "./impl/lessOrEqual";
 import { LessThanInfo } from "./impl/lessThan";
 import { MultiplexerInfo } from "./impl/multiplexer";
@@ -19,6 +18,7 @@ import { RegionInfo } from "./impl/region";
 import { RoundInfo } from "./impl/round";
 import { SumInfo } from "./impl/sum";
 import { TimerInfo } from "./impl/timer";
+import { IVarInfo } from "./impl/ivar";
 
 export const AnyVariableSchema = z.union([
   CeilInfo.schema,
@@ -66,8 +66,33 @@ export const AllVariables: {
   [VariableType.IVar]: IVarInfo,
 };
 
+export function getVariableInfo(variableType: VariableType) {
+  const allVariables: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [t in VariableType]: VariableInfo<any>;
+  } = {
+    [VariableType.Ceil]: CeilInfo,
+    [VariableType.Collector]: CollectorInfo,
+    [VariableType.Divide]: DivideInfo,
+    [VariableType.Equals]: EqualsInfo,
+    [VariableType.Floor]: FloorInfo,
+    [VariableType.Invert]: InvertInfo,
+    [VariableType.LessThan]: LessThanInfo,
+    [VariableType.LessOrEqual]: LessOrEqualInfo,
+    [VariableType.Multiplexer]: MultiplexerInfo,
+    [VariableType.Power]: PowerInfo,
+    [VariableType.Product]: ProductInfo,
+    [VariableType.Region]: RegionInfo,
+    [VariableType.Round]: RoundInfo,
+    [VariableType.Sum]: SumInfo,
+    [VariableType.Timer]: TimerInfo,
+    [VariableType.IVar]: IVarInfo,
+  };
+  return allVariables[variableType];
+}
+
 export const VariableGroups = {
-  Variables: [VariableType.IVar],
+  Inputs: [VariableType.IVar],
   Operators: [
     VariableType.Ceil,
     VariableType.Divide,

@@ -1,8 +1,6 @@
 import { type Node } from "@xyflow/react";
 import { z } from "zod";
 
-import { type AnyVariableData } from "./allVariables";
-
 export enum VariableType {
   Ceil = "ceil",
   Collector = "collector",
@@ -89,7 +87,7 @@ export type PortDef = {
 
 export type OnUpdateVariable<T extends CommonVariableInfoData> = (
   nextData: Partial<T>,
-  otherProps?: Partial<Omit<Node<AnyVariableData>, "data">>
+  otherProps?: Partial<Omit<Node<T>, "data">>
 ) => void;
 
 export type VariablePropertiesProps<T extends CommonVariableInfoData> = {
