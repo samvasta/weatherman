@@ -18,10 +18,16 @@ import {
   useReactFlow,
   useUpdateNodeInternals,
 } from "@xyflow/react";
-import { useAtomValue, useSetAtom } from "jotai";
-import { nanoid } from "nanoid";
 import "@xyflow/react/dist/style.css";
+import { useAtomValue, useSetAtom } from "jotai";
+import { SaveIcon, UserIcon } from "lucide-react";
+import { nanoid } from "nanoid";
 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/primitives/alert/Alert";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -38,7 +44,12 @@ import { ConnectionLine } from "./ConnectionLine";
 import { Menu } from "./Menu";
 import { VariableEdge } from "./VariableEdge";
 import { VariableNode } from "./VariableNode";
-import { isSimulatedAtom, setCompiledModelAtom } from "./atoms";
+import {
+  getCompiledModelAtom,
+  isLoggedInAtom,
+  isSimulatedAtom,
+  setCompiledModelAtom,
+} from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { Toolbar } from "./toolbar/Toolbar";
 import {
@@ -67,7 +78,7 @@ export type CanvasProps = {
 export function Canvas(props: CanvasProps) {
   return (
     <ReactFlowProvider>
-      <div className="m-0 flex h-screen w-screen flex-col overflow-hidden bg-neutral-1 font-sans text-neutral-12 scheme-neutral">
+      <div className="m-0 flex h-screen w-screen flex-col overflow-hidden bg-neutral-1 font-sans text-neutral-12 scheme-neutral relative">
         <Menu />
 
         <ResizablePanelGroup
@@ -86,9 +97,41 @@ export function Canvas(props: CanvasProps) {
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
+        <SaveBanner />
       </div>
     </ReactFlowProvider>
   );
+}
+
+function SaveBanner() {
+  const compiledModel = useAtomValue(getCompiledModelAtom);
+  const isLoggedIn = useAtomValue(isLoggedInAtom);
+
+  if (!isLoggedIn) {
+    return (
+      <Alert>
+        <UserIcon className="h-4 w-4" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          You are currently not logged in. Make sure to log in to save your
+          work!
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  if (!compiledModel.id) {
+    return (
+      <Alert>
+        <SaveIcon className="h-4 w-4" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          You are currently working in an unsaved file. Make sure to save your
+          work!
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  return null;
 }
 
 function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {

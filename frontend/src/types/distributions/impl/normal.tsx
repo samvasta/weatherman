@@ -5,6 +5,7 @@ import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
 import { NormalIcon } from "@/components/icons/distributions/NormalIcon";
+import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
 import { type NormalData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
@@ -53,25 +54,38 @@ export function NormalDistributionProperties({
   return (
     <div className="flex flex-col gap-4">
       <Heading size="xs">Mean</Heading>
-      <NumberInput
-        value={data.mean}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            mean: value,
-          })
-        }
-      />
+
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="meanSheetEditable"
+      >
+        <NumberInput
+          value={data.mean}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              mean: value,
+            })
+          }
+        />
+      </SheetEditableInput>
       <Heading size="xs">Standard Deviation</Heading>
-      <NumberInput
-        value={data.stdDev}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            stdDev: value,
-          })
-        }
-      />
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="stdDevSheetEditable"
+      >
+        <NumberInput
+          value={data.stdDev}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              stdDev: value,
+            })
+          }
+        />
+      </SheetEditableInput>
       <Heading>Range</Heading>
       <Txt intent="subtle">
         Set these numbers so that 80% of all possible scenarios will be in this

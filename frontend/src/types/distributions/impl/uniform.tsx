@@ -2,6 +2,7 @@ import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { UniformIcon } from "@/components/icons/distributions/UniformIcon";
+import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
 import { type UniformData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
@@ -36,26 +37,39 @@ export function UniformDistributionProperties({
   return (
     <div className="flex flex-col gap-4">
       <Heading size="xs">Minimum</Heading>
-      <NumberInput
-        value={data.min}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            min: value,
-          })
-        }
-      />
+
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="minSheetEditable"
+      >
+        <NumberInput
+          value={data.min}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              min: value,
+            })
+          }
+        />
+      </SheetEditableInput>
       <Heading size="xs">Maximum</Heading>
 
-      <NumberInput
-        value={data.max}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            max: value,
-          })
-        }
-      />
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="maxSheetEditable"
+      >
+        <NumberInput
+          value={data.max}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              max: value,
+            })
+          }
+        />
+      </SheetEditableInput>
     </div>
   );
 }
