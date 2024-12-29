@@ -209,7 +209,7 @@ export function getDefaultDistributionData(
         type,
         value: 1,
         sheetEditable: true,
-      } ;
+      };
 
     case DistributionType.Normal:
       return {

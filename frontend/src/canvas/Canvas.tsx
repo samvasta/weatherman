@@ -34,6 +34,12 @@ import {
   ResizablePanelGroup,
 } from "@/components/primitives/resizable/Resizable";
 
+import { isLoggedInAtom } from "@/state/auth.atoms";
+import {
+  getCompiledModelAtom,
+  setCompiledModelAtom,
+} from "@/state/model.atoms";
+import { isSimulatedAtom } from "@/state/simulationResults.atoms";
 import {
   AllVariables,
   type AnyVariableData,
@@ -44,12 +50,6 @@ import { ConnectionLine } from "./ConnectionLine";
 import { Menu } from "./Menu";
 import { VariableEdge } from "./VariableEdge";
 import { VariableNode } from "./VariableNode";
-import {
-  getCompiledModelAtom,
-  isLoggedInAtom,
-  isSimulatedAtom,
-  setCompiledModelAtom,
-} from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { Toolbar } from "./toolbar/Toolbar";
 import {
@@ -78,7 +78,7 @@ export type CanvasProps = {
 export function Canvas(props: CanvasProps) {
   return (
     <ReactFlowProvider>
-      <div className="m-0 flex h-screen w-screen flex-col overflow-hidden bg-neutral-1 font-sans text-neutral-12 scheme-neutral relative">
+      <div className="relative m-0 flex h-screen w-screen flex-col overflow-hidden bg-neutral-1 font-sans text-neutral-12 scheme-neutral">
         <Menu />
 
         <ResizablePanelGroup
@@ -384,7 +384,7 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
         }
       }}
       defaultEdgeOptions={{
-        zIndex: 15
+        zIndex: 15,
       }}
       connectionLineComponent={ConnectionLine as ConnectionLineComponent}
       onConnect={onConnect}

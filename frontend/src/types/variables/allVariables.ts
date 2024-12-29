@@ -40,9 +40,7 @@ export const AnyVariableSchema = z.union([
 ]);
 
 export type AnyVariableData = WithNonNullKey<
-  z.TypeOf<
-    Omit<typeof AnyVariableSchema, "ui"> & NodeUiData
-  >,
+  z.TypeOf<Omit<typeof AnyVariableSchema, "ui"> & NodeUiData>,
   "ui"
 >;
 

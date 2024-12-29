@@ -4,7 +4,7 @@ import PocketBase from "pocketbase";
 import { type Model, type ModelFileInfo } from "@/types/model";
 import { type SimulationResult } from "@/types/results";
 
-const pb = new PocketBase(import.meta.env.VITE_API_URL, );
+const pb = new PocketBase(import.meta.env.VITE_API_URL);
 
 export async function ListRecentModels(): Promise<ModelFileInfo[]> {
   const result = await pb.collection<ModelFileInfo>("models").getList(1, 10, {

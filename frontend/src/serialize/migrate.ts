@@ -1,7 +1,7 @@
 import { type Model } from "@/types/model";
 import { VariableType } from "@/types/variables/common";
 
-export const CURRENT_VERSION = 1;
+export const CURRENT_VERSION = 2;
 
 export function migrate(input: Record<string, unknown>): Model {
   let output = { ...input };

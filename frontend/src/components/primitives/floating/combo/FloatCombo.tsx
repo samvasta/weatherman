@@ -19,7 +19,6 @@ export function FloatCombo({
     ...restOptions,
   });
 
-   
   const content = React.useMemo(() => {
     if (typeof children === "function") {
       return children({ state: float });

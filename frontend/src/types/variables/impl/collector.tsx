@@ -11,13 +11,13 @@ import {
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
-import { getCompiledModelAtom } from "@/canvas/atoms";
 import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import {
   WithLeftNodeIcon,
   WithLeftNodeIconPreview,
 } from "@/canvas/shared/WithLeftNodeIcon";
+import { getCompiledModelAtom } from "@/state/model.atoms";
 import { singleToList } from "@/utils/singleToList";
 
 import {

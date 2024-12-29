@@ -52,9 +52,7 @@ export const Checkbox = React.forwardRef<
     {...props}
   >
     {children ?? (
-      <CheckboxPrimitive.Indicator
-        className={cn("leading-none")}
-      >
+      <CheckboxPrimitive.Indicator className={cn("leading-none")}>
         <CheckIcon className={checkboxSizeToIndicatorSize[size || "md"]} />
       </CheckboxPrimitive.Indicator>
     )}

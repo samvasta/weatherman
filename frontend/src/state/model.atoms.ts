@@ -11,10 +11,6 @@ import { AnyVariableSchema } from "@/types/variables/allVariables";
 import { VariableType } from "@/types/variables/common";
 import { IVarData, IVarInfo } from "@/types/variables/impl/ivar";
 
-export const authAtom = atom<AuthModel>(getAuthModel());
-
-export const isLoggedInAtom = selectAtom(authAtom, (auth) => auth !== null);
-
 export const nodeNameToIdAtom = atom<Record<string, string>>({});
 export const nodeIdToNameAtom = atom<Record<string, string>>({});
 
@@ -87,52 +83,6 @@ export const setCompiledModelAtom = atom(
     set(compiledModelAtom, next);
   }
 );
-
-export const compileErrorsAtom = selectAtom(compiledModelAtom, (model) => {
-  const errorMap: {
-    [name: string]: ZodIssue[];
-  } = {};
-  for (const variable of model.variables) {
-    const result = AnyVariableSchema.safeParse(variable);
-    if (!result.success) {
-      if (errorMap[variable.name]) {
-        errorMap[variable.name]!.push(...result.error.issues);
-      } else {
-        errorMap[variable.name] = [...result.error.issues];
-      }
-    }
-  }
-
-  return errorMap;
-});
-
-export const hasErrorsAtom = selectAtom(
-  compileErrorsAtom,
-  (errors) => Object.keys(errors).length > 0
-);
-
-export function useNodeErrors(nodeName: string) {
-  const errors = useAtomValue(compileErrorsAtom);
-
-  const nodeErrors = errors[nodeName] ?? [];
-
-  return { errors: nodeErrors, hasError: nodeErrors.length > 0 };
-}
-
-export const simulationResultAtom = atom<SimulationResult | null>(null);
-
-export const isSimulatedAtom = selectAtom(
-  simulationResultAtom,
-  (result) => result !== null
-);
-
-export function useSimulationResultForNode(
-  nodeName: string
-): CollectorStats | null {
-  const results = useAtomValue(simulationResultAtom);
-
-  return results?.[nodeName] ?? null;
-}
 
 export const inputSheetsAtom = atom((get) => {
   const model = get(compiledModelAtom);

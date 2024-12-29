@@ -109,14 +109,11 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 );
 Textarea.displayName = "Textarea";
 
-type NumberInputProps =  Omit<InputProps, "onChange" | "type"> & {
+type NumberInputProps = Omit<InputProps, "onChange" | "type"> & {
   onChange: (value: number) => void;
 };
 
-export const NumberInput = React.forwardRef<
-  HTMLInputElement,
-  NumberInputProps
->(
+export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   (
     {
       className,

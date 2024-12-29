@@ -13,9 +13,9 @@ import { Input } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
-import { inputSheetsAtom } from "@/canvas/atoms";
 import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
+import { inputSheetsAtom } from "@/state/model.atoms";
 import {
   type AnyDistributionData,
   AnyDistributionSchema,

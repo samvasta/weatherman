@@ -1,6 +1,6 @@
+import { type Connection, useStore } from "@xyflow/react";
 import { useAtomValue } from "jotai";
 import { Plus } from "lucide-react";
-import { type Connection, useStore } from "@xyflow/react";
 import { z } from "zod";
 
 import {
@@ -10,7 +10,6 @@ import {
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
-import { getCompiledModelAtom, nodeNameToIdAtom } from "@/canvas/atoms";
 import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import {
@@ -18,6 +17,7 @@ import {
   WithLeftNodeIconPreview,
 } from "@/canvas/shared/WithLeftNodeIcon";
 import { OUTPUT_PORT_NAME } from "@/canvas/useNodesAndEdges";
+import { getCompiledModelAtom, nodeNameToIdAtom } from "@/state/model.atoms";
 
 import {
   type CommonVariableInfoData,

@@ -8,8 +8,8 @@ import { Dialog } from "@/components/primitives/floating/dialog/Dialog";
 import { EmptyState } from "@/components/empty/EmptyState";
 
 import { RiverChart } from "@/charts/river/RiverChart";
+import { useSimulationResultForNode } from "@/state/simulationResults.atoms";
 
-import { useSimulationResultForNode } from "../atoms";
 import { type VariableNodeType } from "../useNodesAndEdges";
 
 export function NodeResultsToolbar({

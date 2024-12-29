@@ -1,16 +1,16 @@
 import React from "react";
 
-import { useSetAtom } from "jotai";
 import {
   type Node,
   useNodes,
   useReactFlow,
   useUpdateNodeInternals,
 } from "@xyflow/react";
+import { useSetAtom } from "jotai";
 
+import { setCompiledModelAtom } from "@/state/model.atoms";
 import { type AnyVariableData } from "@/types/variables/allVariables";
 
-import { setCompiledModelAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
 import { VariableEdgeType, type VariableNodeType } from "./useNodesAndEdges";
 
@@ -32,7 +32,6 @@ function replaceName(
   }
 
   if (typeof input === "object") {
-     
     return Object.entries(input)
       .map(([key, value]) =>
         key === "type"
@@ -54,7 +53,10 @@ function replaceName(
 
 export function useOnUpdateNode(data: AnyVariableData) {
   const nodes = useNodes();
-  const { setNodes, getEdges } = useReactFlow<VariableNodeType,VariableEdgeType>();
+  const { setNodes, getEdges } = useReactFlow<
+    VariableNodeType,
+    VariableEdgeType
+  >();
 
   const updateNodeInternals = useUpdateNodeInternals();
 

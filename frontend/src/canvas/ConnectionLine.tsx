@@ -1,15 +1,15 @@
 import React from "react";
 
-import { useAtomValue } from "jotai";
 import {
-  type ConnectionLineComponentProps,
   ConnectionLineComponent,
+  type ConnectionLineComponentProps,
   getSmoothStepPath,
 } from "@xyflow/react";
+import { useAtomValue } from "jotai";
 
+import { isSimulatedAtom } from "@/state/simulationResults.atoms";
 import { cn } from "@/utils/tailwind";
 
-import { isSimulatedAtom } from "./atoms";
 import { type VariableNodeType } from "./useNodesAndEdges";
 
 export const ConnectionLine: ConnectionLineComponent<VariableNodeType> = ({
@@ -62,4 +62,4 @@ export const ConnectionLine: ConnectionLineComponent<VariableNodeType> = ({
       />
     </g>
   );
-}
+};

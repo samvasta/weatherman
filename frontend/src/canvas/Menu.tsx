@@ -33,19 +33,18 @@ import {
   getAuthModel,
 } from "@/io/serverFns";
 import { migrate } from "@/serialize/migrate";
+import { authAtom, isLoggedInAtom } from "@/state/auth.atoms";
+import {
+  getCompiledModelAtom,
+  initializeNodeNamesMapAtom,
+  makeEmptyModel,
+  setCompiledModelAtom,
+} from "@/state/model.atoms";
+import { simulationResultAtom } from "@/state/simulationResults.atoms";
+import { hasErrorsAtom } from "@/state/validation.atoms";
 import { type Model, type ModelFileInfo } from "@/types/model";
 import { type AnyVariableData } from "@/types/variables/allVariables";
 
-import {
-  authAtom,
-  getCompiledModelAtom,
-  hasErrorsAtom,
-  initializeNodeNamesMapAtom,
-  isLoggedInAtom,
-  makeEmptyModel,
-  setCompiledModelAtom,
-  simulationResultAtom,
-} from "./atoms";
 import useLayoutNodes from "./useLayoutNodes";
 import { variablesToNodesAndEdges } from "./useNodesAndEdges";
 

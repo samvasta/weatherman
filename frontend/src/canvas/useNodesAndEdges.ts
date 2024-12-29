@@ -37,17 +37,17 @@ export function variablesToNodesAndEdges(variables: AnyVariableData[]): {
       data: v,
       position: { x: v.ui?.x ?? 0, y: v.ui?.y ?? 0 },
       type: "var",
-      ...(
-        v.type === VariableType.Region ? {
-          width: v.width,
-          height: v.height,
-          zIndex: v.layer,
-          draggable: !v.locked,
-        } : {
-          zIndex: 20,
-          draggable: true,
-        }
-      )
+      ...(v.type === VariableType.Region
+        ? {
+            width: v.width,
+            height: v.height,
+            zIndex: v.layer,
+            draggable: !v.locked,
+          }
+        : {
+            zIndex: 20,
+            draggable: true,
+          }),
     });
   }
 

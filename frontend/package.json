@@ -9,7 +9,7 @@
     "build-watch": "vite build --watch",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "typecheck": "eslint --fix . && tsc && vite build"
+    "typecheck": "eslint --fix . && tsc"
   },
   "dependencies": {
     "@floating-ui/react": "^0.26.28",

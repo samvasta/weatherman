@@ -9,7 +9,6 @@ export function groupBy<T>(
     if (!(group in groups)) {
       groups[group] = [item];
     } else {
-       
       groups[group]!.push(item);
     }
   }

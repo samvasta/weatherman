@@ -19,6 +19,12 @@ import { Txt } from "@/components/primitives/text/Text";
 
 import { sizeLookup } from "@/components/icons/createIcon";
 
+import { nodeIdToNameAtom } from "@/state/model.atoms";
+import {
+  isSimulatedAtom,
+  useSimulationResultForNode,
+} from "@/state/simulationResults.atoms";
+import { useNodeErrors } from "@/state/validation.atoms";
 import {
   AllVariables,
   type AnyVariableData,
@@ -26,12 +32,6 @@ import {
 import { VariableType } from "@/types/variables/common";
 import { cn } from "@/utils/tailwind";
 
-import {
-  isSimulatedAtom,
-  nodeIdToNameAtom,
-  useNodeErrors,
-  useSimulationResultForNode,
-} from "./atoms";
 import {
   OUTPUT_PORT_NAME,
   PORT_NAME_SEPARATOR,
@@ -148,6 +148,7 @@ export const VariableNode = React.memo(
                           intent="subtle"
                           className="scheme-neutral"
                         >
+                          {" "}
                           ({port.name})
                         </Txt>
                       </>

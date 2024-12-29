@@ -15,9 +15,10 @@ import { X } from "lucide-react";
 import { IconButton } from "@/components/primitives/button/Button";
 import { Txt } from "@/components/primitives/text/Text";
 
+import { setCompiledModelAtom } from "@/state/model.atoms";
+import { isSimulatedAtom } from "@/state/simulationResults.atoms";
 import { type AnyVariableData } from "@/types/variables/allVariables";
 
-import { isSimulatedAtom, setCompiledModelAtom } from "./atoms";
 import { graphToModel } from "./graphToModel";
 import {
   VariableEdgeData,

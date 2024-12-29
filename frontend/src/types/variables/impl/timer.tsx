@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useEdges } from "@xyflow/react";
 import { useAtomValue } from "jotai";
 import { Timer } from "lucide-react";
 import { z } from "zod";
@@ -13,13 +14,13 @@ import {
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
-import { getCompiledModelAtom } from "@/canvas/atoms";
 import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import {
   WithLeftNodeIcon,
   WithLeftNodeIconPreview,
 } from "@/canvas/shared/WithLeftNodeIcon";
+import { getCompiledModelAtom } from "@/state/model.atoms";
 
 import {
   type CommonVariableInfoData,
@@ -29,7 +30,6 @@ import {
   type VariablePropertiesProps,
   VariableType,
 } from "../common";
-import { useEdges } from "@xyflow/react";
 
 const TimerSchema = CommonVariableInfoSchema.extend({
   type: z.literal(VariableType.Timer).default(VariableType.Timer),

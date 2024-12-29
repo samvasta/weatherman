@@ -351,7 +351,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                       paddingInline: "1rem",
                       background: "var(--current-color-1)",
                       borderWidth: 1,
-                      borderColor: "var(--current-color-6)"
+                      borderColor: "var(--current-color-6)",
                     }}
                   >
                     <Txt as="span" className="font-mono font-bold">

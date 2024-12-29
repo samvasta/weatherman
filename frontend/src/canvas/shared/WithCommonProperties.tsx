@@ -1,18 +1,17 @@
-import { useSetAtom } from "jotai";
 import { useUpdateNodeInternals } from "@xyflow/react";
+import { useSetAtom } from "jotai";
 
 import { Checkbox } from "@/components/primitives/checkbox/Checkbox";
 import { Input, Textarea } from "@/components/primitives/input/Input";
 import { Label } from "@/components/primitives/label/Label";
 import { Heading } from "@/components/primitives/text/Heading";
 
+import { updateNodeNameAtom } from "@/state/model.atoms";
 import { AllVariables } from "@/types/variables/allVariables";
 import {
   type CommonVariableInfoData,
   type VariablePropertiesProps,
 } from "@/types/variables/common";
-
-import { updateNodeNameAtom } from "../atoms";
 
 export function WithCommonProperties<T extends CommonVariableInfoData>({
   data,

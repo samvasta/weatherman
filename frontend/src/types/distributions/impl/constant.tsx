@@ -38,7 +38,11 @@ export function ConstantDistributionProperties({
   return (
     <div className="flex flex-col gap-4">
       <Heading size="xs">Value</Heading>
-      <SheetEditableInput data={data} onChange={onChange} flagKey="sheetEditable">
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="sheetEditable"
+      >
         <NumberInput
           value={data.value}
           onChange={(value) =>

@@ -1,9 +1,10 @@
 import React from "react";
 
-import { useAtomValue } from "jotai";
 import { useOnSelectionChange } from "@xyflow/react";
+import { useAtomValue } from "jotai";
 
-import { isSimulatedAtom } from "../atoms";
+import { isSimulatedAtom } from "@/state/simulationResults.atoms";
+
 import {
   type VariableEdgeType,
   type VariableNodeType,

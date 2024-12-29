@@ -1,5 +1,5 @@
-import { ArrowDownRight, BoxSelectIcon } from "lucide-react";
 import { NodeResizeControl } from "@xyflow/react";
+import { ArrowDownRight, BoxSelectIcon } from "lucide-react";
 import { z } from "zod";
 
 import { CheckboxWithLabel } from "@/components/primitives/checkbox/Checkbox";

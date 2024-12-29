@@ -107,7 +107,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "pr-1": Boolean(rightIcon),
           },
           "relative",
-          buttonVariants({ variant, size, colorScheme, className }),
+          buttonVariants({ variant, size, colorScheme, className })
         )}
         ref={ref}
         type="button"
