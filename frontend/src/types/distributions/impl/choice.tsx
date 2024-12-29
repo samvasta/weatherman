@@ -1,6 +1,7 @@
 import React from "react";
 
 import { MinusIcon, PlusIcon } from "lucide-react";
+import { z } from "zod";
 
 import { Button, IconButton } from "@/components/primitives/button/Button";
 import { NumberInput } from "@/components/primitives/input/Input";
@@ -8,10 +9,37 @@ import { Heading } from "@/components/primitives/text/Heading";
 
 import { ChoiceIcon } from "@/components/icons/distributions/ChoiceIcon";
 
-import { type ChoiceData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
 
-export function ChoiceDistribution({ data }: { data: ChoiceData }) {
+import {
+  CommonDistributionInfoData,
+  DistributionInfo,
+  DistributionType,
+} from "../common";
+
+const ChoiceSchema = z.object({
+  type: z.literal(DistributionType.Choice),
+  options: z
+    .array(
+      z.object({
+        value: z.number().finite(),
+        weight: z.number().finite().positive("Weight must be positive."),
+
+        valueSheetEditable: z.boolean(),
+        weightSheetEditable: z.boolean(),
+      })
+    )
+    .min(1),
+});
+
+type ChoiceData = z.infer<typeof ChoiceSchema>;
+function isChoice(
+  distribution: CommonDistributionInfoData
+): distribution is ChoiceData {
+  return distribution.type === DistributionType.Choice;
+}
+
+function ChoiceDistribution({ data }: { data: ChoiceData }) {
   return (
     <div className="flex items-end gap-2">
       <Heading size="2xl">
@@ -22,7 +50,7 @@ export function ChoiceDistribution({ data }: { data: ChoiceData }) {
   );
 }
 
-export function ChoiceDistributionPreview({ data }: { data: ChoiceData }) {
+function ChoiceDistributionPreview({ data }: { data: ChoiceData }) {
   return (
     <>
       <ChoiceIcon label="Normal" size="xl" className="text-neutral-10" />
@@ -31,7 +59,7 @@ export function ChoiceDistributionPreview({ data }: { data: ChoiceData }) {
   );
 }
 
-export function ChoiceDistributionProperties({
+function ChoiceDistributionProperties({
   data,
   onChange,
 }: {
@@ -120,3 +148,28 @@ export function ChoiceDistributionProperties({
     </div>
   );
 }
+
+export const ChoiceInfo: DistributionInfo<ChoiceData> = {
+  checkType: isChoice,
+  defaultConfig: {
+    type: DistributionType.Choice,
+    options: [
+      {
+        value: 0,
+        weight: 1,
+        valueSheetEditable: true,
+        weightSheetEditable: true,
+      },
+      {
+        value: 1,
+        weight: 1,
+        valueSheetEditable: true,
+        weightSheetEditable: true,
+      },
+    ],
+  },
+  DistributionNodeContent: ChoiceDistribution,
+  DistributionPreviewContent: ChoiceDistributionPreview,
+  DistributionProperties: ChoiceDistributionProperties,
+  schema: ChoiceSchema,
+};

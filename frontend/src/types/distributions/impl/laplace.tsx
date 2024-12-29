@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
@@ -5,10 +7,34 @@ import { Txt } from "@/components/primitives/text/Text";
 import { NormalIcon } from "@/components/icons/distributions/NormalIcon";
 import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
-import { type LaplaceData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
 
-export function LaplaceDistribution({ data }: { data: LaplaceData }) {
+import {
+  CommonDistributionInfoData,
+  DistributionInfo,
+  DistributionType,
+} from "../common";
+
+const LaplaceSchema = z.object({
+  type: z.literal(DistributionType.Laplace),
+  mean: z.number().finite(),
+  stdDev: z
+    .number()
+    .finite()
+    .nonnegative("Standard deviation cannot be negative."),
+
+  meanSheetEditable: z.boolean(),
+  stdDevSheetEditable: z.boolean(),
+});
+
+type LaplaceData = z.infer<typeof LaplaceSchema>;
+function isLaplace(
+  distribution: CommonDistributionInfoData
+): distribution is LaplaceData {
+  return distribution.type === DistributionType.Laplace;
+}
+
+function LaplaceDistribution({ data }: { data: LaplaceData }) {
   return (
     <div className="flex items-end gap-2">
       <Heading size="2xl">
@@ -22,7 +48,7 @@ export function LaplaceDistribution({ data }: { data: LaplaceData }) {
   );
 }
 
-export function LaplaceDistributionPreview({ data }: { data: LaplaceData }) {
+function LaplaceDistributionPreview({ data }: { data: LaplaceData }) {
   return (
     <>
       <NormalIcon label="Laplace" size="xl" className="text-neutral-10" />
@@ -31,7 +57,7 @@ export function LaplaceDistributionPreview({ data }: { data: LaplaceData }) {
   );
 }
 
-export function LaplaceDistributionProperties({
+function LaplaceDistributionProperties({
   data,
   onChange,
 }: {
@@ -76,3 +102,19 @@ export function LaplaceDistributionProperties({
     </div>
   );
 }
+
+export const LaplaceInfo: DistributionInfo<LaplaceData> = {
+  checkType: isLaplace,
+  defaultConfig: {
+    type: DistributionType.Laplace,
+    mean: 1,
+    stdDev: 0.5,
+
+    meanSheetEditable: true,
+    stdDevSheetEditable: true,
+  },
+  DistributionNodeContent: LaplaceDistribution,
+  DistributionPreviewContent: LaplaceDistributionPreview,
+  DistributionProperties: LaplaceDistributionProperties,
+  schema: LaplaceSchema,
+};

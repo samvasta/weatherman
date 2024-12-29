@@ -5,10 +5,7 @@ import { PlusIcon } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/primitives/button/Button";
-import {
-  Checkbox,
-  CheckboxWithLabel,
-} from "@/components/primitives/checkbox/Checkbox";
+import { CheckboxWithLabel } from "@/components/primitives/checkbox/Checkbox";
 import { Input } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
@@ -17,46 +14,10 @@ import { CommonVariableInfo } from "@/canvas/shared/SharedNodeInfo";
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import { inputSheetsAtom } from "@/state/model.atoms";
 import {
-  type AnyDistributionData,
+  AllDistributions,
   AnyDistributionSchema,
-  DistributionType,
-  isAsymmetricNormal,
-  isChoice,
-  isConstant,
-  isLaplace,
-  isNormal,
-  isUniform,
-} from "@/types/distributions";
-import {
-  AsymmetricNormalDistribution,
-  AsymmetricNormalDistributionPreview,
-  AsymmetricNormalDistributionProperties,
-} from "@/types/distributions/impl/asymmetric_normal";
-import {
-  ChoiceDistribution,
-  ChoiceDistributionPreview,
-  ChoiceDistributionProperties,
-} from "@/types/distributions/impl/choice";
-import {
-  ConstantDistribution,
-  ConstantDistributionPreview,
-  ConstantDistributionProperties,
-} from "@/types/distributions/impl/constant";
-import {
-  LaplaceDistribution,
-  LaplaceDistributionPreview,
-  LaplaceDistributionProperties,
-} from "@/types/distributions/impl/laplace";
-import {
-  NormalDistribution,
-  NormalDistributionPreview,
-  NormalDistributionProperties,
-} from "@/types/distributions/impl/normal";
-import {
-  UniformDistribution,
-  UniformDistributionPreview,
-  UniformDistributionProperties,
-} from "@/types/distributions/impl/uniform";
+} from "@/types/distributions/allDistrubutions";
+import { ConstantInfo } from "@/types/distributions/impl/constant";
 
 import {
   type CommonVariableInfoData,
@@ -77,151 +38,33 @@ const IVarSchema = CommonVariableInfoSchema.extend({
 
 export type IVarData = z.TypeOf<typeof IVarSchema>;
 
-function useDistributionContent(
-  distribution: AnyDistributionData
-): React.ReactNode {
-  if (isConstant(distribution)) {
-    return <ConstantDistribution data={distribution} />;
-  }
-  if (isUniform(distribution)) {
-    return <UniformDistribution data={distribution} />;
-  }
-  if (isNormal(distribution)) {
-    return <NormalDistribution data={distribution} />;
-  }
-  if (isAsymmetricNormal(distribution)) {
-    return <AsymmetricNormalDistribution data={distribution} />;
-  }
-  if (isLaplace(distribution)) {
-    return <LaplaceDistribution data={distribution} />;
-  }
-  if (isChoice(distribution)) {
-    return <ChoiceDistribution data={distribution} />;
-  }
-
-  throw new Error(
-    "Unrecognized distribution type: " + JSON.stringify(distribution)
-  );
-}
-
 export function IVarNode({ data }: { data: IVarData }) {
-  const Content = useDistributionContent(data.distribution);
+  const Content =
+    AllDistributions[data.distribution.type].DistributionNodeContent;
   return (
     <div className="flex flex-col px-6 py-3">
       <CommonVariableInfo info={data} />
-      {Content}
+      <Content data={data.distribution} />
     </div>
   );
 }
 
-function useDistributionPreviewContent(
-  distribution: AnyDistributionData
-): React.ReactNode {
-  if (isConstant(distribution)) {
-    return <ConstantDistributionPreview data={distribution} />;
-  }
-  if (isUniform(distribution)) {
-    return <UniformDistributionPreview data={distribution} />;
-  }
-  if (isNormal(distribution)) {
-    return <NormalDistributionPreview data={distribution} />;
-  }
-  if (isAsymmetricNormal(distribution)) {
-    return <AsymmetricNormalDistributionPreview data={distribution} />;
-  }
-  if (isLaplace(distribution)) {
-    return <LaplaceDistributionPreview data={distribution} />;
-  }
-  if (isChoice(distribution)) {
-    return <ChoiceDistributionPreview data={distribution} />;
-  }
-
-  throw new Error(
-    "Unrecognized distribution type: " + JSON.stringify(distribution)
-  );
-}
-function useDistributionPropertiesContent(
-  key: string,
-  distribution: AnyDistributionData,
-  onChange: (data: AnyDistributionData) => void
-): React.ReactNode {
-  if (isConstant(distribution)) {
-    return (
-      <ConstantDistributionProperties
-        data={distribution}
-        onChange={onChange}
-        key={key}
-      />
-    );
-  }
-  if (isUniform(distribution)) {
-    return (
-      <UniformDistributionProperties
-        data={distribution}
-        onChange={onChange}
-        key={key}
-      />
-    );
-  }
-  if (isNormal(distribution)) {
-    return (
-      <NormalDistributionProperties
-        data={distribution}
-        onChange={onChange}
-        key={key}
-      />
-    );
-  }
-  if (isAsymmetricNormal(distribution)) {
-    return (
-      <AsymmetricNormalDistributionProperties
-        data={distribution}
-        onChange={onChange}
-        key={key}
-      />
-    );
-  }
-  if (isLaplace(distribution)) {
-    return (
-      <LaplaceDistributionProperties
-        data={distribution}
-        onChange={onChange}
-        key={key}
-      />
-    );
-  }
-  if (isChoice(distribution)) {
-    return (
-      <ChoiceDistributionProperties
-        data={distribution}
-        onChange={onChange}
-        key={key}
-      />
-    );
-  }
-
-  throw new Error(
-    "Unrecognized distribution type: " + JSON.stringify(distribution)
-  );
-}
 export function IVarNodePreview({ data }: { data: IVarData }) {
-  const Content = useDistributionPreviewContent(data.distribution);
-  return <div className="flex items-center gap-2 px-2 py-1 ">{Content}</div>;
+  const Content =
+    AllDistributions[data.distribution.type].DistributionPreviewContent;
+  return (
+    <div className="flex items-center gap-2 px-2 py-1 ">
+      <Content data={data.distribution} />
+    </div>
+  );
 }
 
 export function IVarProperties({
   data,
   onChange,
 }: VariablePropertiesProps<IVarData>) {
-  const content = useDistributionPropertiesContent(
-    data.ui.id,
-    data.distribution,
-    (data) => {
-      onChange({
-        distribution: data,
-      });
-    }
-  );
+  const Content =
+    AllDistributions[data.distribution.type].DistributionProperties;
 
   const [pendingSheetName, setPendingSheetName] = React.useState("");
 
@@ -229,7 +72,15 @@ export function IVarProperties({
 
   return (
     <WithCommonProperties data={data} onChange={onChange}>
-      {content}
+      <Content
+        key={data.ui.id}
+        data={data.distribution}
+        onChange={(nextDistribution) =>
+          onChange({
+            distribution: nextDistribution as IVarData["distribution"],
+          })
+        }
+      />
 
       <Heading size="md" className="mt-regular">
         Input Sheets
@@ -304,16 +155,12 @@ export const IVarInfo: VariableInfo<IVarData> = {
     ...DEFAULT_COMMON_DATA,
     name: "sum",
     type: VariableType.IVar,
-    distribution: {
-      type: DistributionType.Constant,
-      value: 1,
-      sheetEditable: true,
-    },
+    distribution: ConstantInfo.defaultConfig,
     inputSheetIds: [],
   },
   hasOutput: true,
-  getInputs: (sum) => ({}),
-  getPorts: (sum) => [],
+  getInputs: (_) => ({}),
+  getPorts: (_) => [],
   VariableContent: IVarNode,
   VariablePreviewContent: IVarNodePreview,
   VariableProperties: IVarProperties,

@@ -2,10 +2,8 @@ import { nanoid } from "nanoid";
 
 import { Heading } from "@/components/primitives/text/Heading";
 
-import {
-  DistributionType,
-  getDefaultDistributionData,
-} from "@/types/distributions";
+import { AllDistributions } from "@/types/distributions/allDistrubutions";
+import { DistributionType } from "@/types/distributions/common";
 import {
   AllVariables,
   type AnyVariableData,
@@ -37,7 +35,7 @@ export function NodePaletteToolbar() {
               const data = {
                 ...info.defaultConfig,
                 name: `New ${distributionType}`,
-                distribution: getDefaultDistributionData(distributionType),
+                distribution: AllDistributions[distributionType].defaultConfig,
                 ui: {
                   id: nanoid(8),
                   x: 0,

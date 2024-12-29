@@ -1,5 +1,7 @@
 import React from "react";
 
+import { z } from "zod";
+
 import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
@@ -7,10 +9,73 @@ import { Txt } from "@/components/primitives/text/Text";
 import { AsymmetricNormalIcon } from "@/components/icons/distributions/AsymmetricNormalIcon";
 import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
-import { type AsymmetricNormalData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
 
-export function AsymmetricNormalDistribution({
+import {
+  CommonDistributionInfoData,
+  DistributionInfo,
+  DistributionType,
+} from "../common";
+
+const AsymmetricNormalSchema = z
+  .object({
+    type: z.literal(DistributionType.AsymmetricNormal),
+    mean: z.number().finite(),
+    stdDevLow: z
+      .number()
+      .finite()
+      .nonnegative("Standard deviation cannot be negative."),
+    stdDevHigh: z
+      .number()
+      .finite()
+      .nonnegative("Standard deviation cannot be negative."),
+    min: z.number().finite(),
+    max: z.number().finite(),
+
+    meanSheetEditable: z.boolean(),
+    stdDevLowSheetEditable: z.boolean(),
+    stdDevHighSheetEditable: z.boolean(),
+    minSheetEditable: z.boolean(),
+    maxSheetEditable: z.boolean(),
+  })
+  .superRefine(({ min, max, mean, stdDevLow, stdDevHigh }, ctx) => {
+    if (min >= max) {
+      ctx.addIssue({
+        code: "too_big",
+        maximum: max,
+        type: "number",
+        inclusive: false,
+        message: "The minimum value must be less than the maximum value",
+      });
+    }
+    if (mean <= min) {
+      ctx.addIssue({
+        code: "too_small",
+        minimum: min,
+        type: "number",
+        inclusive: false,
+        message: "The mean value must be greater than the minimum value",
+      });
+    }
+    if (mean >= max) {
+      ctx.addIssue({
+        code: "too_big",
+        maximum: max,
+        type: "number",
+        inclusive: false,
+        message: "The mean value must be less than the maximum value",
+      });
+    }
+  });
+
+type AsymmetricNormalData = z.infer<typeof AsymmetricNormalSchema>;
+function isAsymmetricNormal(
+  distribution: CommonDistributionInfoData
+): distribution is AsymmetricNormalData {
+  return distribution.type === DistributionType.AsymmetricNormal;
+}
+
+function AsymmetricNormalDistribution({
   data,
 }: {
   data: AsymmetricNormalData;
@@ -37,7 +102,7 @@ export function AsymmetricNormalDistribution({
   );
 }
 
-export function AsymmetricNormalDistributionPreview({
+function AsymmetricNormalDistributionPreview({
   data,
 }: {
   data: AsymmetricNormalData;
@@ -54,7 +119,7 @@ export function AsymmetricNormalDistributionPreview({
   );
 }
 
-export function AsymmetricNormalDistributionProperties({
+function AsymmetricNormalDistributionProperties({
   data,
   onChange,
 }: {
@@ -157,3 +222,25 @@ export function AsymmetricNormalDistributionProperties({
     </div>
   );
 }
+
+export const AsymmetricNormalInfo: DistributionInfo<AsymmetricNormalData> = {
+  checkType: isAsymmetricNormal,
+  defaultConfig: {
+    type: DistributionType.AsymmetricNormal,
+    mean: 5,
+    stdDevLow: 3 / 1.285,
+    stdDevHigh: 3 / 1.285,
+    min: 0,
+    max: 10,
+
+    minSheetEditable: true,
+    maxSheetEditable: true,
+    meanSheetEditable: true,
+    stdDevLowSheetEditable: true,
+    stdDevHighSheetEditable: true,
+  },
+  DistributionNodeContent: AsymmetricNormalDistribution,
+  DistributionPreviewContent: AsymmetricNormalDistributionPreview,
+  DistributionProperties: AsymmetricNormalDistributionProperties,
+  schema: AsymmetricNormalSchema,
+};

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { z } from "zod";
+
 import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
@@ -7,10 +9,34 @@ import { Txt } from "@/components/primitives/text/Text";
 import { NormalIcon } from "@/components/icons/distributions/NormalIcon";
 import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
-import { type NormalData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
 
-export function NormalDistribution({ data }: { data: NormalData }) {
+import {
+  CommonDistributionInfoData,
+  DistributionInfo,
+  DistributionType,
+} from "../common";
+
+const NormalSchema = z.object({
+  type: z.literal(DistributionType.Normal),
+  mean: z.number().finite(),
+  stdDev: z
+    .number()
+    .finite()
+    .nonnegative("Standard deviation cannot be negative."),
+
+  meanSheetEditable: z.boolean(),
+  stdDevSheetEditable: z.boolean(),
+});
+
+type NormalData = z.infer<typeof NormalSchema>;
+function isNormal(
+  distribution: CommonDistributionInfoData
+): distribution is NormalData {
+  return distribution.type === DistributionType.Normal;
+}
+
+function NormalDistribution({ data }: { data: NormalData }) {
   return (
     <div className="flex items-end gap-2">
       <Heading size="2xl">
@@ -24,7 +50,7 @@ export function NormalDistribution({ data }: { data: NormalData }) {
   );
 }
 
-export function NormalDistributionPreview({ data }: { data: NormalData }) {
+function NormalDistributionPreview({ data }: { data: NormalData }) {
   return (
     <>
       <NormalIcon label="Normal" size="xl" className="text-neutral-10" />
@@ -33,7 +59,7 @@ export function NormalDistributionPreview({ data }: { data: NormalData }) {
   );
 }
 
-export function NormalDistributionProperties({
+function NormalDistributionProperties({
   data,
   onChange,
 }: {
@@ -121,3 +147,19 @@ export function NormalDistributionProperties({
     </div>
   );
 }
+
+export const NormalInfo: DistributionInfo<NormalData> = {
+  checkType: isNormal,
+  defaultConfig: {
+    type: DistributionType.Normal,
+    mean: 1,
+    stdDev: 0.5,
+
+    meanSheetEditable: true,
+    stdDevSheetEditable: true,
+  },
+  DistributionNodeContent: NormalDistribution,
+  DistributionPreviewContent: NormalDistributionPreview,
+  DistributionProperties: NormalDistributionProperties,
+  schema: NormalSchema,
+};

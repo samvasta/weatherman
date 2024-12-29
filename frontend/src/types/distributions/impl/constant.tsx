@@ -1,4 +1,5 @@
 import { LockIcon, LockOpenIcon } from "lucide-react";
+import { z } from "zod";
 
 import { Checkbox } from "@/components/primitives/checkbox/Checkbox";
 import { NumberInput } from "@/components/primitives/input/Input";
@@ -7,10 +8,28 @@ import { Heading } from "@/components/primitives/text/Heading";
 import { ConstantIcon } from "@/components/icons/distributions/ConstantIcon";
 import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
-import { type ConstantData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
 
-export function ConstantDistribution({ data }: { data: ConstantData }) {
+import {
+  CommonDistributionInfoData,
+  DistributionInfo,
+  DistributionType,
+} from "../common";
+
+const ConstantSchema = z.object({
+  type: z.literal(DistributionType.Constant),
+  value: z.number().finite(),
+  sheetEditable: z.boolean(),
+});
+
+type ConstantData = z.infer<typeof ConstantSchema>;
+function isConstant(
+  distribution: CommonDistributionInfoData
+): distribution is ConstantData {
+  return distribution.type === DistributionType.Constant;
+}
+
+function ConstantDistribution({ data }: { data: ConstantData }) {
   return (
     <div className="flex items-end gap-2">
       <Heading size="2xl">{formatNumber(data.value)}</Heading>
@@ -19,7 +38,7 @@ export function ConstantDistribution({ data }: { data: ConstantData }) {
   );
 }
 
-export function ConstantDistributionPreview({ data }: { data: ConstantData }) {
+function ConstantDistributionPreview({ data }: { data: ConstantData }) {
   return (
     <>
       <ConstantIcon label="Normal" size="xl" className="text-neutral-10" />
@@ -28,7 +47,7 @@ export function ConstantDistributionPreview({ data }: { data: ConstantData }) {
   );
 }
 
-export function ConstantDistributionProperties({
+function ConstantDistributionProperties({
   data,
   onChange,
 }: {
@@ -56,3 +75,16 @@ export function ConstantDistributionProperties({
     </div>
   );
 }
+
+export const ConstantInfo: DistributionInfo<ConstantData> = {
+  checkType: isConstant,
+  defaultConfig: {
+    sheetEditable: true,
+    type: DistributionType.Constant,
+    value: 1,
+  },
+  DistributionNodeContent: ConstantDistribution,
+  DistributionPreviewContent: ConstantDistributionPreview,
+  DistributionProperties: ConstantDistributionProperties,
+  schema: ConstantSchema,
+};

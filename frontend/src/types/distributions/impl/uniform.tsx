@@ -1,13 +1,47 @@
+import { z } from "zod";
+
 import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { UniformIcon } from "@/components/icons/distributions/UniformIcon";
 import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
-import { type UniformData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
 
-export function UniformDistribution({ data }: { data: UniformData }) {
+import {
+  CommonDistributionInfoData,
+  DistributionInfo,
+  DistributionType,
+} from "../common";
+
+const UniformSchema = z
+  .object({
+    type: z.literal(DistributionType.Uniform),
+    min: z.number().finite(),
+    max: z.number().finite(),
+    minSheetEditable: z.boolean(),
+    maxSheetEditable: z.boolean(),
+  })
+  .superRefine(({ min, max }, ctx) => {
+    if (min > max) {
+      ctx.addIssue({
+        code: "too_big",
+        maximum: max,
+        type: "number",
+        path: ["min"],
+        message: "The minimum value cannot be greater than the maximum value",
+        inclusive: true,
+      });
+    }
+  });
+
+type UniformData = z.infer<typeof UniformSchema>;
+function isUniform(
+  distribution: CommonDistributionInfoData
+): distribution is UniformData {
+  return distribution.type === DistributionType.Uniform;
+}
+function UniformDistribution({ data }: { data: UniformData }) {
   return (
     <div className="flex items-end gap-2">
       <Heading size="2xl">
@@ -18,16 +52,16 @@ export function UniformDistribution({ data }: { data: UniformData }) {
   );
 }
 
-export function UniformDistributionPreview({ data }: { data: UniformData }) {
+function UniformDistributionPreview({ data }: { data: UniformData }) {
   return (
     <>
-      <UniformIcon label="Normal" size="xl" className="text-neutral-10" />
+      <UniformIcon label="Uniform" size="xl" className="text-neutral-10" />
       <Heading size="sm">Random Value</Heading>
     </>
   );
 }
 
-export function UniformDistributionProperties({
+function UniformDistributionProperties({
   data,
   onChange,
 }: {
@@ -73,3 +107,19 @@ export function UniformDistributionProperties({
     </div>
   );
 }
+
+export const UniformInfo: DistributionInfo<UniformData> = {
+  checkType: isUniform,
+  defaultConfig: {
+    type: DistributionType.Uniform,
+    min: 0,
+    max: 10,
+
+    minSheetEditable: true,
+    maxSheetEditable: true,
+  },
+  DistributionNodeContent: UniformDistribution,
+  DistributionPreviewContent: UniformDistributionPreview,
+  DistributionProperties: UniformDistributionProperties,
+  schema: UniformSchema,
+};
