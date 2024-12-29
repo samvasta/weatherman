@@ -2,7 +2,7 @@ import { atom } from "jotai";
 
 import { CURRENT_VERSION } from "@/serialize/migrate";
 import { type Model } from "@/types/model";
-import { type IVarData, IVarInfo } from "@/types/variables/impl/ivar";
+import { isIVar, type IVarData } from "@/types/variables/ivarCommon";
 
 export const nodeNameToIdAtom = atom<Record<string, string>>({});
 export const nodeIdToNameAtom = atom<Record<string, string>>({});
@@ -80,7 +80,7 @@ export const setCompiledModelAtom = atom(
 export const inputSheetsAtom = atom((get) => {
   const model = get(compiledModelAtom);
   const ivars = model.variables
-    .filter(IVarInfo.checkType)
+    .filter(isIVar)
     .filter(
       (variable) => variable.inputSheetIds && variable.inputSheetIds.length > 0
     );

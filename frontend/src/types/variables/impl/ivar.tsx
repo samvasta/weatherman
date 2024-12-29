@@ -15,27 +15,16 @@ import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import { inputSheetsAtom } from "@/state/model.atoms";
 import {
   AllDistributions,
-  AnyDistributionSchema,
 } from "@/types/distributions/allDistributions";
 import { ConstantInfo } from "@/types/distributions/impl/constant";
 import {
-  type CommonVariableInfoData,
-  CommonVariableInfoSchema,
   DEFAULT_COMMON_DATA,
   type VariableInfo,
   type VariablePropertiesProps,
   VariableType,
 } from "@/types/variables/common";
+import { isIVar, IVarSchema, type IVarData } from "../ivarCommon";
 
-const IVarSchema = CommonVariableInfoSchema.extend({
-  type: z.literal(VariableType.IVar).default(VariableType.IVar),
-
-  distribution: AnyDistributionSchema,
-
-  inputSheetIds: z.array(z.string()),
-});
-
-type IVarData = z.TypeOf<typeof IVarSchema>;
 
 function IVarNode({ data }: { data: IVarData }) {
   const Content =
@@ -143,9 +132,7 @@ function IVarProperties({ data, onChange }: VariablePropertiesProps<IVarData>) {
 }
 
 export const IVarInfo: VariableInfo<IVarData> = {
-  checkType: (v: CommonVariableInfoData): v is IVarData => {
-    return v.type === VariableType.IVar;
-  },
+  checkType: isIVar,
   schema: IVarSchema as z.ZodSchema<IVarData>,
   defaultConfig: {
     ...DEFAULT_COMMON_DATA,
