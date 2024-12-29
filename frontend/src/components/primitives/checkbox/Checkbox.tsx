@@ -7,12 +7,12 @@ import { CheckIcon } from "lucide-react";
 import { cn } from "@/utils/tailwind";
 
 export const checkboxVariants = cva(
-  "border-cur-scheme-12 focus-visible:ring-ring data-[state=checked]:bg-cur-scheme-9 data-[state=checked]:border-neutral-12 data-[state=checked]:text-neutral-12 peer h-6 w-6 shrink-0 border focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:bg-neutral-3 disabled:text-neutral-10 disabled:border-neutral-6",
+  "border-cur-scheme-12 focus-visible:ring-ring data-[state=checked]:bg-cur-scheme-9 data-[state=checked]:border-neutral-12 data-[state=checked]:text-neutral-12 peer h-6 w-6 shrink-0 border focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:bg-neutral-3 disabled:text-neutral-10 disabled:border-neutral-6 grid place-items-center",
   {
     variants: {
       size: {
         sm: "p-0",
-        md: "p-0",
+        md: "p-1 w-8 h-8",
         lg: "p-0",
       },
       colorScheme: {
@@ -45,17 +45,19 @@ export const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> &
     CheckboxVariants
->(({ className, colorScheme, size, ...props }, ref) => (
+>(({ className, colorScheme, size, children, ...props }, ref) => (
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(checkboxVariants({ colorScheme, size }), className)}
     {...props}
   >
-    <CheckboxPrimitive.Indicator
-      className={cn("flex items-center justify-center leading-none")}
-    >
-      <CheckIcon className={checkboxSizeToIndicatorSize[size || "md"]} />
-    </CheckboxPrimitive.Indicator>
+    {children ?? (
+      <CheckboxPrimitive.Indicator
+        className={cn("leading-none")}
+      >
+        <CheckIcon className={checkboxSizeToIndicatorSize[size || "md"]} />
+      </CheckboxPrimitive.Indicator>
+    )}
   </CheckboxPrimitive.Root>
 ));
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;

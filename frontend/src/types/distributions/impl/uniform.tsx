@@ -35,7 +35,7 @@ export function UniformDistributionProperties({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <Heading>Minimum</Heading>
+      <Heading size="xs">Minimum</Heading>
       <NumberInput
         value={data.min}
         onChange={(value) =>
@@ -45,7 +45,7 @@ export function UniformDistributionProperties({
           })
         }
       />
-      <Heading>Maximum</Heading>
+      <Heading size="xs">Maximum</Heading>
 
       <NumberInput
         value={data.max}

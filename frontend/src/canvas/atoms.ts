@@ -8,6 +8,8 @@ import { CURRENT_VERSION } from "@/serialize/migrate";
 import { type Model } from "@/types/model";
 import { type CollectorStats, type SimulationResult } from "@/types/results";
 import { AnyVariableSchema } from "@/types/variables/allVariables";
+import { VariableType } from "@/types/variables/common";
+import { IVarData, IVarInfo } from "@/types/variables/impl/ivar";
 
 export const authAtom = atom<AuthModel>(getAuthModel());
 
@@ -131,3 +133,27 @@ export function useSimulationResultForNode(
 
   return results?.[nodeName] ?? null;
 }
+
+export const inputSheetsAtom = atom((get) => {
+  const model = get(compiledModelAtom);
+  const ivars = model.variables
+    .filter(IVarInfo.checkType)
+    .filter(
+      (variable) => variable.inputSheetIds && variable.inputSheetIds.length > 0
+    );
+
+  const sheets = ivars.reduce(
+    (sheets, ivar) => {
+      for (const sheetName of ivar.inputSheetIds) {
+        if (!(sheetName in sheets)) {
+          sheets[sheetName] = [];
+        }
+        sheets[sheetName]!.push(ivar);
+      }
+      return sheets;
+    },
+    {} as Record<string, IVarData[]>
+  );
+
+  return sheets;
+});

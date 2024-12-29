@@ -186,7 +186,7 @@ export function Menu() {
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
-          <MenubarTrigger disabled={!isLoggedIn}>Model</MenubarTrigger>
+          <MenubarTrigger disabled={!isLoggedIn || !compiledModel.id}>Model</MenubarTrigger>
           <MenubarContent>
             <MenubarItem onSelect={() => autoLayoutNodes()}>
               Auto-layout
@@ -194,7 +194,7 @@ export function Menu() {
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
-          <MenubarTrigger disabled={!isLoggedIn} asChild>
+          <MenubarTrigger disabled={!isLoggedIn|| !compiledModel.id} asChild>
             <Button variant="link" size="sm" className="text-neutral-12">
               Simulate
               {simulationResult === null && hasErrors ? (

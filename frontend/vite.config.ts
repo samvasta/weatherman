@@ -11,13 +11,7 @@ export default defineConfig({
     },
   },
   server: {
+    port: 8091,
     open: "/index.html",
-    // proxy: {
-    //   "/api": {
-    //     target: "http://localhost:5173",
-    //     changeOrigin: true,
-    //     secure: false,
-    //   },
-    // },
   },
 });

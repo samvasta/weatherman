@@ -61,6 +61,8 @@ export const SafeUiSchema = z
   })
   .passthrough();
 
+export type NodeUiData = z.infer<typeof BaseUISchema>
+
 export type CommonVariableInfoData = z.TypeOf<typeof CommonVariableInfoSchema>;
 
 export const DEFAULT_COMMON_DATA: Omit<CommonVariableInfoData, "type"> = {

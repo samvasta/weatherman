@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { type WithNonNullKey } from "@/utils/types";
 
-import { type VariableInfo, VariableType } from "./common";
+import { NodeUiData, type VariableInfo, VariableType } from "./common";
 import { CeilInfo } from "./impl/ceil";
 import { CollectorInfo } from "./impl/collector";
 import { DivideInfo } from "./impl/divide";
@@ -41,13 +41,7 @@ export const AnyVariableSchema = z.union([
 
 export type AnyVariableData = WithNonNullKey<
   z.TypeOf<
-    Omit<typeof AnyVariableSchema, "ui"> & {
-      ui: {
-        x: number;
-        y: number;
-        id: string;
-      };
-    }
+    Omit<typeof AnyVariableSchema, "ui"> & NodeUiData
   >,
   "ui"
 >;

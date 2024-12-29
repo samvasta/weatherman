@@ -5,6 +5,7 @@ import { Heading } from "@/components/primitives/text/Heading";
 import { Txt } from "@/components/primitives/text/Text";
 
 import { AsymmetricNormalIcon } from "@/components/icons/distributions/AsymmetricNormalIcon";
+import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
 import { type AsymmetricNormalData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
@@ -62,17 +63,24 @@ export function AsymmetricNormalDistributionProperties({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <Heading>Mean</Heading>
-      <NumberInput
-        value={data.mean}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            mean: value,
-          })
-        }
-      />
-      <Heading>Range</Heading>
+      <Heading size="xs">Mean</Heading>
+
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="meanSheetEditable"
+      >
+        <NumberInput
+          value={data.mean}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              mean: value,
+            })
+          }
+        />
+      </SheetEditableInput>
+      <Heading size="sm">Range</Heading>
       <Txt intent="subtle">
         Set these numbers so that 80% of all possible scenarios will be in this
         range.
@@ -83,45 +91,69 @@ export function AsymmetricNormalDistributionProperties({
         being lower than the smaller value.
       </Txt>
       <Heading size="xs">Minimum</Heading>
-      <NumberInput
-        value={data.min}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            min: value,
-          })
-        }
-      />
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="minSheetEditable"
+      >
+        <NumberInput
+          value={data.min}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              min: value,
+            })
+          }
+        />
+      </SheetEditableInput>
       <Heading size="xs">Low</Heading>
-      <NumberInput
-        value={data.mean - 1.285 * data.stdDevLow}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            stdDevLow: (Number(value) - data.mean) / -1.285,
-          })
-        }
-      />
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="stdDevLowSheetEditable"
+      >
+        <NumberInput
+          value={data.mean - 1.285 * data.stdDevLow}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              stdDevLow: (Number(value) - data.mean) / -1.285,
+            })
+          }
+        />
+      </SheetEditableInput>
       <Heading size="xs">High</Heading>
-      <NumberInput
-        value={data.mean + 1.285 * data.stdDevHigh}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            stdDevHigh: (Number(value) - data.mean) / 1.285,
-          })
-        }
-      />
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="stdDevHighSheetEditable"
+      >
+        <NumberInput
+          value={data.mean + 1.285 * data.stdDevHigh}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              stdDevHigh: (Number(value) - data.mean) / 1.285,
+            })
+          }
+        />
+      </SheetEditableInput>
       <Heading size="xs">Maximum</Heading>
-      <NumberInput
-        value={data.max}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            max: value,
-          })
-        }
-      />
+      <SheetEditableInput
+        data={data}
+        onChange={onChange}
+        flagKey="maxSheetEditable"
+      >
+        <NumberInput
+          value={data.max}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              max: value,
+            })
+          }
+        />
+      </SheetEditableInput>
     </div>
   );
 }

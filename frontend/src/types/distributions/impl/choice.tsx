@@ -105,7 +105,12 @@ export function ChoiceDistributionProperties({
         onClick={() => {
           onChange({
             ...data,
-            options: data.options.concat({ value: 1, weight: 1 }),
+            options: data.options.concat({
+              value: 1,
+              weight: 1,
+              valueSheetEditable: true,
+              weightSheetEditable: true,
+            }),
           });
         }}
       >

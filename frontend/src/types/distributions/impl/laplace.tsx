@@ -39,7 +39,7 @@ export function LaplaceDistributionProperties({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <Heading>Mean</Heading>
+      <Heading size="xs">Mean</Heading>
       <NumberInput
         value={data.mean}
         onChange={(value) =>

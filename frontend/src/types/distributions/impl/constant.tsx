@@ -1,7 +1,11 @@
+import { LockIcon, LockOpenIcon } from "lucide-react";
+
+import { Checkbox } from "@/components/primitives/checkbox/Checkbox";
 import { NumberInput } from "@/components/primitives/input/Input";
 import { Heading } from "@/components/primitives/text/Heading";
 
 import { ConstantIcon } from "@/components/icons/distributions/ConstantIcon";
+import { SheetEditableInput } from "@/components/sheet-editable-input/SheetEditableInput";
 
 import { type ConstantData } from "@/types/distributions";
 import { formatNumber } from "@/utils/numberFormat";
@@ -33,16 +37,18 @@ export function ConstantDistributionProperties({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <Heading>Value</Heading>
-      <NumberInput
-        value={data.value}
-        onChange={(value) =>
-          onChange({
-            ...data,
-            value,
-          })
-        }
-      />
+      <Heading size="xs">Value</Heading>
+      <SheetEditableInput data={data} onChange={onChange} flagKey="sheetEditable">
+        <NumberInput
+          value={data.value}
+          onChange={(value) =>
+            onChange({
+              ...data,
+              value,
+            })
+          }
+        />
+      </SheetEditableInput>
     </div>
   );
 }
