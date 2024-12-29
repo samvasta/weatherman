@@ -13,8 +13,9 @@ import { GridColumns, GridRows } from "@visx/grid";
 import { Group } from "@visx/group";
 import { useParentSize } from "@visx/responsive";
 import { scaleLinear } from "@visx/scale";
-import { Area, LinePath } from "@visx/shape";
+import { Area, Line, LinePath } from "@visx/shape";
 import { Text } from "@visx/text";
+import { LineSeries } from "@visx/xychart";
 
 import { Txt } from "@/components/primitives/text/Text";
 
@@ -72,6 +73,10 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
     [data.percentiles]
   );
 
+  const showAreas = React.useMemo(() => {
+    return type === "river" && data.percentiles.every((p) => p.p00 < p.p100);
+  }, [data.percentiles]);
+
   const [tooltipData, setTooltipData] = React.useState<
     (Percentiles & { x: number }) | null
   >(null);
@@ -80,6 +85,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
     (event: React.MouseEvent<SVGRectElement>) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const point = localPoint(event);
+      console.log("tooltip", point);
 
       if (!point) {
         return;
@@ -117,36 +123,38 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
       },
     ];
 
-    for (const dat of [
-      [tooltipData.p25, 25],
-      [tooltipData.p75, 75],
-      [tooltipData.p10, 10],
-      [tooltipData.p90, 90],
-      [tooltipData.p05, 5],
-      [tooltipData.p95, 95],
-      [tooltipData.p00, 0],
-      [tooltipData.p100, 100],
-    ]) {
-      const [point, percentile] = dat as [number, number];
-      const y = yScale(point);
-      let dy = 0;
-      if (point < tooltipData.p50) {
-        dy = Math.max(y, maxY + 24);
-      } else if (point > tooltipData.p50) {
-        dy = Math.min(y, minY - 24);
+    if (showAreas) {
+      for (const dat of [
+        [tooltipData.p25, 25],
+        [tooltipData.p75, 75],
+        [tooltipData.p10, 10],
+        [tooltipData.p90, 90],
+        [tooltipData.p05, 5],
+        [tooltipData.p95, 95],
+        [tooltipData.p00, 0],
+        [tooltipData.p100, 100],
+      ]) {
+        const [point, percentile] = dat as [number, number];
+        const y = yScale(point);
+        let dy = 0;
+        if (point < tooltipData.p50) {
+          dy = Math.max(y, maxY + 24);
+        } else if (point > tooltipData.p50) {
+          dy = Math.min(y, minY - 24);
+        }
+
+        minY = Math.min(dy, minY);
+        maxY = Math.max(dy, maxY);
+
+        tooltips.push({
+          value: point,
+          percentile,
+          y,
+          x,
+          dy: dy - y,
+          dx,
+        });
       }
-
-      minY = Math.min(dy, minY);
-      maxY = Math.max(dy, maxY);
-
-      tooltips.push({
-        value: point,
-        percentile,
-        y,
-        x,
-        dy: dy - y,
-        dx,
-      });
     }
 
     while (minY < 16) {
@@ -198,7 +206,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
   }, [xScale, yScale]);
 
   return (
-    <div ref={parentRef} className="h-full w-full">
+    <div ref={parentRef} className="h-full w-full scheme-neutral">
       <svg width={width} height={height}>
         <Text textAnchor="middle" fontSize={24} x={width / 2} y={32}>
           {`${name} vs time`}
@@ -247,43 +255,56 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
           />
           <Area
             x={(d) => xScale(d.x)}
-            y0={(d) => yScale(d.p00)}
-            y1={(d) => yScale(d.p100)}
-            fill={type === "river" ? `#c8f50033` : "transparent"}
+            y0={(d) => (showAreas ? yScale(d.p00) : 0)}
+            y1={(d) => (showAreas ? yScale(d.p100) : yMax)}
+            fill={type === "river" && showAreas ? `#c8f50033` : "transparent"}
             data={points}
             clipPath="url(#chart-area)"
             onMouseMove={handleTooltip}
             onMouseOut={() => setTooltipData(null)}
           />
           {type === "river" ? (
-            <>
-              <Area
-                x={(d) => xScale(d.x)}
-                y0={(d) => yScale(d.p05)}
-                y1={(d) => yScale(d.p95)}
-                data={points}
-                fill={`#84da4388`}
-                clipPath="url(#chart-area)"
-                pointerEvents="none"
-              />
-              <Area
-                x={(d) => xScale(d.x)}
-                y0={(d) => yScale(d.p10)}
-                y1={(d) => yScale(d.p90)}
-                data={points}
-                fill={`#4ebc5cBB`}
-                clipPath="url(#chart-area)"
-                pointerEvents="none"
-              />
-              <Area
-                x={(d) => xScale(d.x)}
-                y0={(d) => yScale(d.p25)}
-                y1={(d) => yScale(d.p75)}
-                data={points}
-                fill={`#2c9b67`}
-                clipPath="url(#chart-area)"
-                pointerEvents="none"
-              />
+            showAreas ? (
+              <>
+                <Area
+                  x={(d) => xScale(d.x)}
+                  y0={(d) => yScale(d.p05)}
+                  y1={(d) => yScale(d.p95)}
+                  data={points}
+                  fill={`#84da4388`}
+                  clipPath="url(#chart-area)"
+                  pointerEvents="none"
+                />
+                <Area
+                  x={(d) => xScale(d.x)}
+                  y0={(d) => yScale(d.p10)}
+                  y1={(d) => yScale(d.p90)}
+                  data={points}
+                  fill={`#4ebc5cBB`}
+                  clipPath="url(#chart-area)"
+                  pointerEvents="none"
+                />
+                <Area
+                  x={(d) => xScale(d.x)}
+                  y0={(d) => yScale(d.p25)}
+                  y1={(d) => yScale(d.p75)}
+                  data={points}
+                  fill={`#2c9b67`}
+                  clipPath="url(#chart-area)"
+                  pointerEvents="none"
+                />
+                <LinePath
+                  data={points}
+                  x={(d) => xScale(d.x)}
+                  y={(d) => yScale(d.p50)}
+                  stroke="#193b2d"
+                  strokeWidth={4}
+                  shapeRendering="geometricPrecision"
+                  clipPath="url(#chart-area)"
+                  pointerEvents="none"
+                />
+              </>
+            ) : (
               <LinePath
                 data={points}
                 x={(d) => xScale(d.x)}
@@ -294,7 +315,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                 clipPath="url(#chart-area)"
                 pointerEvents="none"
               />
-            </>
+            )
           ) : (
             <>
               {data.series.map((s, i) => (
@@ -330,6 +351,8 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                       textAlign: data.dx > 0 ? "start" : "end",
                       paddingInline: "1rem",
                       background: "var(--current-color-1)",
+                      borderWidth: 1,
+                      borderColor: "var(--current-color-6)"
                     }}
                   >
                     <Txt as="span" className="font-mono font-bold">
