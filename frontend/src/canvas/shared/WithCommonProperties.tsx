@@ -55,7 +55,8 @@ export function WithCommonProperties<T extends CommonVariableInfoData>({
             <div className="flex items-center gap-2">
               <Checkbox
                 id="magic-link"
-                colorScheme="primary"
+                colorScheme="magic"
+                size="sm"
                 checked={data.ui.isOutputFloating ?? false}
                 onCheckedChange={(checked) => {
                   onChange({

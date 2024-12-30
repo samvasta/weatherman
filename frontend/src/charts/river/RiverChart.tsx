@@ -220,13 +220,13 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
             scale={yScale}
             width={xMax}
             height={yMax}
-            stroke="#e0e0e0"
+            stroke="#d7dad9"
           />
           <GridColumns
             scale={xScale}
             width={xMax}
             height={yMax}
-            stroke="#e0e0e0"
+            stroke="#d7dad9"
             numTicks={points.length}
           />
 
@@ -256,7 +256,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
             x={(d) => xScale(d.x)}
             y0={(d) => (showAreas ? yScale(d.p00) : 0)}
             y1={(d) => (showAreas ? yScale(d.p100) : yMax)}
-            fill={type === "river" && showAreas ? `#c8f50033` : "transparent"}
+            fill={type === "river" && showAreas ? `#69CBE788` : "transparent"}
             data={points}
             clipPath="url(#chart-area)"
             onMouseMove={handleTooltip}
@@ -270,7 +270,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                   y0={(d) => yScale(d.p05)}
                   y1={(d) => yScale(d.p95)}
                   data={points}
-                  fill={`#84da4388`}
+                  fill={`#4EA3E088`}
                   clipPath="url(#chart-area)"
                   pointerEvents="none"
                 />
@@ -279,7 +279,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                   y0={(d) => yScale(d.p10)}
                   y1={(d) => yScale(d.p90)}
                   data={points}
-                  fill={`#4ebc5cBB`}
+                  fill={`#2d63b588`}
                   clipPath="url(#chart-area)"
                   pointerEvents="none"
                 />
@@ -288,7 +288,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                   y0={(d) => yScale(d.p25)}
                   y1={(d) => yScale(d.p75)}
                   data={points}
-                  fill={`#2c9b67`}
+                  fill={`#0c2fa488`}
                   clipPath="url(#chart-area)"
                   pointerEvents="none"
                 />
@@ -296,7 +296,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                   data={points}
                   x={(d) => xScale(d.x)}
                   y={(d) => yScale(d.p50)}
-                  stroke="#193b2d"
+                  stroke="#00075a"
                   strokeWidth={4}
                   shapeRendering="geometricPrecision"
                   clipPath="url(#chart-area)"
@@ -308,7 +308,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                 data={points}
                 x={(d) => xScale(d.x)}
                 y={(d) => yScale(d.p50)}
-                stroke="#193b2d"
+                stroke="#00075a"
                 strokeWidth={4}
                 shapeRendering="geometricPrecision"
                 clipPath="url(#chart-area)"
@@ -323,7 +323,7 @@ export function RiverChart({ data, name, type }: RiverChartProps) {
                   data={s}
                   x={getLineX}
                   y={getLineY}
-                  stroke="#193b2d44"
+                  stroke="#00075a0f"
                   strokeWidth={2}
                   shapeRendering="geometricPrecision"
                   clipPath="url(#chart-area)"

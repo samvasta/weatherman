@@ -81,6 +81,7 @@ function IVarProperties({ data, onChange }: VariablePropertiesProps<IVarData>) {
             key={sheetName}
             checked={isChecked}
             colorScheme="primary"
+            size="sm"
             onCheckedChange={(checked) => {
               if (checked && !isChecked) {
                 onChange({

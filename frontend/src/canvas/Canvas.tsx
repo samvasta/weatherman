@@ -403,7 +403,7 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
       snapGrid={[1, 1]}
       snapToGrid
     >
-      <Background color="#8C8C8C" />
+      <Background color="#868e8b" />
       <Controls />
       <MiniMap className="absolute bottom-4 right-4" />
     </ReactFlow>

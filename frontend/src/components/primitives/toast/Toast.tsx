@@ -39,11 +39,8 @@ const toastVariants = cva(
       colorScheme: {
         neutral: "scheme-neutral",
         primary: "scheme-primary",
-        secondary: "scheme-secondary",
-        tertiary: "scheme-tertiary",
         danger: "scheme-danger",
         success: "scheme-success",
-        info: "scheme-info",
         inherit: "",
       },
     },

@@ -10,11 +10,8 @@ export const arrow = cva("fill-current", {
     colorScheme: {
       default: "text-neutral-10",
       primary: "text-primary-10",
-      secondary: "text-secondary-10",
-      tertiary: "text-tertiary-10",
       success: "text-success-10",
       danger: "text-danger-10",
-      info: "text-info-10",
       neutral: "text-neutral-12",
     },
   },

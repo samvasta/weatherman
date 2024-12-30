@@ -51,7 +51,7 @@ export const ConnectionLine: ConnectionLineComponent<VariableNodeType> = ({
       <circle
         cx={toX}
         cy={toY}
-        fill="#FCFBF8"
+        fill="#fbfdfc"
         r={9}
         strokeWidth={6}
         className={cn(

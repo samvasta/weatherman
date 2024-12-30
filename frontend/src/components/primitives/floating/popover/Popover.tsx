@@ -15,11 +15,8 @@ export const popoverVariants = cva("font-sans font-medium", {
     colorScheme: {
       neutral: "border-neutral-12",
       primary: "border-primary-10",
-      secondary: "border-secondary-10",
-      tertiary: "border-tertiary-10",
       success: "border-success-10",
       danger: "border-danger-10",
-      info: "border-info-10",
     },
   },
   defaultVariants: {

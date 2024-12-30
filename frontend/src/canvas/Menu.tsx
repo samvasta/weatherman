@@ -202,7 +202,7 @@ export function Menu() {
               {simulationResult === null && hasErrors ? (
                 <Tooltip
                   content="Cannot simulate because the model has errors."
-                  colorScheme="warning"
+                  colorScheme="danger"
                 >
                   <TriangleAlertIcon className="h-4 w-4 -translate-y-0.5 fill-swatches-yellow text-neutral-12" />
                 </Tooltip>

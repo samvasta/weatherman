@@ -10,12 +10,10 @@ import { TooltipArrow } from "./TooltipArrow";
 const tooltip = cva("font-sans font-medium", {
   variants: {
     colorScheme: {
-      default: "border-info-10",
+      default: "border-primary-10",
       primary: "border-primary-10",
       success: "border-success-10",
       danger: "border-danger-10",
-      warning: "border-warning-10",
-      info: "border-info-10",
       neutral: "border-neutral-10",
     },
   },

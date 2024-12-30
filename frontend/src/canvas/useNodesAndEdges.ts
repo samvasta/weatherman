@@ -103,14 +103,14 @@ export function makeEdge({
     type: "weatherman",
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      width: 12,
-      height: 12,
-      color: "#9B9A93",
+      width: 20,
+      height: 20,
+      color: "#868e8b",
       strokeWidth: 0,
     },
     style: {
       strokeWidth: 2,
-      stroke: "#9B9A93",
+      stroke: "#868e8b",
     },
   };
 }

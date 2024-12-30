@@ -18,11 +18,9 @@ export const checkboxVariants = cva(
       colorScheme: {
         neutral: "scheme-neutral text-neutral-12",
         primary: "scheme-primary",
-        secondary: "scheme-secondary",
-        tertiary: "scheme-tertiary",
         danger: "scheme-danger",
         success: "scheme-success",
-        info: "scheme-info",
+        magic: "scheme-magic",
         inherit: "",
       },
     },

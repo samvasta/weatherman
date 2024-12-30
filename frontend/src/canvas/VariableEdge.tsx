@@ -18,6 +18,7 @@ import { Txt } from "@/components/primitives/text/Text";
 import { setCompiledModelAtom } from "@/state/model.atoms";
 import { isSimulatedAtom } from "@/state/simulationResults.atoms";
 import { type AnyVariableData } from "@/types/variables/allVariables";
+import { cn } from "@/utils/tailwind";
 
 import { graphToModel } from "./graphToModel";
 import {
@@ -113,11 +114,11 @@ export function VariableEdge({
           ...style,
           stroke:
             selected || isNodeSelected
-              ? "#218358"
+              ? "#df0091"
               : anyNodeSelected
                 ? // add opacity to emphasize the selected edges and to make the selected edges show through
-                  "#9B9A9344"
-                : "#9B9A93",
+                  "#9B868e8b"
+                : "#868e8b",
         }}
       />
       {!isSimulated && (isNodeSelected || selected) && (

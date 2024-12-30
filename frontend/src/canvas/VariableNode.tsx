@@ -84,7 +84,7 @@ export const VariableNode = React.memo(
           isSimulated && "border-neutral-4 bg-neutral-2 text-neutral-10",
           !hasError &&
             results !== null &&
-            "border-info-9 bg-info-2 text-info-12 scheme-info",
+            "border-success-9 bg-success-2 text-success-12 scheme-success",
 
           selected &&
             !hasError &&
@@ -93,7 +93,7 @@ export const VariableNode = React.memo(
 
           selected &&
             hasError &&
-            "border-warning-11 text-warning-12 scheme-warning"
+            "border-danger-11 text-danger-12 scheme-danger"
         )}
         style={{
           minHeight: (targetPorts.length + 1) * 24 + 32,
@@ -206,7 +206,7 @@ export const VariableNode = React.memo(
         )}
         {hasError && (
           <Tooltip
-            colorScheme="warning"
+            colorScheme="danger"
             content={
               <div className="flex flex-col">
                 <Heading size="md">Errors:</Heading>
@@ -218,7 +218,7 @@ export const VariableNode = React.memo(
               </div>
             }
           >
-            <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full  bg-warning-9 p-1 text-neutral-12">
+            <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full  bg-danger-9 p-1 text-danger-12">
               <TriangleAlertIcon
                 size={sizeLookup.xs.width}
                 className="stroke-current"
