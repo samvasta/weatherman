@@ -204,7 +204,7 @@ export function Menu() {
                   content="Cannot simulate because the model has errors."
                   colorScheme="danger"
                 >
-                  <TriangleAlertIcon className="h-4 w-4 -translate-y-0.5 fill-swatches-yellow text-neutral-12" />
+                  <TriangleAlertIcon className="h-4 w-4 -translate-y-0.5 fill-danger-9 text-neutral-12" />
                 </Tooltip>
               ) : isSimulating ? (
                 <div className="absolute right-0 top-0 grid h-4 w-4 translate-x-1/2 place-items-center rounded-full bg-primary-8 p-0.5">

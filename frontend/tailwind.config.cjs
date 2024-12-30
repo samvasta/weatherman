@@ -96,7 +96,6 @@ module.exports = {
         [11]: "#006eb3",
         [12]: "#004e7f",
       },
-
       data: {
         "a-light": "#f0b6fc",
         "a-dark": "#bb38d4",
@@ -137,19 +136,6 @@ module.exports = {
         [3]: "var(--current-color-3)",
         [1]: "var(--current-color-1)",
         [2]: "var(--current-color-2)",
-      },
-      swatches: {
-        red: "#EE6151",
-        orange: "#F4A940",
-        yellow: "#DFDB26",
-        green: "#5BDE62",
-        teal: "#42DDC5",
-        blue: "#58DBF1",
-        violet: "#5BA5F2",
-        purple: "#8A70FA",
-        pink: "#DC64E8",
-        gray: "#969696",
-        brown: "#875D36",
       },
     },
     boxShadow: {

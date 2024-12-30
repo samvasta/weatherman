@@ -1,4 +1,4 @@
-import { NodeResizeControl } from "@xyflow/react";
+import { Node, NodeResizeControl } from "@xyflow/react";
 import { ArrowDownRight, BoxSelectIcon } from "lucide-react";
 import { z } from "zod";
 
@@ -9,6 +9,7 @@ import { Txt } from "@/components/primitives/text/Text";
 
 import { WithCommonProperties } from "@/canvas/shared/WithCommonProperties";
 import { WithLeftNodeIconPreview } from "@/canvas/shared/WithLeftNodeIcon";
+import { VariableNodeType } from "@/canvas/useNodesAndEdges";
 import { useOnUpdateNode } from "@/canvas/useOnUpdateNode";
 
 import {
@@ -198,3 +199,13 @@ export const RegionInfo: VariableInfo<RegionData> = {
   VariablePreviewContent: RegionNodePreview,
   VariableProperties: RegionProperties,
 };
+
+export function minimapNodeColor(node: VariableNodeType): string {
+  if (node.data.type === VariableType.Region) {
+    return layerToSwatch[node.data.layer]+"22";
+  }
+  if(node.selected) {
+    return "#e39cca"
+  }
+  return "#1a211e22";
+}

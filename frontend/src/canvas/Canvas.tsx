@@ -45,6 +45,7 @@ import {
   type AnyVariableData,
 } from "@/types/variables/allVariables";
 import { VariableType } from "@/types/variables/common";
+import { minimapNodeColor } from "@/types/variables/impl/region";
 
 import { ConnectionLine } from "./ConnectionLine";
 import { Menu } from "./Menu";
@@ -405,7 +406,10 @@ function CanvasInner({ initialNodes, initialEdges }: CanvasProps) {
     >
       <Background color="#868e8b" />
       <Controls />
-      <MiniMap className="absolute bottom-4 right-4" />
+      <MiniMap
+        className="absolute bottom-4 right-4"
+        nodeColor={minimapNodeColor}
+      />
     </ReactFlow>
   );
 }
